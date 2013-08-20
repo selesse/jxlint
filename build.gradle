@@ -1,0 +1,42 @@
+apply plugin: 'java'
+
+defaultTasks 'clean', 'assemble'
+
+sourceCompatibility = 1.7
+version = '1.0.0'
+
+buildDir = "out"
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  compile 'com.google.guava:guava:14.0.1'
+  compile 'commons-cli:commons-cli:1.2'
+  compile 'com.github.stefanbirkner:system-rules:1.3.1'
+  testCompile 'junit:junit:4.11'
+}
+
+task release(dependsOn: 'assemble') << {
+  out.println "Releasing $version"
+}
+
+gradle.taskGraph.whenReady {taskGraph ->
+  if (!taskGraph.hasTask(release)) {
+    version += "-SNAPSHOT"
+  }
+}
+
+jar {
+  destinationDir = file("release")
+  manifest {
+    attributes 'Manifest-Version': version, 'Main-Class': 'com.selesse.jxlint.Main'
+  }
+
+  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+}
+
+task getVersion << {
+  out.println version
+}

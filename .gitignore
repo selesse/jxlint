@@ -1,0 +1,9 @@
+*.iml
+.idea/
+
+out/
+
+.class
+
+.gradle
+release/
