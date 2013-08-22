@@ -14,13 +14,18 @@ public class Main {
     private static final String optionsOrder = "hvlsdecwWallWerrorqtx";
     private static String outputMessage;
     private static final String programVersion = "1.0.0-SNAPSHOT"; // sync with build.gradle
-    public static final String programName = "jxlint";
+    private static final String programName = "jxlint";
 
     public static void main(String[] args) {
         new Main().run(args);
     }
 
+    @SuppressWarnings("AccessStaticViaInstance")
     public void run(String[] args) {
+        if (args.length == 0) {
+            args = new String[] { "--help" };
+        }
+
         CommandLineParser commandLineParser = new GnuParser();
         Options options = new Options();
 
@@ -29,11 +34,26 @@ public class Main {
         options.addOption("h", "help", false, "Usage information, help message.");
         options.addOption("v", "version", false, "Output version information.");
         options.addOption("l", "list", false, "Lists lint rules with a short, summary explanation.");
-        options.addOption("s", "show", true, "Lists a verbose rule explanation.");
-
-        options.addOption("d", "disable", true, "Disable the list of rules.");
-        options.addOption("e", "enable", true, "Enable the list of rules.");
-        options.addOption("c", "check", true, "Only check for these rules.");
+        options.addOption(OptionBuilder.withLongOpt("show").
+                                        withDescription("Lists a verbose rule explanation.").
+                                        hasOptionalArg().
+                                        withArgName("RULE[s]").create('s')
+        );
+        options.addOption(OptionBuilder.withLongOpt("disable").
+                withDescription("Disable the list of rules.").
+                hasArg().
+                withArgName("RULE[s]").create('d')
+        );
+        options.addOption(OptionBuilder.withLongOpt("enable").
+                withDescription("Enable the list of rules.").
+                hasArg().
+                withArgName("RULE[s]").create('e')
+        );
+        options.addOption(OptionBuilder.withLongOpt("check").
+                withDescription("Only check for these rules.").
+                hasArg().
+                withArgName("RULE[s]").create('c')
+        );
         options.addOption("w", "nowarn", false, "Only check for errors; ignore warnings.");
         options.addOption("Wall", "Wall", false, "Check all warnings, including those all by default.");
         options.addOption("Werror", "Werror", false, "Treat all warnings as errors.");
@@ -57,17 +77,23 @@ public class Main {
             for (Object option : badOptionGroup.getOptions()) {
                 optionNames.add("--" + ((Option) option).getLongOpt());
             }
-            exitProgram("Only one of " + Joiner.on(", ").join(optionNames) + " must be selected.", ExitType.COMMAND_LINE_ERROR);
+            exitProgramWithMessage("Only one of " + Joiner.on(", ").join(optionNames) + " must be selected.",
+                    ExitType.COMMAND_LINE_ERROR);
         }
         catch (ParseException e) {
-            exitProgram(CLIHelpMessage.getMessage(options), ExitType.COMMAND_LINE_ERROR);
+            System.out.println(e);
+            exitProgramWithMessage(CLIHelpMessage.getMessage(options), ExitType.COMMAND_LINE_ERROR);
         }
     }
 
-    public static void exitProgram(String outputMessage, ExitType exitType) {
+    public static void exitProgram(ExitType exitType) {
+        System.exit(exitType.getErrorCode());
+    }
+
+    public static void exitProgramWithMessage(String outputMessage, ExitType exitType) {
         Main.outputMessage = outputMessage;
         System.out.println(outputMessage);
-        System.exit(exitType.getErrorCode());
+        exitProgram(exitType);
     }
 
     public static String getOptionsOrder() {
@@ -80,5 +106,9 @@ public class Main {
 
     public static String getProgramVersion() {
         return programVersion;
+    }
+
+    public static String getProgramName() {
+        return programName;
     }
 }

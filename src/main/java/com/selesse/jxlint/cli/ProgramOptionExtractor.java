@@ -10,10 +10,16 @@ public class ProgramOptionExtractor {
         programOptions.setHelpMessage(CLIHelpMessage.getMessage(options));
 
         if (commandLine.hasOption("help")) {
-            programOptions.setHelpEnabled(true);
+            programOptions.addOption("help");
         }
         if (commandLine.hasOption("version")) {
-            programOptions.setVersionEnabled(true);
+            programOptions.addOption("version");
+        }
+        if (commandLine.hasOption("list")) {
+            programOptions.addOption("list");
+        }
+        if (commandLine.hasOption("show")) {
+            programOptions.addOption("show", commandLine.getOptionValue("show"));
         }
 
         return programOptions;

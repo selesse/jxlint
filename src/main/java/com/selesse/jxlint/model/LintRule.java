@@ -1,5 +1,10 @@
 package com.selesse.jxlint.model;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
 public class LintRule {
     private String name;
     private String summary;
@@ -68,5 +73,23 @@ public class LintRule {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getSummaryOutput() {
+        return String.format("\"%s\" : %s", getName(), getSummary());
+    }
+
+    public String getDetailedOutput() {
+        List<String> detailedOutput = Lists.newArrayList(
+                getName(),
+                new String(new char[getName().length()]).replace("\0", "-"),
+                "Summary: " + getSummary(),
+                "",
+                "Severity: " + getSeverity(),
+                "",
+                getDetailedDescription()
+        );
+
+        return Joiner.on("\n").join(detailedOutput);
     }
 }

@@ -13,6 +13,12 @@ public class CLIHelpMessage {
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.setOptionComparator(new CLIOptionComparator());
 
+        String exitStatusFooter = "<RULE[s]> should be comma separated, without spaces.\n";
+        exitStatusFooter += "Exit Status:\n";
+        for (ExitType exitType : ExitType.values()) {
+            exitStatusFooter += String.format("%-21d %-30s\n", exitType.getErrorCode(), exitType.getExplanation());
+        }
+
         // redirect stdout to a temporary stream to capture HelpFormatter.printHelp()
 
         PrintStream previousOut = System.out;
@@ -20,12 +26,7 @@ public class CLIHelpMessage {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             System.setOut(new PrintStream(output));
 
-            String exitStatusFooter = "Exit Status:\n";
-            for (ExitType exitType : ExitType.values()) {
-                exitStatusFooter += String.format("%-21d %-30s\n", exitType.getErrorCode(), exitType.getExplanation());
-            }
-
-            helpFormatter.printHelp(Main.programName + " [flags]", "", options, "\n" + exitStatusFooter.trim());
+            helpFormatter.printHelp(Main.getProgramName() + " [flags]", "", options, "\n" + exitStatusFooter.trim());
 
             return output.toString();
         } finally {
