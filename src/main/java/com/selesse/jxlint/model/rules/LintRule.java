@@ -1,11 +1,11 @@
-package com.selesse.jxlint.model;
+package com.selesse.jxlint.model.rules;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class LintRule {
+public abstract class LintRule {
     private String name;
     private String summary;
     private String detailedDescription;
@@ -76,7 +76,7 @@ public class LintRule {
     }
 
     public String getSummaryOutput() {
-        return String.format("\"%s\" : %s", getName(), getSummary());
+        return String.format("\"%s\"%s : %s", getName(), isEnabled() ? "" : "*", getSummary());
     }
 
     public String getDetailedOutput() {
@@ -84,12 +84,34 @@ public class LintRule {
                 getName(),
                 new String(new char[getName().length()]).replace("\0", "-"),
                 "Summary: " + getSummary(),
-                "",
+                isEnabled() ? "" : "\n** Disabled by default **\n",
                 "Severity: " + getSeverity(),
+                "Category: " + getCategory(),
                 "",
                 getDetailedDescription()
         );
 
         return Joiner.on("\n").join(detailedOutput);
     }
+
+    /**
+     * Ad-hoc <code>equals</code>: we return true as long as the {@link String}, or {@link #getName()} is * the same.
+     * This means that <code>"RuleName".equals(new LintRule("RuleName", ...)) == true</code>
+     *
+     * <p>
+     *     Any object that isn't an <code>instanceof</code> {@link String} or {@link LintRule} will return false.
+     * </p>
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof String) {
+            return ((String) obj).equalsIgnoreCase(getName());
+        }
+        if (obj instanceof LintRule) {
+            return ((LintRule) obj).getName().equalsIgnoreCase(getName());
+        }
+        return super.equals(obj);
+    }
+
+    public abstract boolean validate();
 }

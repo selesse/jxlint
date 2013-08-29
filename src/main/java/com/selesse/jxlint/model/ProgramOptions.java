@@ -6,6 +6,7 @@ import java.util.Map;
 public class ProgramOptions {
     private Map<String, String> options;
     private String helpMessage;
+    private String sourceDirectory;
 
     public ProgramOptions() {
         this.options = new HashMap<String, String>();
@@ -36,5 +37,13 @@ public class ProgramOptions {
 
     public String getOption(String show) {
         return options.get(show);
+    }
+
+    public String getSourceDirectory() {
+        return sourceDirectory;
+    }
+
+    public void setSourceDirectory(String sourceDirectory) {
+        this.sourceDirectory = sourceDirectory;
     }
 }

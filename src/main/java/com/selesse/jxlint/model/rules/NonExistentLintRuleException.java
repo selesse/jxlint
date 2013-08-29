@@ -1,4 +1,4 @@
-package com.selesse.jxlint.model;
+package com.selesse.jxlint.model.rules;
 
 public class NonExistentLintRuleException extends Exception {
     private String ruleName;

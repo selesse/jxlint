@@ -26,7 +26,8 @@ public class CLIHelpMessage {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             System.setOut(new PrintStream(output));
 
-            helpFormatter.printHelp(Main.getProgramName() + " [flags]", "", options, "\n" + exitStatusFooter.trim());
+            helpFormatter.printHelp(Main.getProgramName() + " [flags] [directory]", "", options, "\n" +
+                    exitStatusFooter.trim());
 
             return output.toString();
         } finally {
