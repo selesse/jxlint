@@ -1,6 +1,5 @@
 package com.selesse.jxlint.cli;
 
-import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.ProgramOptions;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -47,9 +46,15 @@ public class ProgramOptionExtractor {
         }
         if (commandLine.hasOption("html")) {
             programOptions.addOption("outputType", "html");
+            if (commandLine.getOptionValue("html") != null) {
+                programOptions.addOption("outputTypePath", commandLine.getOptionValue("html"));
+            }
         }
         if (commandLine.hasOption("xml")) {
             programOptions.addOption("outputType", "xml");
+            if (commandLine.getOptionValue("xml") != null) {
+                programOptions.addOption("outputTypePath", commandLine.getOptionValue("xml"));
+            }
         }
 
         @SuppressWarnings("unchecked") List<String> argList = commandLine.getArgList();

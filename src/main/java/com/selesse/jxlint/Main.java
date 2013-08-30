@@ -6,6 +6,7 @@ import com.selesse.jxlint.cli.CLIHelpMessage;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
 import org.apache.commons.cli.*;
 
 import java.util.List;
@@ -35,9 +36,9 @@ public class Main {
         options.addOption("v", "version", false, "Output version information.");
         options.addOption("l", "list", false, "Lists lint rules with a short, summary explanation.");
         options.addOption(OptionBuilder.withLongOpt("show").
-                                        withDescription("Lists a verbose rule explanation.").
-                                        hasOptionalArg().
-                                        withArgName("RULE[s]").create('s')
+                withDescription("Lists a verbose rule explanation.").
+                hasOptionalArg().
+                withArgName("RULE[s]").create('s')
         );
         options.addOption(OptionBuilder.withLongOpt("disable").
                 withDescription("Disable the list of rules.").
@@ -59,9 +60,20 @@ public class Main {
         options.addOption("Werror", "Werror", false, "Treat all warnings as errors.");
 
         OptionGroup outputOptionGroup = new OptionGroup();
-        outputOptionGroup.addOption(new Option("q", "quiet", false, "Don't output any progress or reports."));
-        outputOptionGroup.addOption(new Option("t", "html", true, "Create an HTML report."));
-        outputOptionGroup.addOption(new Option("x", "xml", true, "Create an XML (!!) report."));
+        outputOptionGroup.addOption(OptionBuilder.withLongOpt("quiet").
+                withDescription("Don't output any progress or reports.").
+                create('q')
+        );
+        outputOptionGroup.addOption(OptionBuilder.withLongOpt("html").
+                withDescription("Create an HTML report.").
+                hasOptionalArg().
+                create('t')
+        );
+        outputOptionGroup.addOption(OptionBuilder.withLongOpt("xml").
+                withDescription("Create an XML (!!) report.").
+                hasOptionalArg().
+                create('x')
+        );
 
         options.addOptionGroup(outputOptionGroup);
 
@@ -69,6 +81,10 @@ public class Main {
             CommandLine commandLine = commandLineParser.parse(options, args);
             ProgramOptions programOptions = ProgramOptionExtractor.extractProgramOptions(commandLine, options);
             Dispatcher.dispatch(programOptions);
+        }
+        catch (MissingArgumentException e) {
+            exitProgramWithMessage("Missing argument for option '--" + e.getOption().getLongOpt() + "'.",
+                    ExitType.COMMAND_LINE_ERROR);
         }
         catch (AlreadySelectedException e) {
             OptionGroup badOptionGroup = e.getOptionGroup();
@@ -92,7 +108,9 @@ public class Main {
 
     public static void exitProgramWithMessage(String outputMessage, ExitType exitType) {
         Main.outputMessage = outputMessage;
-        System.out.println(outputMessage);
+        if (outputMessage.trim().length() > 0) {
+            System.out.println(outputMessage);
+        }
         exitProgram(exitType);
     }
 

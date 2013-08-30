@@ -1,12 +1,12 @@
 package com.selesse.jxlint;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
-import com.selesse.jxlint.model.rules.LintRule;
-import com.selesse.jxlint.model.rules.LintRules;
-import com.selesse.jxlint.model.rules.LintRulesImpl;
-import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
+import com.selesse.jxlint.model.rules.*;
+import com.selesse.jxlint.report.Reporter;
+import com.selesse.jxlint.report.UnableToCreateReportException;
 
 import java.io.File;
 import java.util.List;
@@ -29,7 +29,7 @@ public class Dispatcher {
             verifySourceDirectoryThenValidate(programOptions);
         }
         else {
-            Main.exitProgramWithMessage("Unable to parse program options.", ExitType.COMMAND_LINE_ERROR);
+            Main.exitProgramWithMessage("Error: could not find directory to validate.", ExitType.COMMAND_LINE_ERROR);
         }
     }
 
@@ -42,15 +42,17 @@ public class Dispatcher {
     }
 
     private static void doList() {
-        String outputBuffer = "";
+        List<String> outputBuffer = Lists.newArrayList();
+
         LintRules lintRules = LintRulesImpl.getInstance();
         if (lintRules.getAllRules().size() == 0) {
-            outputBuffer += "There are no rules defined.";
+            outputBuffer.add("There are no rules defined.");
         }
         for (LintRule lintRule : lintRules.getAllRules()) {
-            outputBuffer += lintRule.getSummaryOutput() + "\n";
+            outputBuffer.add(lintRule.getSummaryOutput());
         }
-        Main.exitProgramWithMessage(outputBuffer, ExitType.SUCCESS);
+
+        Main.exitProgramWithMessage(Joiner.on("\n").join(outputBuffer), ExitType.SUCCESS);
     }
 
     private static void doShow(ProgramOptions programOptions) {
@@ -114,8 +116,22 @@ public class Dispatcher {
             }
         }
 
+        List<LintError> lintErrors = getLintErrorsFrom(failedRules);
+
+        Reporter reporter = null;
+        try {
+            reporter = programOptions.createReporterFor(lintErrors);
+        } catch (UnableToCreateReportException e) {
+            Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+        }
+        reporter.outputReport();
+
         if (failedRules.size() > 0) {
             Main.exitProgram(ExitType.FAILED);
         }
+    }
+
+    private static List<LintError> getLintErrorsFrom(List<LintRule> failedRules) {
+        return Lists.newArrayList();
     }
 }

@@ -114,7 +114,7 @@ public class DispatcherTest extends AbstractTestCase {
         final List<String> expectedOutput = Lists.newArrayList(
                 "\"Valid XML\" : XML must be well-formed, valid."
                ,"\"Unique attribute\" : Attributes within a tag must be unique."
-               ,"\"XML version specified\"* : Version of XML must be specified.\n"
+               ,"\"XML version specified\"* : Version of XML must be specified."
         );
 
         runExitTest(new String[] { "--list" }, null, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);

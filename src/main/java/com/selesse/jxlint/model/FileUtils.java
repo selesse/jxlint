@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.List;
 
 public class FileUtils {
-    public static List<File> allXMLFilesIn(File rootDir) {
+    public static List<File> allXmlFilesIn(File rootDir) {
         List<File> xmlFiles = Lists.newArrayList();
 
         List<File> allFiles = allFilesIn(rootDir);

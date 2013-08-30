@@ -13,7 +13,7 @@ public abstract class AbstractLintRules implements LintRules {
         initializeLintTasks();
     }
 
-    abstract void initializeLintTasks();
+    public abstract void initializeLintTasks();
 
     @Override
     public LintRule getLintRule(String ruleName) throws NonExistentLintRuleException {

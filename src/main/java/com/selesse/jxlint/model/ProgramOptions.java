@@ -1,6 +1,11 @@
 package com.selesse.jxlint.model;
 
+import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.report.*;
+
+import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProgramOptions {
@@ -45,5 +50,48 @@ public class ProgramOptions {
 
     public void setSourceDirectory(String sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
+    }
+
+    public Reporter createReporterFor(List<LintError> lintErrors) throws UnableToCreateReportException {
+        String outputType = getOption("outputType");
+        String outputPath = getOption("outputTypePath");
+        Reporter reporter = new DefaultReporter(System.out, lintErrors);
+
+        if (outputType == null) {
+            return reporter;
+        }
+
+        if (outputType.equals("quiet")) {
+            reporter = new DefaultReporter(new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {
+                    // my own little /dev/null
+                }
+            }), lintErrors);
+        }
+        else if (outputType.equals("html")) {
+            PrintStream out = System.out;
+            if (outputPath != null) {
+                try {
+                    out = new PrintStream(new FileOutputStream(outputPath), true);
+                } catch (FileNotFoundException e) {
+                    throw new UnableToCreateReportException(new File(outputPath));
+                }
+            }
+            reporter = new HtmlReporter(out, lintErrors);
+        }
+        else if (outputType.equals("xml")) {
+            PrintStream out = System.out;
+            if (outputPath != null) {
+                try {
+                    out = new PrintStream(new FileOutputStream(outputPath), true);
+                } catch (FileNotFoundException e) {
+                    throw new UnableToCreateReportException(new File(outputPath));
+                }
+            }
+            reporter = new XmlReporter(out, lintErrors);
+        }
+
+        return reporter;
     }
 }

@@ -48,11 +48,11 @@ public class FileUtilsTest {
 
     @Test
     public void testListAllXMLFiles() {
-        assertEquals(2, FileUtils.allXMLFilesIn(rootTempDir).size());
+        assertEquals(2, FileUtils.allXmlFilesIn(rootTempDir).size());
 
         List<String> fileNames = Lists.newArrayList();
 
-        for (File file : FileUtils.allXMLFilesIn(rootTempDir)) {
+        for (File file : FileUtils.allXmlFilesIn(rootTempDir)) {
             fileNames.add(file.getName());
         }
 

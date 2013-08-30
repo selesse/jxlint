@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class LintRulesTestImpl extends AbstractLintRules {
     @Override
-    void initializeLintTasks() {
+    public void initializeLintTasks() {
         // Example rule saying that XML must be valid
         lintRules.add(new LintRule("Valid XML", "XML must be well-formed, valid.", "The XML needs to be \"valid\" " +
                 "XML. This test definition means that the XML can be parsed by any parser. Any tag must be closed.",
@@ -41,7 +41,7 @@ public class LintRulesTestImpl extends AbstractLintRules {
                 Severity.WARNING, Category.DEFAULT, false) {
             @Override
             public boolean validate(String sourceDirectory) {
-                List<File> xmlFiles = FileUtils.allXMLFilesIn(new File(sourceDirectory));
+                List<File> xmlFiles = FileUtils.allXmlFilesIn(new File(sourceDirectory));
 
                 for (File xmlFile : xmlFiles) {
                     try {
