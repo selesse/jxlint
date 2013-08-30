@@ -26,7 +26,7 @@ public class Dispatcher {
             doShow(programOptions);
         }
         else if (programOptions.getSourceDirectory() != null) {
-            doLint(programOptions);
+            verifySourceDirectoryThenValidate(programOptions);
         }
         else {
             Main.exitProgramWithMessage("Unable to parse program options.", ExitType.COMMAND_LINE_ERROR);
@@ -77,12 +77,12 @@ public class Dispatcher {
         }
     }
 
-    private static void doLint(ProgramOptions programOptions) {
+    private static void verifySourceDirectoryThenValidate(ProgramOptions programOptions) {
         String sourceDirectoryString = programOptions.getSourceDirectory();
         File sourceDirectory = new File(sourceDirectoryString);
 
         if (sourceDirectory.exists() && sourceDirectory.isDirectory() && sourceDirectory.canRead()) {
-            performLint();
+            doLint(programOptions);
             Main.exitProgramWithMessage("", ExitType.SUCCESS);
         }
         else {
@@ -101,17 +101,21 @@ public class Dispatcher {
         }
     }
 
-    private static void performLint() {
-        performLint(LintRulesImpl.getInstance().getAllEnabledRules());
+    private static void doLint(ProgramOptions programOptions) {
+        doLint(LintRulesImpl.getInstance().getAllEnabledRules(), programOptions);
     }
 
-    private static void performLint(List<LintRule> rules) {
+    private static void doLint(List<LintRule> rules, ProgramOptions programOptions) {
         List<LintRule> failedRules = Lists.newArrayList();
 
         for (LintRule lintRule : rules) {
-            if (!lintRule.validate()) {
+            if (!lintRule.validate(programOptions.getSourceDirectory())) {
                 failedRules.add(lintRule);
             }
+        }
+
+        if (failedRules.size() > 0) {
+            Main.exitProgram(ExitType.FAILED);
         }
     }
 }

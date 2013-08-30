@@ -1,5 +1,13 @@
 package com.selesse.jxlint.model.rules;
 
+import com.selesse.jxlint.model.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.util.List;
+
 /**
  * Implementation of a {@link LintRules} used for testing.
  */
@@ -12,7 +20,7 @@ public class LintRulesTestImpl extends AbstractLintRules {
                 Severity.FATAL, Category.DEFAULT) {
 
             @Override
-            public boolean validate() {
+            public boolean validate(String sourceDirectory) {
                 return true;
             }
         });
@@ -22,7 +30,7 @@ public class LintRulesTestImpl extends AbstractLintRules {
                 "Attributes within an XML tag must be unique. That is, <tag a=\"x\" a=\"y\"> is invalid.",
                 Severity.WARNING, Category.DEFAULT) {
             @Override
-            public boolean validate() {
+            public boolean validate(String sourceDirectory) {
                 return true;
             }
         });
@@ -32,8 +40,23 @@ public class LintRulesTestImpl extends AbstractLintRules {
                 "The xml version should be specified. For example, <?xml version=\"1.0\">.",
                 Severity.WARNING, Category.DEFAULT, false) {
             @Override
-            public boolean validate() {
-                return true;
+            public boolean validate(String sourceDirectory) {
+                List<File> xmlFiles = FileUtils.allXMLFilesIn(new File(sourceDirectory));
+
+                for (File xmlFile : xmlFiles) {
+                    try {
+                        List<String> xmlFileLines = Files.readAllLines(xmlFile.toPath(), Charset.defaultCharset());
+                        for (String line : xmlFileLines) {
+                            if (line.contains("<?xml")) {
+                                return line.contains("version=\"");
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                return false;
             }
         });
     }

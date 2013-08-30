@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 public class DispatcherTest extends AbstractTestCase {
@@ -160,5 +161,47 @@ public class DispatcherTest extends AbstractTestCase {
         tempDirectory.deleteOnExit();
 
         runExitTest(new String[] { tempDirectory.getAbsolutePath() }, null, "", ExitType.SUCCESS);
+    }
+
+    @Test
+    public void testLintValidatesNothing() {
+        File tempDirectory = Files.createTempDir();
+        tempDirectory.deleteOnExit();
+
+        File file = new File(tempDirectory + File.pathSeparator + "foobar.xml");
+        try {
+            file.createNewFile();
+
+            PrintWriter fileWriter = new PrintWriter(file);
+            fileWriter.println("<?xml version=\"1.0\">");
+            fileWriter.flush();
+            fileWriter.close();
+
+            runExitTest(new String[] { tempDirectory.getAbsolutePath() }, null, "", ExitType.SUCCESS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testLintSampleRule() {
+        File tempDirectory = Files.createTempDir();
+        tempDirectory.deleteOnExit();
+
+        File file = new File(tempDirectory + File.pathSeparator + "foobar.xml");
+        try {
+            file.createNewFile();
+            file.deleteOnExit();;
+
+            PrintWriter fileWriter = new PrintWriter(file);
+            fileWriter.println("<?xml>");
+            fileWriter.flush();
+            fileWriter.close();
+
+            runExitTest(new String[] { "--enable", "XML version specified", tempDirectory.getAbsolutePath() }, null,
+                    "", ExitType.FAILED);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

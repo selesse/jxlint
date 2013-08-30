@@ -113,5 +113,5 @@ public abstract class LintRule {
         return super.equals(obj);
     }
 
-    public abstract boolean validate();
+    public abstract boolean validate(String sourceDirectory);
 }
