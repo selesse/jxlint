@@ -8,4 +8,6 @@ public interface LintRules {
     List<LintRule> getAllEnabledRules();
     List<LintRule> getAllRulesExcept(List<String> disabledRules);
     List<LintRule> getAllEnabledRulesExcept(List<String> disabledRules);
+    List<LintRule> getAllEnabledRulesAsWellAs(List<String> enabledRulesList);
+    List<LintRule> getOnlyRules(List<String> checkRulesList);
 }

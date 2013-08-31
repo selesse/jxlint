@@ -6,13 +6,12 @@ import com.selesse.jxlint.cli.CLIHelpMessage;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
-import com.selesse.jxlint.model.rules.LintRulesImpl;
 import org.apache.commons.cli.*;
 
 import java.util.List;
 
 public class Main {
-    private static final String optionsOrder = "hvlsdecwWallWerrorqtx";
+    private static final String optionsOrder = "hvlscdewWallWerrorqtx";
     private static String outputMessage;
     private static final String programVersion = "1.0.0-SNAPSHOT"; // sync with build.gradle
     private static final String programName = "jxlint";
@@ -40,6 +39,11 @@ public class Main {
                 hasOptionalArg().
                 withArgName("RULE[s]").create('s')
         );
+        options.addOption(OptionBuilder.withLongOpt("check").
+                withDescription("Only check for these rules.").
+                hasArg().
+                withArgName("RULE[s]").create('c')
+        );
         options.addOption(OptionBuilder.withLongOpt("disable").
                 withDescription("Disable the list of rules.").
                 hasArg().
@@ -49,11 +53,6 @@ public class Main {
                 withDescription("Enable the list of rules.").
                 hasArg().
                 withArgName("RULE[s]").create('e')
-        );
-        options.addOption(OptionBuilder.withLongOpt("check").
-                withDescription("Only check for these rules.").
-                hasArg().
-                withArgName("RULE[s]").create('c')
         );
         options.addOption("w", "nowarn", false, "Only check for errors; ignore warnings.");
         options.addOption("Wall", "Wall", false, "Check all warnings, including those all by default.");
@@ -103,6 +102,7 @@ public class Main {
     }
 
     public static void exitProgram(ExitType exitType) {
+        Main.outputMessage = "";
         System.exit(exitType.getErrorCode());
     }
 
@@ -111,7 +111,7 @@ public class Main {
         if (outputMessage.trim().length() > 0) {
             System.out.println(outputMessage);
         }
-        exitProgram(exitType);
+        System.exit(exitType.getErrorCode());
     }
 
     public static String getOptionsOrder() {

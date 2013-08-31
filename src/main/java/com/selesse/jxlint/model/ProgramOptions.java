@@ -1,6 +1,10 @@
 package com.selesse.jxlint.model;
 
+import com.google.common.collect.Lists;
+import com.selesse.jxlint.Main;
 import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
+import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
 import com.selesse.jxlint.report.*;
 
 import java.io.*;
@@ -93,5 +97,26 @@ public class ProgramOptions {
         }
 
         return reporter;
+    }
+
+    /**
+     * Returns a list of strings from the raw option string. In other words,
+     * given a raw option string "Rule1, Rule2" (i.e. parsed from <code>--disable "Rule1, Rule2"</code>), this returns
+     * a list with { "Rule1", "Rule2" }. If any of the rules passed as strings do not exist, this will function
+     * will exit the program.
+     */
+    public static List<String> getListFromRawOptionStringOrDie(String disabledRules) {
+        String[] disabledRulesStringArray = disabledRules.split(",");
+        for (int i = 0; i < disabledRulesStringArray.length; i++) {
+            String disabledLintRuleString = disabledRulesStringArray[i];
+            disabledRulesStringArray[i] = disabledLintRuleString.trim();
+            try {
+                LintRulesImpl.getInstance().getLintRule(disabledLintRuleString);
+            } catch (NonExistentLintRuleException e) {
+                Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+            }
+        }
+
+        return Lists.newArrayList(disabledRulesStringArray);
     }
 }

@@ -31,4 +31,31 @@ public class AbstractLintRulesTest {
         List<String> disabledRules = Lists.newArrayList("Unique attribute");
         assertEquals(1, lintRules.getAllEnabledRulesExcept(disabledRules).size());
     }
+
+    @Test
+    public void testLintRulesGetsAllEnabledPlusEnabledRulesSizeProperly() {
+        List<String> enabledRules = Lists.newArrayList("XML version specified");
+        assertEquals(3, lintRules.getAllEnabledRulesAsWellAs(enabledRules).size());
+    }
+
+    @Test
+    public void testLintRulesGetsCheckRuleProperly() {
+        List<String> checkRules = Lists.newArrayList("XML version specified");
+        assertEquals(1, lintRules.getOnlyRules(checkRules).size());
+        assertEquals("XML version specified", lintRules.getOnlyRules(checkRules).get(0).getName());
+    }
+
+    @Test
+    public void testLintRulesGetsMultipleCheckRulesProperly() {
+        List<String> checkRules = Lists.newArrayList("XML version specified", "Unique attribute");
+        assertEquals(2, lintRules.getOnlyRules(checkRules).size());
+    }
+
+    @Test
+    public void testInvalidLintRulesGetsIgnored() {
+        List<String> badRules = Lists.newArrayList("foo", "foobar", "bar");
+
+        assertEquals(0, lintRules.getOnlyRules(badRules).size());
+        assertEquals(lintRules.getAllEnabledRules().size(), lintRules.getAllEnabledRulesAsWellAs(badRules).size());
+    }
 }

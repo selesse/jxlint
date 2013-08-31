@@ -25,8 +25,24 @@ public class Dispatcher {
         else if (programOptions.hasOption("show")) {
             doShow(programOptions);
         }
+        else if (programOptions.hasOption("check")) {
+            String checkRules = programOptions.getOption("check");
+            List<String> checkRulesList = ProgramOptions.getListFromRawOptionStringOrDie(checkRules);
+            doLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), programOptions);
+        }
+        // TODO verify mutually exclusive characteristics of disable/enable (I might want to disable but also enable)
+        else if (programOptions.hasOption("disable")) {
+            String disabledRules = programOptions.getOption("disable");
+            List<String> disabledRulesList = ProgramOptions.getListFromRawOptionStringOrDie(disabledRules);
+            doLint(LintRulesImpl.getInstance().getAllEnabledRulesExcept(disabledRulesList), programOptions);
+        }
+        else if (programOptions.hasOption("enable")) {
+            String enabledRules = programOptions.getOption("enable");
+            List<String> enabledRulesList = ProgramOptions.getListFromRawOptionStringOrDie(enabledRules);
+            doLint(LintRulesImpl.getInstance().getAllEnabledRulesAsWellAs(enabledRulesList), programOptions);
+        }
         else if (programOptions.getSourceDirectory() != null) {
-            verifySourceDirectoryThenValidate(programOptions);
+            verifySourceDirectoryThenDoLint(programOptions);
         }
         else {
             Main.exitProgramWithMessage("Error: could not find directory to validate.", ExitType.COMMAND_LINE_ERROR);
@@ -79,7 +95,7 @@ public class Dispatcher {
         }
     }
 
-    private static void verifySourceDirectoryThenValidate(ProgramOptions programOptions) {
+    private static void verifySourceDirectoryThenDoLint(ProgramOptions programOptions) {
         String sourceDirectoryString = programOptions.getSourceDirectory();
         File sourceDirectory = new File(sourceDirectoryString);
 
@@ -118,13 +134,12 @@ public class Dispatcher {
 
         List<LintError> lintErrors = getLintErrorsFrom(failedRules);
 
-        Reporter reporter = null;
         try {
-            reporter = programOptions.createReporterFor(lintErrors);
+            Reporter reporter = programOptions.createReporterFor(lintErrors);
+            reporter.outputReport();
         } catch (UnableToCreateReportException e) {
             Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
         }
-        reporter.outputReport();
 
         if (failedRules.size() > 0) {
             Main.exitProgram(ExitType.FAILED);
