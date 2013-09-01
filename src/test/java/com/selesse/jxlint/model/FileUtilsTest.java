@@ -47,7 +47,7 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void testListAllXMLFiles() {
+    public void testListAllXmlFiles() {
         assertEquals(2, FileUtils.allXmlFilesIn(rootTempDir).size());
 
         List<String> fileNames = Lists.newArrayList();

@@ -26,7 +26,7 @@ public class DispatcherTest extends AbstractTestCase {
     @Test
     public void testHelpProperlyExtracted() {
         final List<String> expectedOutput = Lists.newArrayList(
-                  "usage: jxlint [flags] [directory]"
+                  "usage: jxlint [flags] <directory>"
                 , " -h,--help                Usage information, help message."
                 , " -v,--version             Output version information."
                 , " -l,--list                Lists lint rules with a short, summary"
@@ -36,12 +36,12 @@ public class DispatcherTest extends AbstractTestCase {
                 , " -d,--disable <RULE[s]>   Disable the list of rules."
                 , " -e,--enable <RULE[s]>    Enable the list of rules."
                 , " -w,--nowarn              Only check for errors; ignore warnings."
-                , " -Wall,--Wall             Check all warnings, including those all by"
+                , " -Wall,--Wall             Check all warnings, including those off by"
                 , "                          default."
                 , " -Werror,--Werror         Treat all warnings as errors."
                 , " -q,--quiet               Don't output any progress or reports."
-                , " -t,--html <arg>          Create an HTML report."
-                , " -x,--xml <arg>           Create an XML (!!) report."
+                , " -t,--html <filename>     Create an HTML report."
+                , " -x,--xml <filename>      Create an XML (!!) report."
                 , ""
                 , "<RULE[s]> should be comma separated, without spaces."
                 , "Exit Status:"
@@ -160,7 +160,7 @@ public class DispatcherTest extends AbstractTestCase {
         File tempDirectory = Files.createTempDir();
         tempDirectory.deleteOnExit();
 
-        runExitTest(new String[] { tempDirectory.getAbsolutePath() }, null, "", ExitType.SUCCESS);
+        runTest(new String[] { tempDirectory.getAbsolutePath() }, null, "");
     }
 
     @Test
@@ -171,13 +171,14 @@ public class DispatcherTest extends AbstractTestCase {
         File file = new File(tempDirectory + File.pathSeparator + "foobar.xml");
         try {
             file.createNewFile();
+            file.deleteOnExit();
 
             PrintWriter fileWriter = new PrintWriter(file);
             fileWriter.println("<?xml version=\"1.0\">");
             fileWriter.flush();
             fileWriter.close();
 
-            runExitTest(new String[] { tempDirectory.getAbsolutePath() }, null, "", ExitType.SUCCESS);
+            runTest(new String[] { tempDirectory.getAbsolutePath() }, null, "");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -191,7 +192,7 @@ public class DispatcherTest extends AbstractTestCase {
         File file = new File(tempDirectory + File.pathSeparator + "foobar.xml");
         try {
             file.createNewFile();
-            file.deleteOnExit();;
+            file.deleteOnExit();
 
             PrintWriter fileWriter = new PrintWriter(file);
             fileWriter.println("<?xml>");

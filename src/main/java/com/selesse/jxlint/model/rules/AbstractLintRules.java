@@ -132,4 +132,17 @@ public abstract class AbstractLintRules implements LintRules {
 
         return Collections.unmodifiableList(filteredLintRules);
     }
+
+    @Override
+    public List<LintRule> getAllRulesWithSeverity(Severity severity) {
+        List<LintRule> severityRules = Lists.newArrayList();
+
+        for (LintRule lintRule : getAllRules()) {
+            if (lintRule.getSeverity() == severity) {
+                severityRules.add(lintRule);
+            }
+        }
+
+        return severityRules;
+    }
 }

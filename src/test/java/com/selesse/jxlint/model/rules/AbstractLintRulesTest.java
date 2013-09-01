@@ -39,6 +39,18 @@ public class AbstractLintRulesTest {
     }
 
     @Test
+    public void testGetAllRulesBySeverity() {
+        List<LintRule> emptyErrorRules = lintRules.getAllRulesWithSeverity(Severity.ERROR);
+        assertEquals(0, emptyErrorRules.size());
+
+        List<LintRule> fatalRules = lintRules.getAllRulesWithSeverity(Severity.FATAL);
+        assertEquals(1, fatalRules.size());
+
+        List<LintRule> warningRules = lintRules.getAllRulesWithSeverity(Severity.WARNING);
+        assertEquals(2, warningRules.size());
+    }
+
+    @Test
     public void testLintRulesGetsCheckRuleProperly() {
         List<String> checkRules = Lists.newArrayList("XML version specified");
         assertEquals(1, lintRules.getOnlyRules(checkRules).size());

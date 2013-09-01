@@ -8,7 +8,7 @@ import org.apache.commons.cli.Options;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-public class CLIHelpMessage {
+public class CliHelpMessage {
     public static String getMessage(Options options) {
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.setOptionComparator(new CLIOptionComparator());
@@ -26,7 +26,7 @@ public class CLIHelpMessage {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             System.setOut(new PrintStream(output));
 
-            helpFormatter.printHelp(Main.getProgramName() + " [flags] [directory]", "", options, "\n" +
+            helpFormatter.printHelp(Main.getProgramName() + " [flags] <directory>", "", options, "\n" +
                     exitStatusFooter.trim());
 
             return output.toString();

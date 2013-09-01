@@ -12,7 +12,10 @@ import java.io.File;
 import java.util.List;
 
 public class Dispatcher {
+    private static boolean warningsAreErrors = false;
+
     public static void dispatch(ProgramOptions programOptions) {
+        // If/else train of mutually exclusive options
         if (programOptions.hasOption("help")) {
             doHelp(programOptions);
         }
@@ -30,19 +33,53 @@ public class Dispatcher {
             List<String> checkRulesList = ProgramOptions.getListFromRawOptionStringOrDie(checkRules);
             doLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), programOptions);
         }
-        // TODO verify mutually exclusive characteristics of disable/enable (I might want to disable but also enable)
-        else if (programOptions.hasOption("disable")) {
+
+        // By default, we only check enabled rules.
+        // We adjust this according to the options below.
+        List<LintRule> lintRuleList = LintRulesImpl.getInstance().getAllEnabledRules();
+
+        if (programOptions.hasOption("Wall")) {
+            lintRuleList = LintRulesImpl.getInstance().getAllRules();
+        }
+        else if (programOptions.hasOption("nowarn")) {
+            lintRuleList = LintRulesImpl.getInstance().getAllRulesWithSeverity(Severity.ERROR);
+        }
+
+        // Options that are "standalone"
+        if (programOptions.hasOption("Werror")) {
+            warningsAreErrors = true;
+        }
+        if (programOptions.hasOption("disable")) {
             String disabledRules = programOptions.getOption("disable");
             List<String> disabledRulesList = ProgramOptions.getListFromRawOptionStringOrDie(disabledRules);
-            doLint(LintRulesImpl.getInstance().getAllEnabledRulesExcept(disabledRulesList), programOptions);
+            lintRuleList.removeAll(LintRulesImpl.getInstance().getOnlyRules(disabledRulesList));
         }
-        else if (programOptions.hasOption("enable")) {
+        if (programOptions.hasOption("enable")) {
             String enabledRules = programOptions.getOption("enable");
             List<String> enabledRulesList = ProgramOptions.getListFromRawOptionStringOrDie(enabledRules);
-            doLint(LintRulesImpl.getInstance().getAllEnabledRulesAsWellAs(enabledRulesList), programOptions);
+            lintRuleList.addAll(LintRulesImpl.getInstance().getOnlyRules(enabledRulesList));
         }
-        else if (programOptions.getSourceDirectory() != null) {
-            verifySourceDirectoryThenDoLint(programOptions);
+
+        if (programOptions.getSourceDirectory() != null) {
+            String sourceDirectoryString = programOptions.getSourceDirectory();
+            if (isValidSourceDirectory(sourceDirectoryString)) {
+                doLint(lintRuleList, programOptions);
+            }
+            else {
+                File sourceDirectory = new File(sourceDirectoryString);
+                String outputBuffer = "Invalid source directory \"" + sourceDirectoryString + "\" : ";
+                if (!sourceDirectory.exists()) {
+                    outputBuffer += "Directory does not exist.";
+                }
+                else if (!sourceDirectory.isDirectory()) {
+                    outputBuffer += "\"" + sourceDirectoryString + "\" is not a directory.";
+                }
+                else if (!sourceDirectory.canRead()) {
+                    outputBuffer += "Cannot read directory.";
+                }
+
+                Main.exitProgramWithMessage(outputBuffer, ExitType.COMMAND_LINE_ERROR);
+            }
         }
         else {
             Main.exitProgramWithMessage("Error: could not find directory to validate.", ExitType.COMMAND_LINE_ERROR);
@@ -95,32 +132,10 @@ public class Dispatcher {
         }
     }
 
-    private static void verifySourceDirectoryThenDoLint(ProgramOptions programOptions) {
-        String sourceDirectoryString = programOptions.getSourceDirectory();
+    private static boolean isValidSourceDirectory(String sourceDirectoryString) {
         File sourceDirectory = new File(sourceDirectoryString);
 
-        if (sourceDirectory.exists() && sourceDirectory.isDirectory() && sourceDirectory.canRead()) {
-            doLint(programOptions);
-            Main.exitProgramWithMessage("", ExitType.SUCCESS);
-        }
-        else {
-            String outputBuffer = "Invalid source directory \"" + sourceDirectoryString + "\" : ";
-            if (!sourceDirectory.exists()) {
-                outputBuffer += "Directory does not exist.";
-            }
-            else if (!sourceDirectory.isDirectory()) {
-                outputBuffer += "\"" + sourceDirectoryString + "\" is not a directory.";
-            }
-            else if (!sourceDirectory.canRead()) {
-                outputBuffer += "Cannot read directory.";
-            }
-
-            Main.exitProgramWithMessage(outputBuffer, ExitType.COMMAND_LINE_ERROR);
-        }
-    }
-
-    private static void doLint(ProgramOptions programOptions) {
-        doLint(LintRulesImpl.getInstance().getAllEnabledRules(), programOptions);
+        return sourceDirectory.exists() && sourceDirectory.isDirectory() && sourceDirectory.canRead();
     }
 
     private static void doLint(List<LintRule> rules, ProgramOptions programOptions) {

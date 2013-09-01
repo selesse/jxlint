@@ -2,7 +2,7 @@ package com.selesse.jxlint;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.cli.CLIHelpMessage;
+import com.selesse.jxlint.cli.CliHelpMessage;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
@@ -11,10 +11,10 @@ import org.apache.commons.cli.*;
 import java.util.List;
 
 public class Main {
+    private static final String programName = "jxlint";
+    private static final String programVersion = "1.0.0-SNAPSHOT"; // sync with build.gradle
     private static final String optionsOrder = "hvlscdewWallWerrorqtx";
     private static String outputMessage;
-    private static final String programVersion = "1.0.0-SNAPSHOT"; // sync with build.gradle
-    private static final String programName = "jxlint";
 
     public static void main(String[] args) {
         new Main().run(args);
@@ -29,8 +29,8 @@ public class Main {
         CommandLineParser commandLineParser = new GnuParser();
         Options options = new Options();
 
-        // the sequence in which these options are added represents the order in which we want them to be displayed.
-        // if this order is modified, make sure to modify "Main:optionsOrder"
+        // The sequence in which these options are added represents the order in which we want them to be displayed.
+        // If this order is modified, make sure to modify "Main.optionsOrder".
         options.addOption("h", "help", false, "Usage information, help message.");
         options.addOption("v", "version", false, "Output version information.");
         options.addOption("l", "list", false, "Lists lint rules with a short, summary explanation.");
@@ -55,7 +55,7 @@ public class Main {
                 withArgName("RULE[s]").create('e')
         );
         options.addOption("w", "nowarn", false, "Only check for errors; ignore warnings.");
-        options.addOption("Wall", "Wall", false, "Check all warnings, including those all by default.");
+        options.addOption("Wall", "Wall", false, "Check all warnings, including those off by default.");
         options.addOption("Werror", "Werror", false, "Treat all warnings as errors.");
 
         OptionGroup outputOptionGroup = new OptionGroup();
@@ -66,11 +66,13 @@ public class Main {
         outputOptionGroup.addOption(OptionBuilder.withLongOpt("html").
                 withDescription("Create an HTML report.").
                 hasOptionalArg().
+                withArgName("filename").
                 create('t')
         );
         outputOptionGroup.addOption(OptionBuilder.withLongOpt("xml").
                 withDescription("Create an XML (!!) report.").
                 hasOptionalArg().
+                withArgName("filename").
                 create('x')
         );
 
@@ -97,7 +99,7 @@ public class Main {
         }
         catch (ParseException e) {
             System.out.println(e);
-            exitProgramWithMessage(CLIHelpMessage.getMessage(options), ExitType.COMMAND_LINE_ERROR);
+            exitProgramWithMessage(CliHelpMessage.getMessage(options), ExitType.COMMAND_LINE_ERROR);
         }
     }
 

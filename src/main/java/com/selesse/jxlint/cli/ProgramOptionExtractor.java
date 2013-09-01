@@ -6,10 +6,14 @@ import org.apache.commons.cli.Options;
 
 import java.util.List;
 
+/**
+ * Class for extracting program options from {@link CommandLine} and {@link Options}.
+ * A wrapper so that if the CLI parser changes, code modifications will be limited to this class.
+ */
 public class ProgramOptionExtractor {
     public static ProgramOptions extractProgramOptions(CommandLine commandLine, Options options) {
         ProgramOptions programOptions = new ProgramOptions();
-        programOptions.setHelpMessage(CLIHelpMessage.getMessage(options));
+        programOptions.setHelpMessage(CliHelpMessage.getMessage(options));
 
         if (commandLine.hasOption("help")) {
             programOptions.addOption("help");
@@ -33,13 +37,13 @@ public class ProgramOptionExtractor {
             programOptions.addOption("check", commandLine.getOptionValue("check"));
         }
         if (commandLine.hasOption("nowarn")) {
-
+            programOptions.addOption("nowarn");
         }
         if (commandLine.hasOption("Wall")) {
-
+            programOptions.addOption("Wall");
         }
         if (commandLine.hasOption("Werror")) {
-
+            programOptions.addOption("Werror");
         }
         if (commandLine.hasOption("quiet")) {
             programOptions.addOption("outputType", "quiet");
