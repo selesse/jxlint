@@ -22,20 +22,26 @@ public class FileUtilsTest {
         try {
             File tempFile1 = new File(rootTempDir.getAbsolutePath() + File.separator + "x");
             tempFile1.createNewFile();
+            tempFile1.deleteOnExit();
             File tempFile2 = new File(rootTempDir.getAbsolutePath() + File.separator + "x2");
             tempFile2.createNewFile();
+            tempFile2.deleteOnExit();
 
             File tempDir2 = new File(rootTempDir.getAbsolutePath() + File.separator + "dir");
             tempDir2.mkdir();
+            tempDir2.deleteOnExit();
 
             File tempFile3 = new File(tempDir2.getAbsolutePath() + File.separator + "3.xml");
             tempFile3.createNewFile();
+            tempFile3.deleteOnExit();
 
             File tempDir3 = new File(rootTempDir.getAbsolutePath() + File.separator + "w" + File.separator + "y" + File.separator + "z");
             tempDir3.mkdirs();
+            tempDir3.deleteOnExit();
 
             File tempFile4 = new File(tempDir3.getAbsolutePath() + File.separator + "test.xml");
             tempFile4.createNewFile();
+            tempFile4.deleteOnExit();
         } catch (IOException e) {
             e.printStackTrace();
         }

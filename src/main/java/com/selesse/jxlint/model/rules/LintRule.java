@@ -3,6 +3,10 @@ package com.selesse.jxlint.model.rules;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.List;
 
 public abstract class LintRule {
@@ -12,6 +16,7 @@ public abstract class LintRule {
     private Severity severity;
     private Category category;
     private boolean enabled = true;
+    protected List<LintError> failedRules;
 
     public LintRule(String name, String summary, String detailedDescription, Severity severity, Category category) {
         this.name = name;
@@ -19,6 +24,7 @@ public abstract class LintRule {
         this.detailedDescription = detailedDescription;
         this.severity = severity;
         this.category = category;
+        this.failedRules = Lists.newArrayList();
     }
 
     public LintRule(String name, String summary, String detailedDescription, Severity severity, Category category,
@@ -113,5 +119,21 @@ public abstract class LintRule {
         return super.equals(obj);
     }
 
-    public abstract boolean validate(String sourceDirectory);
+    public void validate() {
+        for (File file : getFilesToValidate()) {
+            try {
+                List<String> fileContents = Files.readAllLines(file.toPath(), Charset.defaultCharset());
+                lintRuleIsRespected(fileContents);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public List<LintError> getFailedRules() {
+        return failedRules;
+    }
+
+    public abstract List<File> getFilesToValidate();
+    public abstract boolean lintRuleIsRespected(List<String> fileContents);
 }

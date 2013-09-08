@@ -16,10 +16,15 @@ import java.io.PrintWriter;
 import java.util.List;
 
 public class DispatcherTest extends AbstractTestCase {
-    private LintRules lintRuleImpl = new LintRulesTestImpl();
+    private File tempDirectory;
+    private LintRules lintRuleImpl;
 
     @Before
     public void setup() {
+        tempDirectory = Files.createTempDir();
+        tempDirectory.deleteOnExit();
+
+        lintRuleImpl = new LintRulesTestImpl(tempDirectory);
         LintRulesImpl.setInstance(lintRuleImpl);
     }
 
@@ -143,9 +148,6 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testLintFailsOnNonReadDirectory() {
-        File tempDirectory = Files.createTempDir();
-        tempDirectory.deleteOnExit();
-
         tempDirectory.setReadable(false);
 
         final String expectedOutput = "Invalid source directory \"" + tempDirectory.getAbsolutePath() + "\" : " +
@@ -157,18 +159,12 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testLintAcceptsDirectory() {
-        File tempDirectory = Files.createTempDir();
-        tempDirectory.deleteOnExit();
-
-        runTest(new String[] { tempDirectory.getAbsolutePath() }, null, "");
+        runExitTest(new String[] { tempDirectory.getAbsolutePath() }, null, "", ExitType.SUCCESS);
     }
 
     @Test
     public void testLintValidatesNothing() {
-        File tempDirectory = Files.createTempDir();
-        tempDirectory.deleteOnExit();
-
-        File file = new File(tempDirectory + File.pathSeparator + "foobar.xml");
+        File file = new File(tempDirectory + File.separator + "foobar.xml");
         try {
             file.createNewFile();
             file.deleteOnExit();
@@ -178,18 +174,15 @@ public class DispatcherTest extends AbstractTestCase {
             fileWriter.flush();
             fileWriter.close();
 
-            runTest(new String[] { tempDirectory.getAbsolutePath() }, null, "");
+            runExitTest(new String[] { tempDirectory.getAbsolutePath() }, null, "", ExitType.SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @Test
-    public void testLintSampleRule() {
-        File tempDirectory = Files.createTempDir();
-        tempDirectory.deleteOnExit();
-
-        File file = new File(tempDirectory + File.pathSeparator + "foobar.xml");
+    public void testLintSampleRuleFailsWhenItShould() {
+        File file = new File(tempDirectory + File.separator + "foobar.xml");
         try {
             file.createNewFile();
             file.deleteOnExit();
@@ -199,8 +192,27 @@ public class DispatcherTest extends AbstractTestCase {
             fileWriter.flush();
             fileWriter.close();
 
-            runExitTest(new String[] { "--enable", "XML version specified", tempDirectory.getAbsolutePath() }, null,
+            runExitTest(new String[] { "--check", "XML version specified", tempDirectory.getAbsolutePath() }, null,
                     "", ExitType.FAILED);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testLintSampleRulePassesWhenItShould() {
+        File file = new File(tempDirectory + File.separator + "foobar.xml");
+        try {
+            file.createNewFile();
+            file.deleteOnExit();
+
+            PrintWriter fileWriter = new PrintWriter(file);
+            fileWriter.println("<?xml version=\"1.0\">");
+            fileWriter.flush();
+            fileWriter.close();
+
+            runExitTest(new String[] { "--check", "XML version specified", tempDirectory.getAbsolutePath() }, null,
+                    "", ExitType.SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
         }

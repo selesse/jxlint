@@ -1,5 +1,6 @@
 package com.selesse.jxlint.model.rules;
 
+import java.io.File;
 import java.util.List;
 
 public interface LintRules {
@@ -18,4 +19,6 @@ public interface LintRules {
     List<LintRule> getOnlyRules(List<String> checkRulesList);
 
     List<LintRule> getAllRulesWithSeverity(Severity severity);
+
+    File getSourceDirectory();
 }

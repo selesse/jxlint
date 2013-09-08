@@ -3,6 +3,7 @@ package com.selesse.jxlint.model.rules;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.ProgramOptions;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,9 +20,11 @@ import java.util.List;
  */
 public abstract class AbstractLintRules implements LintRules {
     protected List<LintRule> lintRules;
+    protected File sourceDirectory;
 
-    public AbstractLintRules() {
+    public AbstractLintRules(File sourceDirectory) {
         this.lintRules = Lists.newArrayList();
+        this.sourceDirectory = sourceDirectory;
         initializeLintTasks();
     }
 
@@ -144,5 +147,10 @@ public abstract class AbstractLintRules implements LintRules {
         }
 
         return severityRules;
+    }
+
+    @Override
+    public File getSourceDirectory() {
+        return sourceDirectory;
     }
 }

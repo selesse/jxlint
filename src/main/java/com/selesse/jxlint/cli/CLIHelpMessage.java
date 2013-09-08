@@ -11,7 +11,7 @@ import java.io.PrintStream;
 public class CliHelpMessage {
     public static String getMessage(Options options) {
         HelpFormatter helpFormatter = new HelpFormatter();
-        helpFormatter.setOptionComparator(new CLIOptionComparator());
+        helpFormatter.setOptionComparator(new CliOptionComparator());
 
         String exitStatusFooter = "<RULE[s]> should be comma separated, without spaces.\n";
         exitStatusFooter += "Exit Status:\n";

@@ -139,18 +139,15 @@ public class Dispatcher {
     }
 
     private static void doLint(List<LintRule> rules, ProgramOptions programOptions) {
-        List<LintRule> failedRules = Lists.newArrayList();
+        List<LintError> failedRules = Lists.newArrayList();
 
         for (LintRule lintRule : rules) {
-            if (!lintRule.validate(programOptions.getSourceDirectory())) {
-                failedRules.add(lintRule);
-            }
+            lintRule.validate();
+            failedRules.addAll(lintRule.getFailedRules());
         }
 
-        List<LintError> lintErrors = getLintErrorsFrom(failedRules);
-
         try {
-            Reporter reporter = programOptions.createReporterFor(lintErrors);
+            Reporter reporter = programOptions.createReporterFor(failedRules);
             reporter.outputReport();
         } catch (UnableToCreateReportException e) {
             Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
@@ -159,9 +156,7 @@ public class Dispatcher {
         if (failedRules.size() > 0) {
             Main.exitProgram(ExitType.FAILED);
         }
-    }
 
-    private static List<LintError> getLintErrorsFrom(List<LintRule> failedRules) {
-        return Lists.newArrayList();
+        Main.exitProgram(ExitType.SUCCESS);
     }
 }

@@ -8,16 +8,7 @@ import java.util.List;
 
 public class FileUtils {
     public static List<File> allXmlFilesIn(File rootDir) {
-        List<File> xmlFiles = Lists.newArrayList();
-
-        List<File> allFiles = allFilesIn(rootDir);
-        for (File file : allFiles) {
-            if (Files.getFileExtension(file.getAbsolutePath()).equalsIgnoreCase("XML")) {
-                xmlFiles.add(file);
-            }
-        }
-
-        return xmlFiles;
+        return allFilesWithExtensionIn(rootDir, "XML");
     }
 
     public static List<File> allFilesIn(File rootDir) {
@@ -33,5 +24,18 @@ public class FileUtils {
         }
 
         return files;
+    }
+
+    private static List<File> allFilesWithExtensionIn(File rootDir, String extension) {
+        List<File> filteredFiles = Lists.newArrayList();
+
+        List<File> allFiles = allFilesIn(rootDir);
+        for (File file : allFiles) {
+            if (Files.getFileExtension(file.getAbsolutePath()).equalsIgnoreCase(extension)) {
+                filteredFiles.add(file);
+            }
+        }
+
+        return filteredFiles;
     }
 }

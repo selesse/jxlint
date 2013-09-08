@@ -3,15 +3,16 @@ package com.selesse.jxlint.model.rules;
 import com.selesse.jxlint.model.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.List;
 
 /**
  * Implementation of a {@link LintRules} used for testing.
  */
 public class LintRulesTestImpl extends AbstractLintRules {
+    public LintRulesTestImpl(File sourceDirectory) {
+        super(sourceDirectory);
+    }
+
     @Override
     public void initializeLintTasks() {
         // Example rule saying that XML must be valid
@@ -20,7 +21,12 @@ public class LintRulesTestImpl extends AbstractLintRules {
                 Severity.FATAL, Category.DEFAULT) {
 
             @Override
-            public boolean validate(String sourceDirectory) {
+            public List<File> getFilesToValidate() {
+                return FileUtils.allXmlFilesIn(getSourceDirectory());
+            }
+
+            @Override
+            public boolean lintRuleIsRespected(List<String> fileContents) {
                 return true;
             }
         });
@@ -30,7 +36,12 @@ public class LintRulesTestImpl extends AbstractLintRules {
                 "Attributes within an XML tag must be unique. That is, <tag a=\"x\" a=\"y\"> is invalid.",
                 Severity.WARNING, Category.DEFAULT) {
             @Override
-            public boolean validate(String sourceDirectory) {
+            public List<File> getFilesToValidate() {
+                return FileUtils.allXmlFilesIn(getSourceDirectory());
+            }
+
+            @Override
+            public boolean lintRuleIsRespected(List<String> fileContents) {
                 return true;
             }
         });
@@ -40,22 +51,21 @@ public class LintRulesTestImpl extends AbstractLintRules {
                 "The xml version should be specified. For example, <?xml version=\"1.0\">.",
                 Severity.WARNING, Category.DEFAULT, false) {
             @Override
-            public boolean validate(String sourceDirectory) {
-                List<File> xmlFiles = FileUtils.allXmlFilesIn(new File(sourceDirectory));
+            public List<File> getFilesToValidate() {
+                return FileUtils.allXmlFilesIn(getSourceDirectory());
+            }
 
-                for (File xmlFile : xmlFiles) {
-                    try {
-                        List<String> xmlFileLines = Files.readAllLines(xmlFile.toPath(), Charset.defaultCharset());
-                        for (String line : xmlFileLines) {
-                            if (line.contains("<?xml")) {
-                                return line.contains("version=\"");
-                            }
+            @Override
+            public boolean lintRuleIsRespected(List<String> fileContents) {
+                for (String line : fileContents) {
+                    if (line.contains("<?xml")) {
+                        if (line.contains("version=\"")) {
+                            return true;
                         }
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     }
                 }
 
+                failedRules.add(new LintError());
                 return false;
             }
         });
