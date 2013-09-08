@@ -7,6 +7,10 @@ version = '1.0.0'
 
 buildDir = "out"
 
+ext {
+  releaseDir = "release"
+}
+
 repositories {
   mavenCentral()
 }
@@ -14,8 +18,12 @@ repositories {
 dependencies {
   compile 'com.google.guava:guava:14.0.1'
   compile 'commons-cli:commons-cli:1.2'
-  compile 'com.github.stefanbirkner:system-rules:1.3.1'
+  testCompile 'com.github.stefanbirkner:system-rules:1.3.1'
   testCompile 'junit:junit:4.11'
+}
+
+clean.doLast {
+  ant.delete(dir: releaseDir)
 }
 
 task release(dependsOn: 'assemble') << {
@@ -29,7 +37,7 @@ gradle.taskGraph.whenReady {taskGraph ->
 }
 
 jar {
-  destinationDir = file("release")
+  destinationDir = file(releaseDir)
   manifest {
     attributes 'Manifest-Version': version, 'Main-Class': 'com.selesse.jxlint.Main'
   }
