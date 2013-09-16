@@ -6,7 +6,7 @@ import com.google.common.io.Files;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
-import com.selesse.jxlint.model.rules.LintRulesTestImpl;
+import com.selesse.jxlint.samplerules.xml.LintRulesTestImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class DispatcherTest extends AbstractTestCase {
         tempDirectory = Files.createTempDir();
         tempDirectory.deleteOnExit();
 
-        lintRuleImpl = new LintRulesTestImpl(tempDirectory);
+        lintRuleImpl = new LintRulesTestImpl();
         LintRulesImpl.setInstance(lintRuleImpl);
     }
 
@@ -55,28 +55,29 @@ public class DispatcherTest extends AbstractTestCase {
                 , "2                     Command line error\n"
         );
 
-        runExitTest(new String[] { "--help" }, null, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
+        runExitTest(new String[] { "--help" }, tempDirectory, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
     }
 
     @Test
     public void testVersionProperlyExtracted() {
         final String expectedOutput = String.format("%s: version %s", Main.getProgramName(), Main.getProgramVersion());
 
-        runExitTest(new String[] { "--version" }, null, expectedOutput, ExitType.SUCCESS);
+        runExitTest(new String[] { "--version" }, tempDirectory, expectedOutput, ExitType.SUCCESS);
     }
 
     @Test
     public void testShowInvalidOptionSaysSo() {
         final String expectedOutput = "'foobarrule' is not a valid rule.";
 
-        runExitTest(new String[] { "--show=foobarrule" }, null, expectedOutput, ExitType.COMMAND_LINE_ERROR);
+        runExitTest(new String[] { "--show=foobarrule" }, tempDirectory, expectedOutput, ExitType.COMMAND_LINE_ERROR);
     }
 
     @Test
     public void testShowInvalidOptionSaysSoVariation() {
         final String expectedOutput = "'foobarrule' is not a valid rule.";
 
-        runExitTest(new String[] { "--show", "foobarrule" }, null, expectedOutput, ExitType.COMMAND_LINE_ERROR);
+        runExitTest(new String[] { "--show", "foobarrule" }, tempDirectory, expectedOutput,
+                ExitType.COMMAND_LINE_ERROR);
     }
 
     @Test
@@ -89,11 +90,12 @@ public class DispatcherTest extends AbstractTestCase {
                 , "Severity: FATAL"
                 , "Category: DEFAULT"
                 , ""
-                , "The XML needs to be \"valid\" XML. This test definition means that the XML can be parsed by any parser. "
-                + "Any tag must be closed.\n\n"
+                , "The XML needs to be \"valid\" XML. This test definition means that the XML can be parsed by "
+                + "any parser. Any tag must be closed.\n\n"
         );
 
-        runExitTest(new String[] { "--show", "Valid XML" }, null, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
+        runExitTest(new String[] { "--show", "Valid XML" }, tempDirectory, Joiner.on("\n").join(expectedOutput),
+                ExitType.SUCCESS);
     }
 
     @Test
@@ -111,7 +113,8 @@ public class DispatcherTest extends AbstractTestCase {
                 , "The xml version should be specified. For example, <?xml version=\"1.0\">.\n\n"
         );
 
-        runExitTest(new String[] { "--show", "XML version specified" }, null, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
+        runExitTest(new String[] { "--show", "XML version specified" }, tempDirectory,
+                Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
     }
 
     @Test
@@ -122,14 +125,14 @@ public class DispatcherTest extends AbstractTestCase {
                ,"\"XML version specified\"* : Version of XML must be specified."
         );
 
-        runExitTest(new String[] { "--list" }, null, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
+        runExitTest(new String[] { "--list" }, tempDirectory, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
     }
 
     @Test
     public void testLintFailsOnNonExistentDirectory() {
         final String expectedOutput = "Invalid source directory \"foobar\" : Directory does not exist.";
 
-        runExitTest(new String[] { "foobar" }, null, expectedOutput, ExitType.COMMAND_LINE_ERROR);
+        runExitTest(new String[] { "foobar" }, tempDirectory, expectedOutput, ExitType.COMMAND_LINE_ERROR);
     }
 
     @Test
@@ -140,7 +143,8 @@ public class DispatcherTest extends AbstractTestCase {
             final String expectedOutput = "Invalid source directory \"" + tempFile.getAbsolutePath() + "\" : \"" +
                     tempFile.getAbsolutePath() + "\" is not a directory.";
 
-            runExitTest(new String[] { tempFile.getAbsolutePath() }, null, expectedOutput, ExitType.COMMAND_LINE_ERROR);
+            runExitTest(new String[] {}, tempFile, expectedOutput,
+                    ExitType.COMMAND_LINE_ERROR);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -153,13 +157,12 @@ public class DispatcherTest extends AbstractTestCase {
         final String expectedOutput = "Invalid source directory \"" + tempDirectory.getAbsolutePath() + "\" : " +
                 "Cannot read directory.";
 
-        runExitTest(new String[] { tempDirectory.getAbsolutePath() }, null, expectedOutput,
-                ExitType.COMMAND_LINE_ERROR);
+        runExitTest(new String[] {}, tempDirectory, expectedOutput, ExitType.COMMAND_LINE_ERROR);
     }
 
     @Test
     public void testLintAcceptsDirectory() {
-        runExitTest(new String[] { tempDirectory.getAbsolutePath() }, null, "", ExitType.SUCCESS);
+        runExitTest(new String[] {}, tempDirectory, "", ExitType.SUCCESS);
     }
 
     @Test
@@ -174,7 +177,7 @@ public class DispatcherTest extends AbstractTestCase {
             fileWriter.flush();
             fileWriter.close();
 
-            runExitTest(new String[] { tempDirectory.getAbsolutePath() }, null, "", ExitType.SUCCESS);
+            runExitTest(new String[] {}, tempDirectory, "", ExitType.SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -192,8 +195,7 @@ public class DispatcherTest extends AbstractTestCase {
             fileWriter.flush();
             fileWriter.close();
 
-            runExitTest(new String[] { "--check", "XML version specified", tempDirectory.getAbsolutePath() }, null,
-                    "", ExitType.FAILED);
+            runExitTest(new String[] { "--check", "XML version specified" }, tempDirectory, "", ExitType.FAILED);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -211,8 +213,7 @@ public class DispatcherTest extends AbstractTestCase {
             fileWriter.flush();
             fileWriter.close();
 
-            runExitTest(new String[] { "--check", "XML version specified", tempDirectory.getAbsolutePath() }, null,
-                    "", ExitType.SUCCESS);
+            runExitTest(new String[] { "--check", "XML version specified" }, tempDirectory, "", ExitType.SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
         }

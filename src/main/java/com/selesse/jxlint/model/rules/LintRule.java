@@ -4,9 +4,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.List;
 
 public abstract class LintRule {
@@ -121,12 +118,7 @@ public abstract class LintRule {
 
     public void validate() {
         for (File file : getFilesToValidate()) {
-            try {
-                List<String> fileContents = Files.readAllLines(file.toPath(), Charset.defaultCharset());
-                lintRuleIsRespected(fileContents);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            applyRule(file);
         }
     }
 
@@ -134,6 +126,11 @@ public abstract class LintRule {
         return failedRules;
     }
 
+    public File getSourceDirectory() {
+        return LintRulesImpl.getInstance().getSourceDirectory();
+    }
+
     public abstract List<File> getFilesToValidate();
-    public abstract boolean lintRuleIsRespected(List<String> fileContents);
+
+    public abstract boolean applyRule(File file);
 }

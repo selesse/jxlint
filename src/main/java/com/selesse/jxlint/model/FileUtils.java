@@ -8,6 +8,9 @@ import java.util.List;
 
 public class FileUtils {
     public static List<File> allXmlFilesIn(File rootDir) {
+        if (rootDir == null) {
+            throw new NullPointerException("Impossible to get all children files of null directory.");
+        }
         return allFilesWithExtensionIn(rootDir, "XML");
     }
 
@@ -26,7 +29,7 @@ public class FileUtils {
         return files;
     }
 
-    private static List<File> allFilesWithExtensionIn(File rootDir, String extension) {
+    public static List<File> allFilesWithExtensionIn(File rootDir, String extension) {
         List<File> filteredFiles = Lists.newArrayList();
 
         List<File> allFiles = allFilesIn(rootDir);

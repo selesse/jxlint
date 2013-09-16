@@ -1,17 +1,15 @@
 package com.selesse.jxlint.model.rules;
 
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
+import com.selesse.jxlint.samplerules.xml.LintRulesTestImpl;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class AbstractLintRulesTest {
-    private File tempDirectory = Files.createTempDir();
-    private LintRules lintRules = new LintRulesTestImpl(tempDirectory);
+    private LintRules lintRules = new LintRulesTestImpl();
 
     @Test
     public void testLintRulesGetsAllRuleSizeProperly() {

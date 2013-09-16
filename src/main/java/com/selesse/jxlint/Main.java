@@ -11,9 +11,6 @@ import org.apache.commons.cli.*;
 import java.util.List;
 
 public class Main {
-    private static final String programName = "jxlint";
-    private static final String programVersion = "1.0.0-SNAPSHOT"; // sync with build.gradle
-    private static final String optionsOrder = "hvlscdewWallWerrorqtx";
     private static String outputMessage;
 
     public static void main(String[] args) {
@@ -116,19 +113,19 @@ public class Main {
         System.exit(exitType.getErrorCode());
     }
 
-    public static String getOptionsOrder() {
-        return optionsOrder;
-    }
-
     public static String getOutputMessage() {
         return outputMessage;
     }
 
+    public static String getOptionsOrder() {
+        return "hvlscdewWallWerrorqtx";
+    }
+
     public static String getProgramVersion() {
-        return programVersion;
+        return "1.0.0-SNAPSHOT"; // sync with build.gradle
     }
 
     public static String getProgramName() {
-        return programName;
+        return "jxlint";
     }
 }

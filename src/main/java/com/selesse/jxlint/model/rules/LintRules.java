@@ -20,5 +20,7 @@ public interface LintRules {
 
     List<LintRule> getAllRulesWithSeverity(Severity severity);
 
+    void setSourceDirectory(File sourceDirectory);
+
     File getSourceDirectory();
 }

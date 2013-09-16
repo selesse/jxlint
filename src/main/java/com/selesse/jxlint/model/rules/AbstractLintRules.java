@@ -22,13 +22,12 @@ public abstract class AbstractLintRules implements LintRules {
     protected List<LintRule> lintRules;
     protected File sourceDirectory;
 
-    public AbstractLintRules(File sourceDirectory) {
+    public AbstractLintRules() {
         this.lintRules = Lists.newArrayList();
-        this.sourceDirectory = sourceDirectory;
-        initializeLintTasks();
+        initializeLintRules();
     }
 
-    public abstract void initializeLintTasks();
+    public abstract void initializeLintRules();
 
     @Override
     public LintRule getLintRule(String ruleName) throws NonExistentLintRuleException {
@@ -55,6 +54,10 @@ public abstract class AbstractLintRules implements LintRules {
 
     @Override
     public List<LintRule> getAllEnabledRules() {
+        return Collections.unmodifiableList(getModifiableAllEnabledRules());
+    }
+
+    private List<LintRule> getModifiableAllEnabledRules() {
         List<LintRule> filteredLintRules = Lists.newArrayList();
 
         for (LintRule lintRule : getAllRules()) {
@@ -106,7 +109,7 @@ public abstract class AbstractLintRules implements LintRules {
             return getAllEnabledRules();
         }
 
-        List<LintRule> bloatedLintRules = getAllEnabledRules();
+        List<LintRule> bloatedLintRules = getModifiableAllEnabledRules();
 
         for (String enabledLintString : enabledRulesList) {
             try {
@@ -146,7 +149,12 @@ public abstract class AbstractLintRules implements LintRules {
             }
         }
 
-        return severityRules;
+        return Collections.unmodifiableList(severityRules);
+    }
+
+    @Override
+    public void setSourceDirectory(File sourceDirectory) {
+        this.sourceDirectory = sourceDirectory;
     }
 
     @Override

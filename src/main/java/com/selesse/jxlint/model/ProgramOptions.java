@@ -1,5 +1,6 @@
 package com.selesse.jxlint.model;
 
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.Main;
 import com.selesse.jxlint.model.rules.LintError;
@@ -106,17 +107,17 @@ public class ProgramOptions {
      * will exit the program.
      */
     public static List<String> getListFromRawOptionStringOrDie(String disabledRules) {
-        String[] disabledRulesStringArray = disabledRules.split(",");
-        for (int i = 0; i < disabledRulesStringArray.length; i++) {
-            String disabledLintRuleString = disabledRulesStringArray[i];
-            disabledRulesStringArray[i] = disabledLintRuleString.trim();
+        Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
+
+        List<String> disabledRulesStringList = Lists.newArrayList(splitter.split(disabledRules));
+        for (String disabledRuleString : disabledRulesStringList) {
             try {
-                LintRulesImpl.getInstance().getLintRule(disabledLintRuleString);
+                LintRulesImpl.getInstance().getLintRule(disabledRuleString);
             } catch (NonExistentLintRuleException e) {
                 Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }
 
-        return Lists.newArrayList(disabledRulesStringArray);
+        return Lists.newArrayList(disabledRulesStringList);
     }
 }

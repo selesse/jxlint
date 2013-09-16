@@ -1,6 +1,7 @@
 package com.selesse.jxlint;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
@@ -28,7 +29,33 @@ public class Dispatcher {
         else if (programOptions.hasOption("show")) {
             doShow(programOptions);
         }
-        else if (programOptions.hasOption("check")) {
+
+        // we've parsed all mutually exclusive options, now let's make sure we have a proper source directory
+        if (programOptions.getSourceDirectory() != null) {
+            String sourceDirectoryString = programOptions.getSourceDirectory();
+            if (!isValidSourceDirectory(sourceDirectoryString)) {
+                File sourceDirectory = new File(sourceDirectoryString);
+                String outputBuffer = "Invalid source directory \"" + sourceDirectoryString + "\" : ";
+                if (!sourceDirectory.exists()) {
+                    outputBuffer += "Directory does not exist.";
+                }
+                else if (!sourceDirectory.isDirectory()) {
+                    outputBuffer += "\"" + sourceDirectoryString + "\" is not a directory.";
+                }
+                else if (!sourceDirectory.canRead()) {
+                    outputBuffer += "Cannot read directory.";
+                }
+
+                Main.exitProgramWithMessage(outputBuffer, ExitType.COMMAND_LINE_ERROR);
+            }
+
+            LintRulesImpl.getInstance().setSourceDirectory(new File(sourceDirectoryString));
+        }
+        else {
+            Main.exitProgramWithMessage("Error: could not find directory to validate.", ExitType.COMMAND_LINE_ERROR);
+        }
+
+        if (programOptions.hasOption("check")) {
             String checkRules = programOptions.getOption("check");
             List<String> checkRulesList = ProgramOptions.getListFromRawOptionStringOrDie(checkRules);
             doLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), programOptions);
@@ -36,13 +63,13 @@ public class Dispatcher {
 
         // By default, we only check enabled rules.
         // We adjust this according to the options below.
-        List<LintRule> lintRuleList = LintRulesImpl.getInstance().getAllEnabledRules();
+        List<LintRule> lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllEnabledRules());
 
         if (programOptions.hasOption("Wall")) {
-            lintRuleList = LintRulesImpl.getInstance().getAllRules();
+            lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllRules());
         }
         else if (programOptions.hasOption("nowarn")) {
-            lintRuleList = LintRulesImpl.getInstance().getAllRulesWithSeverity(Severity.ERROR);
+            lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllRulesWithSeverity(Severity.ERROR));
         }
 
         // Options that are "standalone"
@@ -60,30 +87,7 @@ public class Dispatcher {
             lintRuleList.addAll(LintRulesImpl.getInstance().getOnlyRules(enabledRulesList));
         }
 
-        if (programOptions.getSourceDirectory() != null) {
-            String sourceDirectoryString = programOptions.getSourceDirectory();
-            if (isValidSourceDirectory(sourceDirectoryString)) {
-                doLint(lintRuleList, programOptions);
-            }
-            else {
-                File sourceDirectory = new File(sourceDirectoryString);
-                String outputBuffer = "Invalid source directory \"" + sourceDirectoryString + "\" : ";
-                if (!sourceDirectory.exists()) {
-                    outputBuffer += "Directory does not exist.";
-                }
-                else if (!sourceDirectory.isDirectory()) {
-                    outputBuffer += "\"" + sourceDirectoryString + "\" is not a directory.";
-                }
-                else if (!sourceDirectory.canRead()) {
-                    outputBuffer += "Cannot read directory.";
-                }
-
-                Main.exitProgramWithMessage(outputBuffer, ExitType.COMMAND_LINE_ERROR);
-            }
-        }
-        else {
-            Main.exitProgramWithMessage("Error: could not find directory to validate.", ExitType.COMMAND_LINE_ERROR);
-        }
+        doLint(lintRuleList, programOptions);
     }
 
     private static void doHelp(ProgramOptions programOptions) {
@@ -118,7 +122,9 @@ public class Dispatcher {
                 outputBuffer += "There are " + LintRulesImpl.getInstance().getAllRules().size() + " rules.";
             }
             else {
-                String[] rules = programOptions.getOption("show").split(",");
+                Splitter splitter = Splitter.on(",").trimResults().omitEmptyStrings();
+
+                List<String> rules = Lists.newArrayList(splitter.split(programOptions.getOption("show")));
                 for (String rule : rules) {
                     LintRule lintRule = LintRulesImpl.getInstance().getLintRule(rule.trim());
                     outputBuffer += lintRule.getDetailedOutput() + "\n\n";

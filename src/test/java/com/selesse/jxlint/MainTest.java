@@ -7,13 +7,13 @@ public class MainTest extends AbstractTestCase {
     @Test
     public void testMutuallyExclusiveArgumentsGivesError() {
         final String expectedOutput = "Only one of --html, --quiet, --xml must be selected.";
-        runExitTest(new String[]{"--quiet", "--xml"}, null, expectedOutput, ExitType.COMMAND_LINE_ERROR);
+        runExitTest(new String[]{"--quiet", "--xml"}, pwd, expectedOutput, ExitType.COMMAND_LINE_ERROR);
     }
 
     @Test
     public void testBadArgumentGivesProperErrorCode() {
         expectedSystemExit.expectSystemExitWithStatus(ExitType.COMMAND_LINE_ERROR.getErrorCode());
 
-        checkLint(new String[]{"---"}, null);
+        checkLint(new String[]{"---"}, pwd);
     }
 }
