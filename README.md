@@ -30,63 +30,64 @@ Quick Start
 1. Clone this repository.
 2. Make customizations:
 
-Create all your rules. It's recommended to put all the rules in one directory,
-as can be seen in the [sample implementations](src/test/java/com/selesse/jxlint/samplerules).
-Each rule should also have a corresponding test.
+  Create all your rules. It's recommended to put all the rules in one directory,
+  as can be seen in the [sample implementations](src/test/java/com/selesse/jxlint/samplerules).
+  Each rule should also have a corresponding test.
 
-    public class MustHaveAuthorTag extends LintRule {
-        public MustHaveAuthorTag() {
-            super("Author tag required", "Every file must have an @author tag.",
-                    "Every file in this project requires an \"@author\" tag.",
-                    Severity.WARNING, Category.DEFAULT);
-        }
-
-        @Override
-        public List<File> getFilesToValidate() {
-            return FileUtils.allFilesIn(getSourceDirectory());
-        }
-
-        @Override
-        public boolean applyRule(File file) {
-            try {
-                List<String> fileContents = Files.readAllLines(file.toPath(), Charset.defaultCharset());
-                for (String line : fileContents) {
-                    if (line.contains("<?xml")) {
-                        if (line.contains("version=\"")) {
-                            return true;
-                        }
-                    }
-                }
-                failedRules.add(new LintError("No version specified"));
-            } catch (IOException e) {
-                failedRules.add(new LintError("Error reading file"));
-            }
-
-            return false;
+  ```java
+  public class MustHaveAuthorTag extends LintRule {
+      public MustHaveAuthorTag() {
+          super("Author tag required", "Every file must have an @author tag.",
+                  "Every file in this project requires an \"@author\" tag.",
+                  Severity.WARNING, Category.DEFAULT);
       }
 
-Set up the container by adding all of the rules to it.
+      @Override
+      public List<File> getFilesToValidate() {
+          return FileUtils.allFilesIn(getSourceDirectory());
+      }
 
-    public class MyLintRuleImplementation extends AbstractLintRules {
-        @Override
-        public void initializeLintRules() {
-            lintRules.add(new ValidXmlRule());
-            lintRules.add(new UniqueAttributeRule());
-            lintRules.add(new XmlVersionRule());
-        }
-    }
+      @Override
+      public boolean applyRule(File file) {
+          try {
+              List<String> fileContents = Files.readAllLines(file.toPath(), Charset.defaultCharset());
+              for (String line : fileContents) {
+                  if (line.contains("@author")) {
+                          return true;
+                  }
+              }
+              failedRules.add(new LintError("No version specified"));
+          } catch (IOException e) {
+              failedRules.add(new LintError("Error reading file"));
+          }
+          return false;
+      }
+  }
+  ```
 
-In `com.selesse.jxlint.Main`, set the `LintRules` singleton:
+  Set up the container by adding all of the rules to it.
 
-    public class Main {
-        ...
+  ```java
+  public class MyLintRuleImplementation extends AbstractLintRules {
+      @Override
+      public void initializeLintRules() {
+          lintRules.add(new MustHaveAuthorTag());
+      }
+  }
+  ```
 
-        public static void main(String[] args) {
-            LintRulesImpl.setInstance(new MyLintRuleImplementation());
-            new Main().run(args);
-        }
+  In `com.selesse.jxlint.Main`, set the `LintRules` singleton:
 
-    }
+  ```java
+  public class Main {
+      ...
+
+      public static void main(String[] args) {
+          LintRulesImpl.setInstance(new MyLintRuleImplementation());
+          new Main().run(args);
+      }
+  }
+  ```
 
 3. Type `gradle`.
 
