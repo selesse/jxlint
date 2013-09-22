@@ -8,7 +8,7 @@ import com.selesse.jxlint.samplerules.xml.rules.XmlVersionRule;
 /**
  * Implementation of a {@link com.selesse.jxlint.model.rules.LintRules} used for testing.
  */
-public class LintRulesTestImpl extends AbstractLintRules {
+public class XmlLintRulesTestImpl extends AbstractLintRules {
     @Override
     public void initializeLintRules() {
         // Example rule saying that XML must be valid

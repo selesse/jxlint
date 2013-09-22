@@ -5,17 +5,18 @@ import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.util.List;
 
 public class XmlVersionRule extends LintRule {
     public XmlVersionRule() {
         super("XML version specified", "Version of XML must be specified.",
-                "The xml version should be specified. For example, <?xml version=\"1.0\">.",
+                "The xml version should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
                 Severity.WARNING, Category.DEFAULT, false);
     }
 
@@ -27,19 +28,23 @@ public class XmlVersionRule extends LintRule {
     @Override
     public boolean applyRule(File file) {
         try {
-            List<String> fileContents = Files.readAllLines(file.toPath(), Charset.defaultCharset());
-            for (String line : fileContents) {
-                if (line.contains("<?xml")) {
-                    if (line.contains("version=\"")) {
-                        return true;
-                    }
-                }
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            documentBuilder.setErrorHandler(null); // shut up!
+            Document document = documentBuilder.parse(file);
+
+            document.getDocumentElement().normalize();
+        } catch (SAXException e) {
+            String errorMessage = e.getMessage();
+            if (errorMessage.matches("The version is required in the XML declaration.")) {
+                failedRules.add(new LintError(this, e));
+                return false;
             }
-        } catch (IOException e) {
-            // do nothing, it has erred
+        } catch (Exception e) {
+            failedRules.add(new LintError(this, e));
+            return false;
         }
 
-        failedRules.add(new LintError());
-        return false;
+        return true;
     }
 }

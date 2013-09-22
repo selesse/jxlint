@@ -42,6 +42,9 @@ public class AbstractTestCase {
      * @param exitType Expected {@link com.selesse.jxlint.model.ExitType}
      */
     protected void runExitTest(String[] args, File sourceDirectory, final String expectedOutput, ExitType exitType) {
+        if (args == null) {
+            args = new String[] {};
+        }
         expectedSystemExit.expectSystemExitWithStatus(exitType.getErrorCode());
         expectedSystemExit.checkAssertionAfterwards(new Assertion() {
             @Override

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<this name="steve" name="joe" value="is">
+  <anexample country="CA">
+    <of/>
+    <nested>
+      <stuff value="hello"/>
+    </nested>
+  </anexample>
+</this>

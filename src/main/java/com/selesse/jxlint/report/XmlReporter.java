@@ -13,13 +13,15 @@ public class XmlReporter extends Reporter {
 
     @Override
     public void printHeader() {
-        out.println("<?xml version=\"1.0\" encoding=\"UTF-8\">");
+        out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         out.println("<issues>");
     }
 
     @Override
     public void printError(LintError error) {
-        out.println("<issue>" + error + "</issue>");
+        out.println("  <issue>");
+        out.println("    " + error);
+        out.println("  </issue>");
     }
 
     @Override

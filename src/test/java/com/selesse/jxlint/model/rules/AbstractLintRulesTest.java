@@ -1,7 +1,7 @@
 package com.selesse.jxlint.model.rules;
 
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.samplerules.xml.LintRulesTestImpl;
+import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import org.junit.Test;
 
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 public class AbstractLintRulesTest {
-    private LintRules lintRules = new LintRulesTestImpl();
+    private LintRules lintRules = new XmlLintRulesTestImpl();
 
     @Test
     public void testLintRulesGetsAllRuleSizeProperly() {

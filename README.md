@@ -24,6 +24,20 @@ If you are working with a framework that relies on XML for various parts of
 the system and you'd like to verify that certain configurations are correct
 before running the system, you might want to use this framework.
 
+Requirements
+------------
+
+[Gradle](http://gradle.org) is required to build the code. jxlint uses the
+following libraries:
+
+  * [Apache Commons CLI](http://commons.apache.org/proper/commons-cli/)
+  * [Guava](https://code.google.com/p/guava-libraries/)
+
+For running tests, jxlint uses the following libraries:
+
+  * [junit](http://junit.org/)
+  * [System Rules](http://www.stefan-birkner.de/system-rules/)
+
 Quick Start
 -----------
 
@@ -32,7 +46,6 @@ Quick Start
 
   Create all your rules. It's recommended to put all the rules in one directory,
   as can be seen in the [sample implementations](src/test/java/com/selesse/jxlint/samplerules).
-  Each rule should also have a corresponding test.
 
   ```java
   public class MustHaveAuthorTag extends LintRule {
@@ -65,7 +78,20 @@ Quick Start
   }
   ```
 
-  Set up the container by adding all of the rules to it.
+  Add (at least) 1 positive and 1 negative test case. A (recommended) version
+  of such a tester can be found [here](src/test/java/com/selesse/jxlint/AbstractPassFailFileTest.java).
+  See the Javadoc for instructions on how to set this up. Extending this class leads to
+  [the following positive + negative test case](src/test/java/com/selesse/jxlint/samplerulestest/textfiles/MustHaveAuthorTest.java):
+
+  ```java
+  public class MustHaveAuthorTest extends AbstractPassFailFileTextFileTest {
+      public MustHaveAuthorTest() {
+          super(new MustHaveAuthor());
+      }
+  }
+  ```
+
+  Set up the container by adding all your custom-defined rules.
 
   ```java
   public class MyLintRuleImplementation extends AbstractLintRules {
@@ -76,7 +102,7 @@ Quick Start
   }
   ```
 
-  In `com.selesse.jxlint.Main`, set the `LintRules` singleton:
+  In `com.selesse.jxlint.Main`, set the `LintRules` singleton before `run`:
 
   ```java
   public class Main {
@@ -91,20 +117,6 @@ Quick Start
 
 3. Type `gradle`.
 
-Requirements
-------------
-
-[Gradle](http://gradle.org) is required to build the code. jxlint uses the
-following libraries:
-
-  * [Apache Commons CLI](http://commons.apache.org/proper/commons-cli/)
-  * [Guava](https://code.google.com/p/guava-libraries/)
-
-For running tests, jxlint uses the following libraries:
-
-  * [junit](http://junit.org/)
-  * [System Rules](http://www.stefan-birkner.de/system-rules/)
-
 Building the Code
 -----------------
 
@@ -115,6 +127,32 @@ Examples
 --------
 
 Sample implementations can be found [here](src/test/java/com/selesse/jxlint/samplerules).
+
+The following is the "--help" command line switch, which should give you an
+idea of what you get "for free" if you use jxlint:
+
+    usage: jxlint [flags] <directory>
+     -h,--help                Usage information, help message.
+     -v,--version             Output version information.
+     -l,--list                Lists lint rules with a short, summary
+                              explanation.
+     -s,--show <RULE[s]>      Lists a verbose rule explanation.
+     -c,--check <RULE[s]>     Only check for these rules.
+     -d,--disable <RULE[s]>   Disable the list of rules.
+     -e,--enable <RULE[s]>    Enable the list of rules.
+     -w,--nowarn              Only check for errors; ignore warnings.
+     -Wall,--Wall             Check all warnings, including those off by
+                              default.
+     -Werror,--Werror         Treat all warnings as errors.
+     -q,--quiet               Don't output any progress or reports.
+     -t,--html <filename>     Create an HTML report.
+     -x,--xml <filename>      Create an XML (!!) report.
+
+    <RULE[s]> should be comma separated, without spaces.
+    Exit Status:
+    0                     Success
+    1                     Failed
+    2                     Command line error
 
 License
 -------

@@ -6,7 +6,7 @@ import com.google.common.io.Files;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
-import com.selesse.jxlint.samplerules.xml.LintRulesTestImpl;
+import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class DispatcherTest extends AbstractTestCase {
         tempDirectory = Files.createTempDir();
         tempDirectory.deleteOnExit();
 
-        lintRuleImpl = new LintRulesTestImpl();
+        lintRuleImpl = new XmlLintRulesTestImpl();
         LintRulesImpl.setInstance(lintRuleImpl);
     }
 
@@ -110,7 +110,7 @@ public class DispatcherTest extends AbstractTestCase {
                 , "Severity: WARNING"
                 , "Category: DEFAULT"
                 , ""
-                , "The xml version should be specified. For example, <?xml version=\"1.0\">.\n\n"
+                , "The xml version should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.\n\n"
         );
 
         runExitTest(new String[] { "--show", "XML version specified" }, tempDirectory,
@@ -143,8 +143,7 @@ public class DispatcherTest extends AbstractTestCase {
             final String expectedOutput = "Invalid source directory \"" + tempFile.getAbsolutePath() + "\" : \"" +
                     tempFile.getAbsolutePath() + "\" is not a directory.";
 
-            runExitTest(new String[] {}, tempFile, expectedOutput,
-                    ExitType.COMMAND_LINE_ERROR);
+            runExitTest(null, tempFile, expectedOutput, ExitType.COMMAND_LINE_ERROR);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -157,12 +156,12 @@ public class DispatcherTest extends AbstractTestCase {
         final String expectedOutput = "Invalid source directory \"" + tempDirectory.getAbsolutePath() + "\" : " +
                 "Cannot read directory.";
 
-        runExitTest(new String[] {}, tempDirectory, expectedOutput, ExitType.COMMAND_LINE_ERROR);
+        runExitTest(null, tempDirectory, expectedOutput, ExitType.COMMAND_LINE_ERROR);
     }
 
     @Test
     public void testLintAcceptsDirectory() {
-        runExitTest(new String[] {}, tempDirectory, "", ExitType.SUCCESS);
+        runExitTest(null, tempDirectory, "", ExitType.SUCCESS);
     }
 
     @Test
@@ -173,11 +172,12 @@ public class DispatcherTest extends AbstractTestCase {
             file.deleteOnExit();
 
             PrintWriter fileWriter = new PrintWriter(file);
-            fileWriter.println("<?xml version=\"1.0\">");
+            fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            fileWriter.println("<empty/>");
             fileWriter.flush();
             fileWriter.close();
 
-            runExitTest(new String[] {}, tempDirectory, "", ExitType.SUCCESS);
+            runExitTest(null, tempDirectory, "", ExitType.SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -191,7 +191,7 @@ public class DispatcherTest extends AbstractTestCase {
             file.deleteOnExit();
 
             PrintWriter fileWriter = new PrintWriter(file);
-            fileWriter.println("<?xml>");
+            fileWriter.println("<?xml?>");
             fileWriter.flush();
             fileWriter.close();
 
@@ -209,7 +209,7 @@ public class DispatcherTest extends AbstractTestCase {
             file.deleteOnExit();
 
             PrintWriter fileWriter = new PrintWriter(file);
-            fileWriter.println("<?xml version=\"1.0\">");
+            fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             fileWriter.flush();
             fileWriter.close();
 
