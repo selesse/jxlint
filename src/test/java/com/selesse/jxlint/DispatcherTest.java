@@ -4,7 +4,6 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.selesse.jxlint.model.ExitType;
-import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import org.junit.Before;
@@ -17,15 +16,13 @@ import java.util.List;
 
 public class DispatcherTest extends AbstractTestCase {
     private File tempDirectory;
-    private LintRules lintRuleImpl;
 
     @Before
     public void setup() {
         tempDirectory = Files.createTempDir();
         tempDirectory.deleteOnExit();
 
-        lintRuleImpl = new XmlLintRulesTestImpl();
-        LintRulesImpl.setInstance(lintRuleImpl);
+        LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
     }
 
     @Test
@@ -87,8 +84,8 @@ public class DispatcherTest extends AbstractTestCase {
                 , "---------"
                 , "Summary: XML must be well-formed, valid."
                 , ""
-                , "Severity: FATAL"
-                , "Category: DEFAULT"
+                , "Severity: Fatal"
+                , "Category: Lint"
                 , ""
                 , "The XML needs to be \"valid\" XML. This test definition means that the XML can be parsed by "
                 + "any parser. Any tag must be closed.\n\n"
@@ -107,8 +104,8 @@ public class DispatcherTest extends AbstractTestCase {
                 , ""
                 , "** Disabled by default **"
                 , ""
-                , "Severity: WARNING"
-                , "Category: DEFAULT"
+                , "Severity: Warning"
+                , "Category: Lint"
                 , ""
                 , "The xml version should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.\n\n"
         );
@@ -120,9 +117,10 @@ public class DispatcherTest extends AbstractTestCase {
     @Test
     public void testListOptions() {
         final List<String> expectedOutput = Lists.newArrayList(
-                "\"Valid XML\" : XML must be well-formed, valid."
-               ,"\"Unique attribute\" : Attributes within a tag must be unique."
-               ,"\"XML version specified\"* : Version of XML must be specified."
+               "\"Valid XML\" : XML must be well-formed, valid.",
+               "\"Unique attribute\" : Attributes within a tag must be unique.",
+               "\"XML version specified\"* : Version of XML must be specified.",
+               "\"XML encoding specified\"* : Encoding of the XML must be specified."
         );
 
         runExitTest(new String[] { "--list" }, tempDirectory, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
@@ -210,6 +208,7 @@ public class DispatcherTest extends AbstractTestCase {
 
             PrintWriter fileWriter = new PrintWriter(file);
             fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            fileWriter.println("<empty/>");
             fileWriter.flush();
             fileWriter.close();
 

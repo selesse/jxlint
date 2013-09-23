@@ -1,6 +1,13 @@
 package com.selesse.jxlint.report;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.selesse.jxlint.model.EnumUtils;
+import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.model.rules.Severity;
+import com.selesse.jxlint.report.color.Color;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -16,11 +23,58 @@ public class DefaultReporter extends Reporter {
     }
 
     @Override
+    protected void printCategoryHeader(Category category) {
+        out.println();
+        out.println(Color.wrapColor("    -- " + EnumUtils.toHappyString(category) + " --", Color.GREEN));
+        out.println();
+    }
+
+    @Override
     public void printError(LintError error) {
-        out.println(error.toString());
+        LintRule violatedRule = error.getViolatedRule();
+        out.println(String.format("[%s] '%s' => %s in file '%s'",  colorSeverity(violatedRule.getSeverity()),
+                violatedRule.getName(), error.getMessage(), error.getFile().getAbsolutePath()));
+    }
+
+    private String colorSeverity(Severity severity) {
+        return Color.wrapColor(EnumUtils.toHappyString(severity), severity.getColor());
     }
 
     @Override
     public void printFooter() {
+        int numberOfErrors = getNumberOfSeverityErrors(Severity.ERROR);
+        int numberOfWarnings = getNumberOfSeverityErrors(Severity.WARNING);
+        int numberOfFatal = getNumberOfSeverityErrors(Severity.FATAL);
+
+        if (lintErrorList.size() > 0) {
+            out.println("");
+            out.println(String.format("There are %s, %s, and %s (%d total).",
+                    pluralize(numberOfWarnings, "warning"),
+                    pluralize(numberOfErrors, "error"),
+                    pluralize(numberOfFatal, "fatal error"),
+                    lintErrorList.size()
+            ));
+        }
+    }
+
+    private String pluralize(int numberOfErrors, String error) {
+        return numberOfErrors + " " + (numberOfErrors == 1 ? error : error + "s");
+    }
+
+    private int getNumberOfSeverityErrors(final Severity severity) {
+        Iterable<LintError> severityList = Iterables.filter(lintErrorList, new Predicate<LintError>() {
+            @Override
+            public boolean apply(LintError input) {
+                return input.getViolatedRule().getSeverity() == severity;
+            }
+        });
+
+        int errors = 0;
+
+        for (LintError ignored : severityList) {
+            errors++;
+        }
+
+        return errors;
     }
 }

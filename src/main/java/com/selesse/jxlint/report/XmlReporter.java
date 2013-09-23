@@ -1,12 +1,17 @@
 package com.selesse.jxlint.report;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.xml.XmlEscapers;
+import com.selesse.jxlint.model.EnumUtils;
+import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRule;
 
 import java.io.PrintStream;
 import java.util.List;
 
 public class XmlReporter extends Reporter {
-
     public XmlReporter(PrintStream out, List<LintError> lintErrorList) {
         super(out, lintErrorList);
     }
@@ -18,10 +23,29 @@ public class XmlReporter extends Reporter {
     }
 
     @Override
+    public void printCategoryHeader(Category category) {
+    }
+
+    @Override
     public void printError(LintError error) {
-        out.println("  <issue>");
-        out.println("    " + error);
-        out.println("  </issue>");
+        LintRule violatedRule = error.getViolatedRule();
+        out.println("    <issue");
+        List<String> outputBuffer = Lists.newArrayList(
+                "        name=\"" + xmlEncode(violatedRule.getName()) + "\"",
+                "        severity=\"" + xmlEncode(EnumUtils.toHappyString(violatedRule.getSeverity())) + "\"",
+                "        message=\"" + xmlEncode(error.getMessage()) + "\"",
+                "        category=\"" + xmlEncode(EnumUtils.toHappyString(violatedRule.getCategory())) + "\"",
+                "        summary=\"" + xmlEncode(violatedRule.getSummary()) + "\"",
+                "        explanation=\"" + xmlEncode(violatedRule.getDetailedDescription()) + "\"",
+                "        location=\"" + xmlEncode(error.getFile().getAbsolutePath()) + "\"",
+                "    />"
+
+        );
+        out.println(Joiner.on("\n").join(outputBuffer));
+    }
+
+    private String xmlEncode(String string) {
+        return XmlEscapers.xmlAttributeEscaper().escape(string);
     }
 
     @Override

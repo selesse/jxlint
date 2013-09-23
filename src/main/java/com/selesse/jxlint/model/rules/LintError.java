@@ -1,34 +1,57 @@
 package com.selesse.jxlint.model.rules;
 
+import java.io.File;
+
 public class LintError {
     private LintRule lintRule;
     private int lineNumber;
-    private String miscErrorMessage;
+    private String errorMessage;
+    private Exception e;
+    private File faultyFile;
 
-    public LintError(LintRule lintRule) {
+    public LintError(LintRule lintRule, File faultyFile) {
         this.lintRule = lintRule;
+        this.faultyFile = faultyFile;
         this.lineNumber = 0;
-        this.miscErrorMessage = "";
+        this.errorMessage = "";
     }
 
-    public LintError(LintRule lintRule, int lineNumber) {
-        this(lintRule);
+    public LintError(LintRule lintRule, File faultyFile, int lineNumber) {
+        this(lintRule, faultyFile);
         this.lineNumber = lineNumber;
     }
 
-    public LintError(LintRule lintRule, Exception e) {
-        this(lintRule);
-        this.miscErrorMessage = "Exception " + e.getClass().getName() + " was thrown";
+    public LintError(LintRule lintRule, File faultyFile, Exception e) {
+        this(lintRule, faultyFile);
+        this.errorMessage = "Exception " + e.getClass().getName() + " was thrown";
+        this.e = e;
+    }
+
+    public LintError(LintRule lintRule, File faultyFile, String errorMessage) {
+        this(lintRule, faultyFile);
+        this.errorMessage = errorMessage;
+    }
+
+    public LintRule getViolatedRule() {
+        return lintRule;
+    }
+
+    public String getMessage() {
+        return errorMessage;
+    }
+
+    public File getFile() {
+        return faultyFile;
     }
 
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(lintRule.getName()).append(" failed");
+        stringBuilder.append("'").append(lintRule.getName()).append("' failed");
         if (lineNumber > 0) {
-            stringBuilder.append(" at line " + lineNumber);
+            stringBuilder.append(" at line ").append(lineNumber);
         }
-        if (miscErrorMessage.length() > 0) {
-            stringBuilder.append(" due to " + miscErrorMessage);
+        if (errorMessage.length() > 0) {
+            stringBuilder.append(": ").append(errorMessage);
         }
 
         return stringBuilder.toString();

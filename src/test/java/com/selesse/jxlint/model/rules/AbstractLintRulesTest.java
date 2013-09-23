@@ -13,7 +13,7 @@ public class AbstractLintRulesTest {
 
     @Test
     public void testLintRulesGetsAllRuleSizeProperly() {
-        assertEquals(3, lintRules.getAllRules().size());
+        assertEquals(4, lintRules.getAllRules().size());
     }
 
     @Test
@@ -24,7 +24,7 @@ public class AbstractLintRulesTest {
     @Test
     public void testLintRulesGetsAllDisabledRulesSizeProperly() {
         List<String> disabledRules = Lists.newArrayList("XML version specified");
-        assertEquals(2, lintRules.getAllRulesExcept(disabledRules).size());
+        assertEquals(3, lintRules.getAllRulesExcept(disabledRules).size());
     }
 
     @Test
@@ -42,7 +42,7 @@ public class AbstractLintRulesTest {
     @Test
     public void testGetAllRulesBySeverity() {
         List<LintRule> emptyErrorRules = lintRules.getAllRulesWithSeverity(Severity.ERROR);
-        assertEquals(0, emptyErrorRules.size());
+        assertEquals(1, emptyErrorRules.size());
 
         List<LintRule> fatalRules = lintRules.getAllRulesWithSeverity(Severity.FATAL);
         assertEquals(1, fatalRules.size());

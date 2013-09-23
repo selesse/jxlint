@@ -2,6 +2,7 @@ package com.selesse.jxlint.model.rules;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.model.EnumUtils;
 
 import java.io.File;
 import java.util.List;
@@ -88,8 +89,8 @@ public abstract class LintRule {
                 new String(new char[getName().length()]).replace("\0", "-"),
                 "Summary: " + getSummary(),
                 isEnabled() ? "" : "\n** Disabled by default **\n",
-                "Severity: " + getSeverity(),
-                "Category: " + getCategory(),
+                "Severity: " + EnumUtils.toHappyString(getSeverity()),
+                "Category: " + EnumUtils.toHappyString(getCategory()),
                 "",
                 getDetailedDescription()
         );

@@ -3,6 +3,7 @@ package com.selesse.jxlint.samplerules.xml;
 import com.selesse.jxlint.model.rules.AbstractLintRules;
 import com.selesse.jxlint.samplerules.xml.rules.UniqueAttributeRule;
 import com.selesse.jxlint.samplerules.xml.rules.ValidXmlRule;
+import com.selesse.jxlint.samplerules.xml.rules.XmlEncodingRule;
 import com.selesse.jxlint.samplerules.xml.rules.XmlVersionRule;
 
 /**
@@ -17,7 +18,8 @@ public class XmlLintRulesTestImpl extends AbstractLintRules {
         // Example rule saying that duplicate attribute tags within XML are bad
         lintRules.add(new UniqueAttributeRule());
 
-        // Example (disabled-by-default) rule
+        // Example (disabled-by-default) rules
         lintRules.add(new XmlVersionRule());
+        lintRules.add(new XmlEncodingRule());
     }
 }

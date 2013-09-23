@@ -16,7 +16,7 @@ public class ValidXmlRule extends LintRule {
     public ValidXmlRule() {
         super("Valid XML", "XML must be well-formed, valid.", "The XML needs to be \"valid\" " +
                 "XML. This test definition means that the XML can be parsed by any parser. Any tag must be closed.",
-                Severity.FATAL, Category.DEFAULT);
+                Severity.FATAL, Category.LINT);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ValidXmlRule extends LintRule {
 
             document.getDocumentElement().normalize();
         } catch (Exception e) {
-            failedRules.add(new LintError(this, e));
+            failedRules.add(new LintError(this, file, "Malformed XML, could not parse"));
             return false;
         }
 

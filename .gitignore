@@ -7,3 +7,5 @@ out/
 
 .gradle
 release/
+
+src/main/java/com/selesse/jxlint/impl

@@ -17,7 +17,7 @@ public class UniqueAttributeRule extends LintRule {
     public UniqueAttributeRule() {
         super("Unique attribute", "Attributes within a tag must be unique.",
                 "Attributes within an XML tag must be unique. That is, <tag a=\"x\" a=\"y\"> is invalid.",
-                Severity.WARNING, Category.DEFAULT);
+                Severity.ERROR, Category.LINT);
     }
 
     @Override
@@ -37,12 +37,15 @@ public class UniqueAttributeRule extends LintRule {
         } catch (SAXException e) {
             String errorMessage = e.getMessage();
             if (errorMessage.matches("Attribute \"([^\"]+)\" was already specified for element \"([^\"])+\"\\.")) {
-                failedRules.add(new LintError(this, e));
-                return false;
+                failedRules.add(new LintError(this, file, errorMessage.substring(0, errorMessage.length() - 1)));
             }
+            else {
+                failedRules.add(new LintError(this, file, "Error checking rule, could not parse xml"));
+            }
+            return false;
         } catch (Exception e) {
             // this will catch parser configuration errors as well as I/O exceptions
-            failedRules.add(new LintError(this, e));
+            failedRules.add(new LintError(this, file, "Error checking rule, could not parse xml"));
             return false;
         }
 

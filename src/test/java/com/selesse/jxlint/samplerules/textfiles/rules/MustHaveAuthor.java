@@ -16,7 +16,7 @@ public class MustHaveAuthor extends LintRule {
     public MustHaveAuthor() {
         super("Author tag required", "Every file must have an @author tag.",
                 "Every file in this project requires an \"@author\" tag.",
-                Severity.WARNING, Category.DEFAULT);
+                Severity.WARNING, Category.STYLE);
     }
 
     @Override
@@ -33,9 +33,9 @@ public class MustHaveAuthor extends LintRule {
                     return true;
                 }
             }
-            failedRules.add(new LintError(this));
+            failedRules.add(new LintError(this, file));
         } catch (IOException e) {
-            failedRules.add(new LintError(this, e));
+            failedRules.add(new LintError(this, file, e));
         }
         return false;
     }

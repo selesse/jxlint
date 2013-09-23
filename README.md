@@ -48,32 +48,34 @@ Quick Start
   as can be seen in the [sample implementations](src/test/java/com/selesse/jxlint/samplerules).
 
   ```java
-  public class MustHaveAuthorTag extends LintRule {
-      public MustHaveAuthorTag() {
-          super("Author tag required", "Every file must have an @author tag.",
-                  "Every file in this project requires an \"@author\" tag.",
-                  Severity.WARNING, Category.DEFAULT);
+  public class XmlEncodingRule extends LintRule {
+      public XmlEncodingRule () {
+          super("XML encoding specified", "Encoding of the XML should be specified.",
+                  "The xml version should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
+                  Severity.WARNING, Category.LINT, false);
       }
 
       @Override
       public List<File> getFilesToValidate() {
-          return FileUtils.allFilesIn(getSourceDirectory());
+          return FileUtils.allXmlFilesIn(getSourceDirectory());
       }
 
       @Override
       public boolean applyRule(File file) {
           try {
-              List<String> fileContents = Files.readAllLines(file.toPath(), Charset.defaultCharset());
-              for (String line : fileContents) {
-                  if (line.contains("@author")) {
-                          return true;
-                  }
-              }
-              failedRules.add(new LintError("No version specified"));
-          } catch (IOException e) {
-              failedRules.add(new LintError("Error reading file"));
+              DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+              DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+              documentBuilder.setErrorHandler(null); // silence the DOM error handler
+              Document document = documentBuilder.parse(file);
+
+              document.getDocumentElement().normalize();
+
+              return !Strings.isNullOrEmpty(document.getXmlEncoding());
           }
-          return false;
+          catch (Exception e) {
+              failedRules.add(new LintError(new ValidXmlRule(), file, "Error checking rule, could not parse xml"));
+              return false;
+          }
       }
   }
   ```
@@ -81,12 +83,12 @@ Quick Start
   Add (at least) 1 positive and 1 negative test case. A (recommended) version
   of such a tester can be found [here](src/test/java/com/selesse/jxlint/AbstractPassFailFileTest.java).
   See the Javadoc for instructions on how to set this up. Extending this class leads to
-  [the following positive + negative test case](src/test/java/com/selesse/jxlint/samplerulestest/textfiles/MustHaveAuthorTest.java):
+  [the following positive + negative test case](src/test/java/com/selesse/jxlint/samplerulestest/xml/XmlEncodingTest.java):
 
   ```java
-  public class MustHaveAuthorTest extends AbstractPassFailFileTextFileTest {
-      public MustHaveAuthorTest() {
-          super(new MustHaveAuthor());
+  public class XmlEncodingTest extends AbstractPassFailFileXmlFileTest {
+      public XmlEncodingTest() {
+          super(new XmlEncodingRule());
       }
   }
   ```
@@ -94,10 +96,18 @@ Quick Start
   Set up the container by adding all your custom-defined rules.
 
   ```java
-  public class MyLintRuleImplementation extends AbstractLintRules {
+  public class MyXmlLintRulesImpl extends AbstractLintRules {
       @Override
       public void initializeLintRules() {
-          lintRules.add(new MustHaveAuthorTag());
+          // Example rule saying that XML must be valid
+          lintRules.add(new ValidXmlRule());
+
+          // Example rule saying that duplicate attribute tags within XML are bad
+          lintRules.add(new UniqueAttributeRule());
+
+          // Example (disabled-by-default) rules
+          lintRules.add(new XmlVersionRule());
+          lintRules.add(new XmlEncodingRule());
       }
   }
   ```
@@ -109,7 +119,7 @@ Quick Start
       ...
 
       public static void main(String[] args) {
-          LintRulesImpl.setInstance(new MyLintRuleImplementation());
+          LintRulesImpl.setInstance(new MyXmlLintRulesImpl());
           new Main().run(args);
       }
   }
@@ -153,6 +163,11 @@ idea of what you get "for free" if you use jxlint:
     0                     Success
     1                     Failed
     2                     Command line error
+
+TODO
+----
+
+* Context for errors.
 
 License
 -------
