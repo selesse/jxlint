@@ -4,10 +4,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.cli.CliHelpMessage;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;
-import com.selesse.jxlint.impl.xml.XmlLintRulesTestImpl;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
-import com.selesse.jxlint.model.rules.LintRulesImpl;
 import org.apache.commons.cli.*;
 import org.fusesource.jansi.AnsiConsole;
 
