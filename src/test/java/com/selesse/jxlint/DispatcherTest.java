@@ -189,11 +189,12 @@ public class DispatcherTest extends AbstractTestCase {
             file.deleteOnExit();
 
             PrintWriter fileWriter = new PrintWriter(file);
-            fileWriter.println("<?xml?>");
+            fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            fileWriter.println("<attribute name=\"dupe-name\" name=\"dupe-name\"/>");
             fileWriter.flush();
             fileWriter.close();
 
-            runExitTest(new String[] { "--check", "XML version specified" }, tempDirectory, "", ExitType.FAILED);
+            runExitTest(new String[] { "--check", "Unique attribute" }, tempDirectory, "", ExitType.FAILED);
         } catch (IOException e) {
             e.printStackTrace();
         }
