@@ -7,6 +7,7 @@ import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
 import org.apache.commons.cli.*;
+import org.fusesource.jansi.AnsiConsole;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ public class Main {
         if (args.length == 0) {
             args = new String[] { "--help" };
         }
+
+        AnsiConsole.systemInstall();
 
         CommandLineParser commandLineParser = new GnuParser();
         Options options = new Options();
