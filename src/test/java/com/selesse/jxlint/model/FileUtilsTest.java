@@ -35,9 +35,17 @@ public class FileUtilsTest {
             tempFile3.createNewFile();
             tempFile3.deleteOnExit();
 
-            File tempDir3 = new File(rootTempDir.getAbsolutePath() + File.separator + "w" + File.separator + "y" + File.separator + "z");
-            tempDir3.mkdirs();
+            File tempDir3 = new File(rootTempDir.getAbsolutePath() + File.separator + "w");
+            tempDir3.mkdir();
             tempDir3.deleteOnExit();
+
+            File tempDir4 = new File(tempDir3.getAbsolutePath() + File.separator + "y");
+            tempDir4.mkdir();
+            tempDir4.deleteOnExit();
+
+            File tempDir5 = new File(tempDir4.getAbsolutePath() + File.separator + "z");
+            tempDir5.mkdir();
+            tempDir5.deleteOnExit();
 
             File tempFile4 = new File(tempDir3.getAbsolutePath() + File.separator + "test.xml");
             tempFile4.createNewFile();

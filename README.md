@@ -32,6 +32,7 @@ following libraries:
 
   * [Apache Commons CLI](http://commons.apache.org/proper/commons-cli/)
   * [Guava](https://code.google.com/p/guava-libraries/)
+  * [Jansi](http://jansi.fusesource.org/)
 
 For running tests, jxlint uses the following libraries:
 

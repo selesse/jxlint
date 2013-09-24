@@ -27,6 +27,8 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testHelpProperlyExtracted() {
+        String newLineSeparator = System.lineSeparator();
+
         final List<String> expectedOutput = Lists.newArrayList(
                   "usage: jxlint [flags] <directory>"
                 , " -h,--help                Usage information, help message."
@@ -49,10 +51,10 @@ public class DispatcherTest extends AbstractTestCase {
                 , "Exit Status:"
                 , "0                     Success"
                 , "1                     Failed"
-                , "2                     Command line error\n"
+                , "2                     Command line error" + newLineSeparator
         );
 
-        runExitTest(new String[] { "--help" }, tempDirectory, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
+        runExitTest(new String[] { "--help" }, tempDirectory, Joiner.on(newLineSeparator).join(expectedOutput), ExitType.SUCCESS);
     }
 
     @Test
@@ -149,12 +151,13 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testLintFailsOnNonReadDirectory() {
-        tempDirectory.setReadable(false);
+        // skip this test if we can't set the directory readability to false... (i.e. Windows)
+        if (tempDirectory.setReadable(false)) {
+            final String expectedOutput = "Invalid source directory \"" + tempDirectory.getAbsolutePath() + "\" : " +
+                    "Cannot read directory.";
 
-        final String expectedOutput = "Invalid source directory \"" + tempDirectory.getAbsolutePath() + "\" : " +
-                "Cannot read directory.";
-
-        runExitTest(null, tempDirectory, expectedOutput, ExitType.COMMAND_LINE_ERROR);
+            runExitTest(null, tempDirectory, expectedOutput, ExitType.COMMAND_LINE_ERROR);
+        }
     }
 
     @Test
