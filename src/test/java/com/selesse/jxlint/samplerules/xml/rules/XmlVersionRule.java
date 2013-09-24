@@ -37,14 +37,14 @@ public class XmlVersionRule extends LintRule {
         } catch (SAXException e) {
             String errorMessage = e.getMessage();
             if (errorMessage.matches("The version is required in the XML declaration.")) {
-                failedRules.add(new LintError(this, file, e));
+                failedRules.add(new LintError(this, file, errorMessage.substring(0, errorMessage.length() - 1)));
             }
             else {
                 failedRules.add(new LintError(this, file, "Error checking rule, could not parse xml"));
             }
             return false;
         } catch (Exception e) {
-            failedRules.add(new LintError(new ValidXmlRule(), file, "Error checking rule, could not parse xml"));
+            failedRules.add(new LintError(this, file, "Error checking rule, could not parse xml"));
             return false;
         }
 

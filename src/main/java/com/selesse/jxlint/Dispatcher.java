@@ -15,6 +15,28 @@ import java.util.List;
 public class Dispatcher {
     private static boolean warningsAreErrors = false;
 
+    /**
+     * The order for the dispatcher is as such:
+     *
+     * <ol>
+     * <li> First, look for the mutually exclusive options ("help", "version", "list", "show").
+     * These are first-come, first-serve. If enabled, branch out to those options. </li>
+     *
+     * <li> Second, check to see if warnings are errors and keep note of it. </li>
+     *
+     * <li> Thirdly, check to see if the source directory exists. Exit if it doesn't. </li>
+     *
+     * <li> Fourthly, check to see if "check" was called. Branch out if it is. </li>
+     *
+     * <li> Then, by default, we only do enabled rules. We check to see if "Wall" or "nowarn" are set.
+     * If they are, adjust accordingly. </li>
+     *
+     * <li> Finally, we check to see if "enable" or "disable" are set and modify our list of rules accordingly. </li>
+     *
+     * <li> Perform the lint validation. </li>
+     *
+     * </ol>
+     */
     public static void dispatch(ProgramOptions programOptions) {
         // If/else train of mutually exclusive options
         if (programOptions.hasOption("help")) {
@@ -28,6 +50,10 @@ public class Dispatcher {
         }
         else if (programOptions.hasOption("show")) {
             doShow(programOptions);
+        }
+
+        if (programOptions.hasOption("Werror")) {
+            warningsAreErrors = true;
         }
 
         // we've parsed all mutually exclusive options, now let's make sure we have a proper source directory
@@ -70,12 +96,10 @@ public class Dispatcher {
         }
         else if (programOptions.hasOption("nowarn")) {
             lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllRulesWithSeverity(Severity.ERROR));
+            lintRuleList.addAll(LintRulesImpl.getInstance().getAllRulesWithSeverity(Severity.FATAL));
         }
 
         // Options that are "standalone"
-        if (programOptions.hasOption("Werror")) {
-            warningsAreErrors = true;
-        }
         if (programOptions.hasOption("disable")) {
             String disabledRules = programOptions.getOption("disable");
             List<String> disabledRulesList = ProgramOptions.getListFromRawOptionStringOrDie(disabledRules);
@@ -159,10 +183,17 @@ public class Dispatcher {
             Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
         }
 
-        if (failedRules.size() > 0) {
+        if (warningsAreErrors && failedRules.size() > 0) {
             Main.exitProgram(ExitType.FAILED);
         }
 
+        if (failedRules.size() > 0) {
+            for (LintError error : failedRules) {
+                if (error.getViolatedRule().getSeverity().ordinal() >= Severity.ERROR.ordinal()) {
+                    Main.exitProgram(ExitType.FAILED);
+                }
+            }
+        }
         Main.exitProgram(ExitType.SUCCESS);
     }
 }

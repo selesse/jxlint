@@ -18,11 +18,11 @@ public enum Color {
         this.color = s;
     }
 
-    public String toAnsi() {
+    private String toAnsi() {
         return this.color;
     }
 
-    public static String wrapColor(String s, Color color) {
-        return color.toAnsi() + s + Color.RESET.toAnsi();
+    public String wrapAround(String s) {
+        return this.toAnsi() + s + Color.RESET.toAnsi();
     }
 }

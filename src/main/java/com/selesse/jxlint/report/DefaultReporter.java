@@ -25,19 +25,21 @@ public class DefaultReporter extends Reporter {
     @Override
     protected void printCategoryHeader(Category category) {
         out.println();
-        out.println(Color.wrapColor("    -- " + EnumUtils.toHappyString(category) + " --", Color.GREEN));
+        out.println("    " + Color.GREEN.wrapAround("-- " + EnumUtils.toHappyString(category) + " --"));
         out.println();
     }
 
     @Override
     public void printError(LintError error) {
         LintRule violatedRule = error.getViolatedRule();
-        out.println(String.format("[%s] '%s' => %s in file '%s'",  colorSeverity(violatedRule.getSeverity()),
-                violatedRule.getName(), error.getMessage(), error.getFile().getAbsolutePath()));
+        out.println(String.format("[%s] \"%s\" in %s",  colorSeverity(violatedRule.getSeverity()),
+                Color.WHITE.wrapAround(violatedRule.getName()), error.getFile().getAbsolutePath()));
+        out.println("    " + error.getMessage());
+        out.println();
     }
 
     private String colorSeverity(Severity severity) {
-        return Color.wrapColor(EnumUtils.toHappyString(severity), severity.getColor());
+        return severity.getColor().wrapAround(EnumUtils.toHappyString(severity));
     }
 
     @Override
@@ -47,7 +49,6 @@ public class DefaultReporter extends Reporter {
         int numberOfFatal = getNumberOfSeverityErrors(Severity.FATAL);
 
         if (lintErrorList.size() > 0) {
-            out.println("");
             out.println(String.format("There are %s, %s, and %s (%d total).",
                     pluralize(numberOfWarnings, "warning"),
                     pluralize(numberOfErrors, "error"),

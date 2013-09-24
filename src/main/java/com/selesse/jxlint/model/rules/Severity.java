@@ -5,7 +5,7 @@ import com.selesse.jxlint.report.color.Color;
 @SuppressWarnings("unused")
 public enum Severity {
     WARNING(Color.YELLOW),
-    ERROR(Color.BLUE),
+    ERROR(Color.CYAN),
     FATAL(Color.RED);
 
     private Color severityColor;
