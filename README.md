@@ -27,8 +27,9 @@ before running the system, you might want to use this framework.
 Requirements
 ------------
 
-[Gradle](http://gradle.org) is required to build the code. jxlint uses the
-following libraries:
+[Gradle](http://gradle.org) is required to build the code. If Gradle is not
+already installed, you can use the wrapper to install it for you. jxlint uses
+the following libraries:
 
   * [Apache Commons CLI](http://commons.apache.org/proper/commons-cli/)
   * [Guava](https://code.google.com/p/guava-libraries/)
@@ -134,8 +135,9 @@ Quick Start
 Building the Code
 -----------------
 
-To build the code, run `gradle`. This will create a jxlint jar. (TODO: create
-a portable, general bash script that runs the jar).
+To build the code, run `gradle`. This will create a jxlint jar. If you do
+not have gradle installed, type `gradlew`. (TODO: create a portable, general
+bash script that runs the jar).
 
 Examples
 --------
