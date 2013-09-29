@@ -32,6 +32,11 @@ public class LintError {
         this.errorMessage = errorMessage;
     }
 
+    public LintError(LintRule lintRule, File faultyFile, String errorMessage, Exception e) {
+        this(lintRule, faultyFile, errorMessage);
+        this.e = e;
+    }
+
     public LintRule getViolatedRule() {
         return lintRule;
     }
@@ -42,6 +47,10 @@ public class LintError {
 
     public File getFile() {
         return faultyFile;
+    }
+
+    public Exception getException() {
+        return e;
     }
 
     public String toString() {

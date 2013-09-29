@@ -3,6 +3,8 @@ package com.selesse.jxlint;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.selesse.jxlint.linter.LintFactory;
+import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
@@ -14,6 +16,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class DispatcherTest extends AbstractTestCase {
     private File tempDirectory;
 
@@ -23,6 +27,13 @@ public class DispatcherTest extends AbstractTestCase {
         tempDirectory.deleteOnExit();
 
         LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
+        LintFactory.setTestMode(false);
+    }
+
+    public void setupTestLinterAndRunProgramWithArgs(String[] args) {
+        LintFactory.setTestMode(true);
+
+        new Main().run(args);
     }
 
     @Test
@@ -167,12 +178,47 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testLintAcceptsDirectory() {
-        runExitTest(null, tempDirectory, "", ExitType.SUCCESS);
+        runExitTest(null, tempDirectory, ExitType.SUCCESS);
     }
 
     @Test
     public void testLintValidatesNothing() {
-        File file = new File(tempDirectory + File.separator + "foobar.xml");
+        createValidXml();
+        runExitTest(null, tempDirectory, ExitType.SUCCESS);
+    }
+
+    @Test
+    public void testLintSampleRuleFailsWhenItShould() {
+        createBadAttributeFile();
+        runExitTest(new String[] { "--check", "Unique attribute" }, tempDirectory, ExitType.FAILED);
+    }
+
+    @Test
+    public void testLintSampleRulePassesWhenItShould() {
+        createValidXml();
+        runExitTest(new String[] { "--check", "XML version specified" }, tempDirectory, ExitType.SUCCESS);
+    }
+
+    @Test
+    public void testWarningsReturnProperReturnCode() {
+        createBadEncodingFile();
+        runExitTest(new String[] { "--check", "XML encoding specified" }, tempDirectory, ExitType.SUCCESS);
+    }
+
+    @Test
+    public void testFailedRulesAreAppropriate() {
+        createBadAuthorFile();
+        createBadVersionFile();
+        createBadEncodingFile();
+        createBadAttributeFile();
+
+        setupTestLinterAndRunProgramWithArgs(new String[] { "--Wall", tempDirectory.getAbsolutePath() });
+        Linter linter = LintFactory.getInstance();
+        assertEquals(8, linter.getLintErrors().size());
+    }
+
+    private File createValidXml() {
+        File file = new File(tempDirectory + File.separator + "valid.xml");
         try {
             file.createNewFile();
             file.deleteOnExit();
@@ -182,16 +228,51 @@ public class DispatcherTest extends AbstractTestCase {
             fileWriter.println("<empty/>");
             fileWriter.flush();
             fileWriter.close();
-
-            runExitTest(null, tempDirectory, "", ExitType.SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return file;
     }
 
-    @Test
-    public void testLintSampleRuleFailsWhenItShould() {
-        File file = new File(tempDirectory + File.separator + "foobar.xml");
+    private File createBadVersionFile() {
+        File file = new File(tempDirectory + File.separator + "bad-version.xml");
+        try {
+            file.createNewFile();
+            file.deleteOnExit();
+
+            PrintWriter fileWriter = new PrintWriter(file);
+            fileWriter.println("<?xml encoding=\"UTF-8\"?>");
+            fileWriter.println("<empty/>");
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+    private File createBadEncodingFile() {
+        File file = new File(tempDirectory + File.separator + "bad-encoding.xml");
+        try {
+            file.createNewFile();
+            file.deleteOnExit();
+
+            PrintWriter fileWriter = new PrintWriter(file);
+            fileWriter.println("<?xml version=\"1.0\"?>");
+            fileWriter.println("<empty/>");
+            fileWriter.flush();
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+    private File createBadAttributeFile() {
+        File file = new File(tempDirectory + File.separator + "bad-attribute.xml");
         try {
             file.createNewFile();
             file.deleteOnExit();
@@ -201,29 +282,28 @@ public class DispatcherTest extends AbstractTestCase {
             fileWriter.println("<attribute name=\"dupe-name\" name=\"dupe-name\"/>");
             fileWriter.flush();
             fileWriter.close();
-
-            runExitTest(new String[] { "--check", "Unique attribute" }, tempDirectory, "", ExitType.FAILED);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return file;
     }
 
-    @Test
-    public void testLintSampleRulePassesWhenItShould() {
-        File file = new File(tempDirectory + File.separator + "foobar.xml");
+    private File createBadAuthorFile() {
+        File file = new File(tempDirectory + File.separator + "author.xml");
         try {
             file.createNewFile();
             file.deleteOnExit();
 
             PrintWriter fileWriter = new PrintWriter(file);
             fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            fileWriter.println("<empty/>");
+            fileWriter.println("<author name=\"\"/>");
             fileWriter.flush();
             fileWriter.close();
-
-            runExitTest(new String[] { "--check", "XML version specified" }, tempDirectory, "", ExitType.SUCCESS);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        return file;
     }
 }

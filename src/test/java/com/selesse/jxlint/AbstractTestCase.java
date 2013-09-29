@@ -55,4 +55,13 @@ public class AbstractTestCase {
 
         checkLint(args, sourceDirectory);
     }
+
+    protected void runExitTest(String[] args, File sourceDirectory, ExitType exitType) {
+        if (args == null) {
+            args = new String[] {};
+        }
+
+        expectedSystemExit.expectSystemExitWithStatus(exitType.getErrorCode());
+        checkLint(args, sourceDirectory);
+    }
 }

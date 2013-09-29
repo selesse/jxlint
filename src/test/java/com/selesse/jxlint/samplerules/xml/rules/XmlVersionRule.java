@@ -40,11 +40,11 @@ public class XmlVersionRule extends LintRule {
                 failedRules.add(new LintError(this, file, errorMessage.substring(0, errorMessage.length() - 1)));
             }
             else {
-                failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
+                failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML", e));
             }
             return false;
         } catch (Exception e) {
-            failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
+            failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML", e));
             return false;
         }
 

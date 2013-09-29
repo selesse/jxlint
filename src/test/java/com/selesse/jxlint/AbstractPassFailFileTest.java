@@ -20,11 +20,9 @@ public abstract class AbstractPassFailFileTest {
     protected String passFileName;
     protected String failFileName;
     protected LintRule lintRule;
-    protected LintRules lintRuleImpl;
     protected File sourceDirectory;
 
     public AbstractPassFailFileTest(LintRules lintRules, File sourceDirectory, LintRule lintRule) {
-        this.lintRuleImpl = lintRules;
         LintRulesImpl.setInstance(lintRules);
         this.sourceDirectory = sourceDirectory;
         this.lintRule = lintRule;

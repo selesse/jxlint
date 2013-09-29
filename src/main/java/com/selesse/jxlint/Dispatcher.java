@@ -3,11 +3,11 @@ package com.selesse.jxlint;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.linter.LintFactory;
+import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.*;
-import com.selesse.jxlint.report.Reporter;
-import com.selesse.jxlint.report.UnableToCreateReportException;
 
 import java.io.File;
 import java.util.List;
@@ -84,7 +84,10 @@ public class Dispatcher {
         if (programOptions.hasOption("check")) {
             String checkRules = programOptions.getOption("check");
             List<String> checkRulesList = ProgramOptions.getListFromRawOptionStringOrDie(checkRules);
-            doLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), programOptions);
+
+            Linter linter = LintFactory.createNewLinter(LintRulesImpl.getInstance().getOnlyRules(checkRulesList),
+                    warningsAreErrors);
+            linter.doLint(programOptions);
         }
 
         // By default, we only check enabled rules.
@@ -111,7 +114,8 @@ public class Dispatcher {
             lintRuleList.addAll(LintRulesImpl.getInstance().getOnlyRules(enabledRulesList));
         }
 
-        doLint(lintRuleList, programOptions);
+        Linter linter = LintFactory.createNewLinter(lintRuleList, warningsAreErrors);
+        linter.doLint(programOptions);
     }
 
     private static void doHelp(ProgramOptions programOptions) {
@@ -166,34 +170,5 @@ public class Dispatcher {
         File sourceDirectory = new File(sourceDirectoryString);
 
         return sourceDirectory.exists() && sourceDirectory.isDirectory() && sourceDirectory.canRead();
-    }
-
-    private static void doLint(List<LintRule> rules, ProgramOptions programOptions) {
-        List<LintError> failedRules = Lists.newArrayList();
-
-        for (LintRule lintRule : rules) {
-            lintRule.validate();
-            failedRules.addAll(lintRule.getFailedRules());
-        }
-
-        try {
-            Reporter reporter = programOptions.createReporterFor(failedRules);
-            reporter.outputReport();
-        } catch (UnableToCreateReportException e) {
-            Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
-        }
-
-        if (warningsAreErrors && failedRules.size() > 0) {
-            Main.exitProgram(ExitType.FAILED);
-        }
-
-        if (failedRules.size() > 0) {
-            for (LintError error : failedRules) {
-                if (error.getViolatedRule().getSeverity().ordinal() >= Severity.ERROR.ordinal()) {
-                    Main.exitProgram(ExitType.FAILED);
-                }
-            }
-        }
-        Main.exitProgram(ExitType.SUCCESS);
     }
 }

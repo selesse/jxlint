@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class UniqueAttributeRule extends LintRule {
     public UniqueAttributeRule() {
@@ -36,16 +37,16 @@ public class UniqueAttributeRule extends LintRule {
             document.getDocumentElement().normalize();
         } catch (SAXException e) {
             String errorMessage = e.getMessage();
-            if (errorMessage.matches("Attribute \"([^\"]+)\" was already specified for element \"([^\"])+\"\\.")) {
-                failedRules.add(new LintError(this, file, errorMessage.substring(0, errorMessage.length() - 1)));
+            if (errorMessage.matches("Attribute \"([^\"]+)\" was already specified for element \"([^\"]+)\"\\.")) {
+                failedRules.add(new LintError(this, file, errorMessage.substring(0, errorMessage.length() - 1), e));
             }
             else {
-                failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
+                failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML", e));
             }
             return false;
         } catch (Exception e) {
             // this will catch parser configuration errors as well as I/O exceptions
-            failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
+            failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML", e));
             return false;
         }
 
