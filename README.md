@@ -53,7 +53,7 @@ Quick Start
   public class XmlEncodingRule extends LintRule {
       public XmlEncodingRule () {
           super("XML encoding specified", "Encoding of the XML should be specified.",
-                  "The xml version should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
+                  "The XML encoding should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
                   Severity.WARNING, Category.LINT, false);
       }
 
@@ -78,7 +78,7 @@ Quick Start
               return !Strings.isNullOrEmpty(document.getXmlEncoding());
           }
           catch (Exception e) {
-              failedRules.add(new LintError(this, file, "Error checking rule, could not parse xml"));
+              failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
               return false;
           }
       }

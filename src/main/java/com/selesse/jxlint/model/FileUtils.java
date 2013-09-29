@@ -41,4 +41,17 @@ public class FileUtils {
 
         return filteredFiles;
     }
+
+    public static List<File> allFilesWithFilenameIn(File rootDir, String filename) {
+        List<File> filteredFiles = Lists.newArrayList();
+
+        List<File> allFiles = allFilesIn(rootDir);
+        for (File file : allFiles) {
+            if (file.getName().equals(filename)) {
+                filteredFiles.add(file);
+            }
+        }
+
+        return filteredFiles;
+    }
 }

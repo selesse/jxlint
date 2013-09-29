@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<author name="Steve" creationDate="2013-09-28">
+    <this name="joe" value="is">
+      <example country="CA">
+        <of/>
+        <nested>
+          <stuff value="hello"/>
+        </nested>
+      </example>
+    </this>
+</author>

@@ -18,7 +18,7 @@ public class AbstractLintRulesTest {
 
     @Test
     public void testLintRulesGetsAllEnabledRulesSizeProperly() {
-        assertEquals(2, lintRules.getAllEnabledRules().size());
+        assertEquals(3, lintRules.getAllEnabledRules().size());
     }
 
     @Test
@@ -30,13 +30,13 @@ public class AbstractLintRulesTest {
     @Test
     public void testLintRulesGetsAllEnabledMinusDisabledRulesSizeProperly() {
         List<String> disabledRules = Lists.newArrayList("Unique attribute");
-        assertEquals(1, lintRules.getAllEnabledRulesExcept(disabledRules).size());
+        assertEquals(2, lintRules.getAllEnabledRulesExcept(disabledRules).size());
     }
 
     @Test
     public void testLintRulesGetsAllEnabledPlusEnabledRulesSizeProperly() {
         List<String> enabledRules = Lists.newArrayList("XML version specified");
-        assertEquals(3, lintRules.getAllEnabledRulesAsWellAs(enabledRules).size());
+        assertEquals(4, lintRules.getAllEnabledRulesAsWellAs(enabledRules).size());
     }
 
     @Test

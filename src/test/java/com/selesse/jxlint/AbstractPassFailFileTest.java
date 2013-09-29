@@ -17,9 +17,9 @@ import static org.junit.Assert.assertTrue;
  * accordingly.
  */
 public abstract class AbstractPassFailFileTest {
-    private LintRule lintRule;
-    private String passFileName;
-    private String failFileName;
+    protected String passFileName;
+    protected String failFileName;
+    protected LintRule lintRule;
     protected LintRules lintRuleImpl;
     protected File sourceDirectory;
 

@@ -16,8 +16,8 @@ import java.util.List;
 public class XmlVersionRule extends LintRule {
     public XmlVersionRule() {
         super("XML version specified", "Version of XML must be specified.",
-                "The xml version should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
-                Severity.WARNING, Category.LINT, false);
+                "The XML version should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
+                Severity.FATAL, Category.LINT);
     }
 
     @Override
@@ -40,11 +40,11 @@ public class XmlVersionRule extends LintRule {
                 failedRules.add(new LintError(this, file, errorMessage.substring(0, errorMessage.length() - 1)));
             }
             else {
-                failedRules.add(new LintError(this, file, "Error checking rule, could not parse xml"));
+                failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
             }
             return false;
         } catch (Exception e) {
-            failedRules.add(new LintError(this, file, "Error checking rule, could not parse xml"));
+            failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
             return false;
         }
 

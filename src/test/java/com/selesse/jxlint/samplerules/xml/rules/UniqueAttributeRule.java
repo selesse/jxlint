@@ -40,12 +40,12 @@ public class UniqueAttributeRule extends LintRule {
                 failedRules.add(new LintError(this, file, errorMessage.substring(0, errorMessage.length() - 1)));
             }
             else {
-                failedRules.add(new LintError(this, file, "Error checking rule, could not parse xml"));
+                failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
             }
             return false;
         } catch (Exception e) {
             // this will catch parser configuration errors as well as I/O exceptions
-            failedRules.add(new LintError(this, file, "Error checking rule, could not parse xml"));
+            failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
             return false;
         }
 

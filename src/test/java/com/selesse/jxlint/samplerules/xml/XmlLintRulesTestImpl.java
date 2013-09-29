@@ -1,8 +1,8 @@
 package com.selesse.jxlint.samplerules.xml;
 
 import com.selesse.jxlint.model.rules.AbstractLintRules;
+import com.selesse.jxlint.samplerules.xml.rules.AuthorTagRule;
 import com.selesse.jxlint.samplerules.xml.rules.UniqueAttributeRule;
-import com.selesse.jxlint.samplerules.xml.rules.ValidXmlRule;
 import com.selesse.jxlint.samplerules.xml.rules.XmlEncodingRule;
 import com.selesse.jxlint.samplerules.xml.rules.XmlVersionRule;
 
@@ -12,14 +12,16 @@ import com.selesse.jxlint.samplerules.xml.rules.XmlVersionRule;
 public class XmlLintRulesTestImpl extends AbstractLintRules {
     @Override
     public void initializeLintRules() {
-        // Example rule saying that XML must be valid
-        lintRules.add(new ValidXmlRule());
-
         // Example rule saying that duplicate attribute tags within XML are bad
         lintRules.add(new UniqueAttributeRule());
 
-        // Example (disabled-by-default) rules
+        // Example rule saying that XML Version needs to be specified
         lintRules.add(new XmlVersionRule());
+
+        // Example rule saying that XML encoding needs to be specified
         lintRules.add(new XmlEncodingRule());
+
+        // Example rule saying that author tag needs to exist somewhere in every XML file
+        lintRules.add(new AuthorTagRule());
     }
 }

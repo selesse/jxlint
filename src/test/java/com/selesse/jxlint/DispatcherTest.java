@@ -82,47 +82,52 @@ public class DispatcherTest extends AbstractTestCase {
     @Test
     public void testShowValidOption() {
         final List<String> expectedOutput = Lists.newArrayList(
-                  "Valid XML"
-                , "---------"
-                , "Summary: XML must be well-formed, valid."
+                  "XML encoding specified"
+                , "----------------------"
+                , "Summary: Encoding of the XML must be specified."
                 , ""
-                , "Severity: Fatal"
+                , "Severity: Warning"
                 , "Category: Lint"
                 , ""
-                , "The XML needs to be \"valid\" XML. This test definition means that the XML can be parsed by "
-                + "any parser. Any tag must be closed.\n\n"
+                , "The XML encoding should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.\n\n"
         );
 
-        runExitTest(new String[] { "--show", "Valid XML" }, tempDirectory, Joiner.on("\n").join(expectedOutput),
+        runExitTest(new String[] { "--show", "XML encoding specified" }, tempDirectory, Joiner.on("\n").join(expectedOutput),
                 ExitType.SUCCESS);
     }
 
     @Test
     public void testShowValidDisabledByDefaultOption() {
         final List<String> expectedOutput = Lists.newArrayList(
-                  "XML version specified"
-                , "---------------------"
-                , "Summary: Version of XML must be specified."
+                  "Author tag specified"
+                , "--------------------"
+                , "Summary: author.xml files must contain a valid root-element <author> tag."
                 , ""
                 , "** Disabled by default **"
                 , ""
                 , "Severity: Warning"
-                , "Category: Lint"
+                , "Category: Style"
                 , ""
-                , "The xml version should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.\n\n"
+                , "For style purposes, every author.xml file must contain an <author> tag as the root element. " +
+                  "This tag should also have the 'name' and 'creationDate' attributes. " +
+                  "For example:"
+                , "<?xml version=\"1.0\" encoding=\"UTF-8\">"
+                , "<author name=\"Steve Holt\" creationDate=\"2013-09-28\">"
+                , "  .. content .."
+                , "</author>\n\n"
         );
 
-        runExitTest(new String[] { "--show", "XML version specified" }, tempDirectory,
+        runExitTest(new String[] { "--show", "Author tag specified" }, tempDirectory,
                 Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
     }
 
     @Test
     public void testListOptions() {
         final List<String> expectedOutput = Lists.newArrayList(
-               "\"Valid XML\" : XML must be well-formed, valid.",
                "\"Unique attribute\" : Attributes within a tag must be unique.",
-               "\"XML version specified\"* : Version of XML must be specified.",
-               "\"XML encoding specified\"* : Encoding of the XML must be specified."
+               "\"XML version specified\" : Version of XML must be specified.",
+               "\"XML encoding specified\" : Encoding of the XML must be specified.",
+               "\"Author tag specified\"* : author.xml files must contain a valid root-element <author> tag."
         );
 
         runExitTest(new String[] { "--list" }, tempDirectory, Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
