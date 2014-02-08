@@ -2,7 +2,7 @@ jxlint
 ======
 
 jxlint is a Java framework for performing static analysis. Its name is derived
-from [lint](http://en.wikipedia.org/wiki/Lint_(software\)) tools and is
+from [lint](http://en.wikipedia.org/wiki/Lint_%28software%29) tools and is
 partially inspired by [Android's lint tool](http://developer.android.com/tools/help/lint.html).
 Originally, it stood for "Java XML lint" but was later generalized to be
 useful for any kind of static analysis.
