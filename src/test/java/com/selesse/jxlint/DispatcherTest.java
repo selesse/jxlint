@@ -237,7 +237,6 @@ public class DispatcherTest extends AbstractTestCase {
         assertEquals(0, linter.getLintErrors().size());
 
         // Now, let's re-run the same program with the bad author file rule enabled... We should flag it!
-
         setupTestLinterAndRunProgramWithArgs(new String[] { "--enable", "Author tag specified",
                 tempDirectory.getAbsolutePath() });
         linter = LintFactory.getInstance();
@@ -255,9 +254,23 @@ public class DispatcherTest extends AbstractTestCase {
         assertEquals(1, linter.getLintErrors().size());
 
         // Now, let's re-run the same program with the bad encoding file rule disabled... It should shut up!
-
         setupTestLinterAndRunProgramWithArgs(new String[] { "--disable", "XML encoding specified",
                 tempDirectory.getAbsolutePath() });
+        linter = LintFactory.getInstance();
+        assertEquals(0, linter.getLintErrors().size());
+    }
+
+    @Test
+    public void testNoWarnOptionTriggersCorrectly() {
+        // First, create a bad encoding file and assert that there are errors
+        TestFileCreator.createBadEncodingFile(tempDirectory);
+
+        setupTestLinterAndRunProgramWithArgs(new String[] { tempDirectory.getAbsolutePath() });
+        Linter linter = LintFactory.getInstance();
+        assertEquals(1, linter.getLintErrors().size());
+
+        // Now, let's re-run the same program without pesky warnings... It should shut up!
+        setupTestLinterAndRunProgramWithArgs(new String[] { "--nowarn", tempDirectory.getAbsolutePath() });
         linter = LintFactory.getInstance();
         assertEquals(0, linter.getLintErrors().size());
     }

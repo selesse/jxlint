@@ -26,7 +26,7 @@ public abstract class Reporter {
      * Prints the header, every category-error group, and the footer.
      * The category-error group is defined by a category header and one or more errors,
      */
-    public void outputReport() {
+    public void writeReport() {
         Category lastCategory = null;
         printHeader();
         Collections.sort(lintErrorList, new CategoryThenNameComparator());

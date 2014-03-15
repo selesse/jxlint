@@ -1,16 +1,12 @@
 package com.selesse.jxlint.model;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.selesse.jxlint.Main;
-import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
-import com.selesse.jxlint.report.*;
 
-import java.io.*;
 import java.util.List;
 import java.util.Map;
 
@@ -41,63 +37,31 @@ public class ProgramOptions {
         return options.get(show);
     }
 
+    public OutputType getOutputType() {
+        String outputType = options.get("outputType");
+
+        if (outputType == null) {
+            return OutputType.DEFAULT;
+        }
+
+        switch (outputType.toLowerCase()) {
+            case "quiet":
+                return OutputType.QUIET;
+            case "html":
+                return OutputType.HTML;
+            case "xml":
+                return OutputType.XML;
+            default:
+                return OutputType.DEFAULT;
+        }
+    }
+
     public String getSourceDirectory() {
         return sourceDirectory;
     }
 
     public void setSourceDirectory(String sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
-    }
-
-    public Reporter createReporterFor(List<LintError> lintErrors) throws UnableToCreateReportException {
-        String outputType = getOption("outputType");
-        String outputPath = getOption("outputTypePath");
-        Reporter reporter = new DefaultReporter(System.out, lintErrors);
-
-        if (outputType == null) {
-            return reporter;
-        }
-
-        if (outputType.equals("quiet")) {
-            try {
-                reporter = new DefaultReporter(new PrintStream(new OutputStream() {
-                    @Override
-                    public void write(int b) throws IOException {
-                        // my own little /dev/null
-                    }
-                }, false, Charsets.UTF_8.displayName()), lintErrors);
-            } catch (UnsupportedEncodingException e) {
-                // nothing to do here, why wouldn't UTF-8 be available?
-            }
-        }
-        else if (outputType.equals("html")) {
-            PrintStream out = System.out;
-            if (outputPath != null) {
-                try {
-                    out = new PrintStream(new FileOutputStream(outputPath), true, Charsets.UTF_8.displayName());
-                } catch (FileNotFoundException e) {
-                    throw new UnableToCreateReportException(new File(outputPath));
-                } catch (UnsupportedEncodingException e) {
-                    // nothing to do here, why wouldn't UTF-8 be available?
-                }
-            }
-            reporter = new HtmlReporter(out, lintErrors);
-        }
-        else if (outputType.equals("xml")) {
-            PrintStream out = System.out;
-            if (outputPath != null) {
-                try {
-                    out = new PrintStream(new FileOutputStream(outputPath), true, Charsets.UTF_8.displayName());
-                } catch (FileNotFoundException e) {
-                    throw new UnableToCreateReportException(new File(outputPath));
-                } catch (UnsupportedEncodingException e) {
-                    // nothing to do here, why wouldn't UTF-8 be available?
-                }
-            }
-            reporter = new XmlReporter(out, lintErrors);
-        }
-
-        return reporter;
     }
 
     /**

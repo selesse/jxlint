@@ -16,4 +16,10 @@ public class MainTest extends AbstractTestCase {
 
         checkLint(new String[]{"---"}, pwd);
     }
+
+    @Test
+    public void testMissingArgumentIsDisplayed() {
+        final String expectedOutput = "Missing argument for option '--check'.";
+        runExitTest(new String[]{"--check", "--Wall"}, pwd, expectedOutput, ExitType.COMMAND_LINE_ERROR);
+    }
 }

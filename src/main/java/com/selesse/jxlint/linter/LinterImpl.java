@@ -3,11 +3,13 @@ package com.selesse.jxlint.linter;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.Main;
 import com.selesse.jxlint.model.ExitType;
+import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.report.Reporter;
+import com.selesse.jxlint.report.Reporters;
 import com.selesse.jxlint.report.UnableToCreateReportException;
 
 import java.util.List;
@@ -32,15 +34,17 @@ public class LinterImpl implements Linter {
             failedRules.addAll(lintRule.getFailedRules());
         }
 
-        reportAndExit(programOptions, failedRules);
+        OutputType outputType = programOptions.getOutputType();
+        String outputPath = programOptions.getOption("outputTypePath");
+        reportAndExit(failedRules, outputType, outputPath);
     }
 
-    private void reportAndExit(ProgramOptions programOptions, List<LintError> failedRules) {
+    private void reportAndExit(List<LintError> failedRules, OutputType outputType, String outputTypePath) {
         errors = failedRules;
 
         try {
-            Reporter reporter = programOptions.createReporterFor(failedRules);
-            reporter.outputReport();
+            Reporter reporter = Reporters.createReporterFor(failedRules, outputType, outputTypePath);
+            reporter.writeReport();
         } catch (UnableToCreateReportException e) {
             Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
         }

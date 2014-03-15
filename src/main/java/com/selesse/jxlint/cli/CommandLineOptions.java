@@ -85,7 +85,6 @@ public class CommandLineOptions {
         String outputString = "";
 
         // redirect stdout to a temporary stream to capture HelpFormatter.printHelp()
-
         PrintStream previousOut = System.out;
         try {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
