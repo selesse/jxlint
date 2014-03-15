@@ -89,9 +89,6 @@ publishing {
         }
     }
     repositories {
-        maven {
-            // Should eventually change, e.g. http://my.org/repo
-            url "$buildDir/repo"
-        }
+        mavenLocal()
     }
 }
