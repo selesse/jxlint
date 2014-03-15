@@ -1,5 +1,6 @@
 package com.selesse.jxlint;
 
+import com.google.common.base.Charsets;
 import com.selesse.jxlint.model.ExitType;
 import org.junit.Rule;
 import org.junit.contrib.java.lang.system.Assertion;
@@ -8,9 +9,11 @@ import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class AbstractTestCase {
     @Rule
@@ -21,17 +24,20 @@ public class AbstractTestCase {
         PrintStream previousOut = System.out;
         try {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
-            System.setOut(new PrintStream(output));
+            System.setOut(new PrintStream(output, true, Charsets.UTF_8.displayName()));
 
             String[] newArgs = Arrays.copyOfRange(args, 0, args.length + 1);
             newArgs[args.length] = sourceDirectory.getAbsolutePath();
 
             Main.main(newArgs);
 
-            return output.toString();
+            return output.toString(Charsets.UTF_8.displayName());
+        } catch (UnsupportedEncodingException e) {
+            fail("Threw exception while setting up test:\n" + e.getMessage());
         } finally {
             System.setOut(previousOut);
         }
+        return "";
     }
 
     /**

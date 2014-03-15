@@ -9,12 +9,10 @@ import java.util.List;
 
 public class TestLinterImpl implements Linter {
     private List<LintRule> rules;
-    private boolean warningsAreErrors;
     private List<LintError> failedRules;
 
-    public TestLinterImpl(List<LintRule> rules, boolean warningsAreErrors) {
+    public TestLinterImpl(List<LintRule> rules, boolean ignored) {
         this.rules = rules;
-        this.warningsAreErrors = warningsAreErrors;
     }
 
     @Override

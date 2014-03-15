@@ -1,5 +1,6 @@
 package com.selesse.jxlint.model;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.Main;
@@ -67,20 +68,26 @@ public class ProgramOptions {
         }
 
         if (outputType.equals("quiet")) {
-            reporter = new DefaultReporter(new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) throws IOException {
-                    // my own little /dev/null
-                }
-            }), lintErrors);
+            try {
+                reporter = new DefaultReporter(new PrintStream(new OutputStream() {
+                    @Override
+                    public void write(int b) throws IOException {
+                        // my own little /dev/null
+                    }
+                }, false, Charsets.UTF_8.displayName()), lintErrors);
+            } catch (UnsupportedEncodingException e) {
+                // nothing to do here, why wouldn't UTF-8 be available?
+            }
         }
         else if (outputType.equals("html")) {
             PrintStream out = System.out;
             if (outputPath != null) {
                 try {
-                    out = new PrintStream(new FileOutputStream(outputPath), true);
+                    out = new PrintStream(new FileOutputStream(outputPath), true, Charsets.UTF_8.displayName());
                 } catch (FileNotFoundException e) {
                     throw new UnableToCreateReportException(new File(outputPath));
+                } catch (UnsupportedEncodingException e) {
+                    // nothing to do here, why wouldn't UTF-8 be available?
                 }
             }
             reporter = new HtmlReporter(out, lintErrors);
@@ -89,9 +96,11 @@ public class ProgramOptions {
             PrintStream out = System.out;
             if (outputPath != null) {
                 try {
-                    out = new PrintStream(new FileOutputStream(outputPath), true);
+                    out = new PrintStream(new FileOutputStream(outputPath), true, Charsets.UTF_8.displayName());
                 } catch (FileNotFoundException e) {
                     throw new UnableToCreateReportException(new File(outputPath));
+                } catch (UnsupportedEncodingException e) {
+                    // nothing to do here, why wouldn't UTF-8 be available?
                 }
             }
             reporter = new XmlReporter(out, lintErrors);

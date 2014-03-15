@@ -98,6 +98,18 @@ public abstract class LintRule {
         return Joiner.on("\n").join(detailedOutput);
     }
 
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (summary != null ? summary.hashCode() : 0);
+        result = 31 * result + (detailedDescription != null ? detailedDescription.hashCode() : 0);
+        result = 31 * result + (severity != null ? severity.hashCode() : 0);
+        result = 31 * result + (category != null ? category.hashCode() : 0);
+        result = 31 * result + (enabled ? 1 : 0);
+        result = 31 * result + (failedRules != null ? failedRules.hashCode() : 0);
+        return result;
+    }
+
     /**
      * Ad-hoc <code>equals</code>: we return true as long as the {@link String}, or {@link #getName()} is * the same.
      * This means that <code>"RuleName".equals(new LintRule("RuleName", ...)) == true</code>
@@ -108,13 +120,24 @@ public abstract class LintRule {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof String) {
-            return ((String) obj).equalsIgnoreCase(getName());
-        }
         if (obj instanceof LintRule) {
             return ((LintRule) obj).getName().equalsIgnoreCase(getName());
         }
         return super.equals(obj);
+    }
+
+    /**
+     * Returns true if this rule's name is a member of this list of strings.
+     * It's like {@link List#contains(Object)}, but on the {@link com.selesse.jxlint.model.rules.LintRule}
+     * rather than the list. Does a case-insensitive string comparison.
+     */
+    public boolean hasNameInList(List<String> ruleStrings) {
+        for (String string : ruleStrings) {
+            if (string.equalsIgnoreCase(getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void validate() {

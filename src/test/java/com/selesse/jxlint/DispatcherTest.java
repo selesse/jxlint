@@ -1,5 +1,6 @@
 package com.selesse.jxlint;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
@@ -17,6 +18,7 @@ import java.io.PrintWriter;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DispatcherTest extends AbstractTestCase {
     private File tempDirectory;
@@ -220,10 +222,11 @@ public class DispatcherTest extends AbstractTestCase {
     private File createValidXml() {
         File file = new File(tempDirectory + File.separator + "valid.xml");
         try {
-            file.createNewFile();
+            boolean newFile = file.createNewFile();
+            assertTrue("File creation failed, could not run test", newFile);
             file.deleteOnExit();
 
-            PrintWriter fileWriter = new PrintWriter(file);
+            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
             fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             fileWriter.println("<empty/>");
             fileWriter.flush();
@@ -238,10 +241,11 @@ public class DispatcherTest extends AbstractTestCase {
     private File createBadVersionFile() {
         File file = new File(tempDirectory + File.separator + "bad-version.xml");
         try {
-            file.createNewFile();
+            boolean newFile = file.createNewFile();
+            assertTrue("File creation failed, could not run test", newFile);
             file.deleteOnExit();
 
-            PrintWriter fileWriter = new PrintWriter(file);
+            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
             fileWriter.println("<?xml encoding=\"UTF-8\"?>");
             fileWriter.println("<empty/>");
             fileWriter.flush();
@@ -256,10 +260,11 @@ public class DispatcherTest extends AbstractTestCase {
     private File createBadEncodingFile() {
         File file = new File(tempDirectory + File.separator + "bad-encoding.xml");
         try {
-            file.createNewFile();
+            boolean newFile = file.createNewFile();
+            assertTrue("File creation failed, could not run test", newFile);
             file.deleteOnExit();
 
-            PrintWriter fileWriter = new PrintWriter(file);
+            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
             fileWriter.println("<?xml version=\"1.0\"?>");
             fileWriter.println("<empty/>");
             fileWriter.flush();
@@ -274,10 +279,11 @@ public class DispatcherTest extends AbstractTestCase {
     private File createBadAttributeFile() {
         File file = new File(tempDirectory + File.separator + "bad-attribute.xml");
         try {
-            file.createNewFile();
+            boolean newFile = file.createNewFile();
+            assertTrue("File creation failed, could not run test", newFile);
             file.deleteOnExit();
 
-            PrintWriter fileWriter = new PrintWriter(file);
+            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
             fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             fileWriter.println("<attribute name=\"dupe-name\" name=\"dupe-name\"/>");
             fileWriter.flush();
@@ -292,10 +298,11 @@ public class DispatcherTest extends AbstractTestCase {
     private File createBadAuthorFile() {
         File file = new File(tempDirectory + File.separator + "author.xml");
         try {
-            file.createNewFile();
+            boolean newFile = file.createNewFile();
+            assertTrue("File creation failed, could not run test", newFile);
             file.deleteOnExit();
 
-            PrintWriter fileWriter = new PrintWriter(file);
+            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
             fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             fileWriter.println("<author name=\"\"/>");
             fileWriter.flush();

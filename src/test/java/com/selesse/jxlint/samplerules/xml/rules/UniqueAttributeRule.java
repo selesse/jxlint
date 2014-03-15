@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class UniqueAttributeRule extends LintRule {
     public UniqueAttributeRule() {

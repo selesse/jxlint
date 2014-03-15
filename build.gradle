@@ -1,51 +1,67 @@
 apply plugin: 'java'
+apply plugin: 'findbugs'
+apply plugin: 'build-announcements'
 
 defaultTasks 'clean', 'check', 'assemble'
 
-sourceCompatibility = 1.7
 version = '1.0.0'
-
 buildDir = "out"
 
 ext {
-  releaseDir = "release"
+    releaseDir = "release"
+    mainClass = 'com.selesse.jxlint.Main'
 }
 
 repositories {
-  mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-  compile 'com.google.guava:guava:15.0'
-  compile 'commons-cli:commons-cli:1.2'
-  compile 'org.fusesource.jansi:jansi:1.11'
-  testCompile 'com.github.stefanbirkner:system-rules:1.3.1'
-  testCompile 'junit:junit:4.11'
+    compile 'com.google.guava:guava:16.0.1'
+    compile 'com.google.code.findbugs:annotations:2.0.3'
+    compile 'commons-cli:commons-cli:1.2'
+    compile 'org.fusesource.jansi:jansi:1.11'
+
+    testCompile 'commons-io:commons-io:2.4'
+    testCompile 'com.github.stefanbirkner:system-rules:1.3.1'
+    testCompile 'junit:junit:4.11'
 }
 
 clean.doLast {
-  ant.delete(dir: releaseDir)
+    ant.delete(dir: releaseDir)
 }
 
-task release(dependsOn: 'assemble') << {
-  out.println "Releasing $version"
+task release(dependsOn: ['check', 'assemble']) << {
+    out.println "Releasing $version"
 }
 
-gradle.taskGraph.whenReady {taskGraph ->
-  if (!taskGraph.hasTask(release)) {
-    version += "-SNAPSHOT"
-  }
+gradle.taskGraph.whenReady { taskGraph ->
+    if (!taskGraph.hasTask(release)) {
+        version += "-SNAPSHOT"
+    }
 }
 
 jar {
-  destinationDir = file(releaseDir)
-  manifest {
-    attributes 'Manifest-Version': version, 'Main-Class': 'com.selesse.jxlint.Main'
-  }
+    destinationDir = file(releaseDir)
+    manifest {
+        attributes 'Manifest-Version': version, 'Main-Class': mainClass
+    }
 
-  from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 task getVersion << {
-  out.println version
+    out.println version
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = '1.7'
+    targetCompatibility = '1.7'
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }

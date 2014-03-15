@@ -78,7 +78,7 @@ public abstract class AbstractLintRules implements LintRules {
         List<LintRule> filteredLintRules = Lists.newArrayList();
 
         for (LintRule lintRule : getAllRules()) {
-            if (!disabledRules.contains(lintRule)) {
+            if (!lintRule.hasNameInList(disabledRules)) {
                 filteredLintRules.add(lintRule);
             }
         }
@@ -95,7 +95,7 @@ public abstract class AbstractLintRules implements LintRules {
         List<LintRule> filteredLintRules = Lists.newArrayList();
 
         for (LintRule lintRule : getAllEnabledRules()) {
-            if (!disabledRules.contains(lintRule)) {
+            if (!lintRule.hasNameInList(disabledRules)) {
                 filteredLintRules.add(lintRule);
             }
         }

@@ -142,12 +142,13 @@ public class Dispatcher {
 
     private static void doShow(ProgramOptions programOptions) {
         try {
-            String outputBuffer = "";
+            StringBuilder outputBuffer = new StringBuilder();
             if (programOptions.hasOption("show") && programOptions.getOption("show") == null) {
                 for (LintRule rule : LintRulesImpl.getInstance().getAllRules()) {
-                    outputBuffer += rule.getDetailedOutput() + "\n\n";
+                    outputBuffer.append(rule.getDetailedOutput()).append("\n\n");
                 }
-                outputBuffer += "There are " + LintRulesImpl.getInstance().getAllRules().size() + " rules.";
+                outputBuffer.append("There are ").append(
+                        LintRulesImpl.getInstance().getAllRules().size()).append(" rules.");
             }
             else {
                 Splitter splitter = Splitter.on(",").trimResults().omitEmptyStrings();
@@ -155,10 +156,10 @@ public class Dispatcher {
                 List<String> rules = Lists.newArrayList(splitter.split(programOptions.getOption("show")));
                 for (String rule : rules) {
                     LintRule lintRule = LintRulesImpl.getInstance().getLintRule(rule.trim());
-                    outputBuffer += lintRule.getDetailedOutput() + "\n\n";
+                    outputBuffer.append(lintRule.getDetailedOutput()).append("\n\n");
                 }
             }
-            Main.exitProgramWithMessage(outputBuffer, ExitType.SUCCESS);
+            Main.exitProgramWithMessage(outputBuffer.toString(), ExitType.SUCCESS);
         }
         catch (NonExistentLintRuleException e) {
             Main.exitProgramWithMessage(String.format("'%s' is not a valid rule.", e.getRuleName()),

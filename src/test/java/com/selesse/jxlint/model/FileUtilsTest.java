@@ -2,6 +2,7 @@ package com.selesse.jxlint.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -22,42 +23,43 @@ public class FileUtilsTest {
         rootTempDir.deleteOnExit();
         try {
             File tempFile1 = new File(rootTempDir.getAbsolutePath() + File.separator + "x");
-            tempFile1.createNewFile();
-            tempFile1.deleteOnExit();
+            boolean tempFile1NewFile = tempFile1.createNewFile();
             File tempFile2 = new File(rootTempDir.getAbsolutePath() + File.separator + "x2");
-            tempFile2.createNewFile();
-            tempFile2.deleteOnExit();
+            boolean tempFile2NewFile = tempFile2.createNewFile();
 
             File tempDir2 = new File(rootTempDir.getAbsolutePath() + File.separator + "dir");
-            tempDir2.mkdir();
-            tempDir2.deleteOnExit();
+            boolean tempDir2mkdir = tempDir2.mkdir();
 
             File tempFile3 = new File(tempDir2.getAbsolutePath() + File.separator + "3.xml");
-            tempFile3.createNewFile();
-            tempFile3.deleteOnExit();
+            boolean tempFile3NewFile = tempFile3.createNewFile();
 
             File tempDir3 = new File(rootTempDir.getAbsolutePath() + File.separator + "w");
-            tempDir3.mkdir();
-            tempDir3.deleteOnExit();
+            boolean tempDir3mkdir = tempDir3.mkdir();
 
             File tempDir4 = new File(tempDir3.getAbsolutePath() + File.separator + "y");
-            tempDir4.mkdir();
-            tempDir4.deleteOnExit();
+            boolean tempDir4mkdir = tempDir4.mkdir();
 
             File tempDir5 = new File(tempDir4.getAbsolutePath() + File.separator + "z");
-            tempDir5.mkdir();
-            tempDir5.deleteOnExit();
+            boolean tempDir5mkdir = tempDir5.mkdir();
 
             File tempFile4 = new File(tempDir3.getAbsolutePath() + File.separator + "test.xml");
-            tempFile4.createNewFile();
-            tempFile4.deleteOnExit();
+            boolean tempFile4NewFile = tempFile4.createNewFile();
 
             File tempFile5 = new File(tempDir4.getAbsolutePath() + File.separator + "test.xml");
-            tempFile5.createNewFile();
-            tempFile5.deleteOnExit();
+            boolean tempFile5NewFile = tempFile5.createNewFile();
+
+            // Wow, gross! This is done to appease FindBugs.
+            assertTrue("Files were all created property for test", tempFile1NewFile && tempFile2NewFile &&
+                    tempFile3NewFile && tempFile4NewFile && tempFile5NewFile && tempDir2mkdir && tempDir3mkdir &&
+                    tempDir4mkdir && tempDir5mkdir);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @AfterClass
+    public static void deleteWorkingFiles() throws IOException {
+        org.apache.commons.io.FileUtils.deleteDirectory(rootTempDir);
     }
 
     @Test

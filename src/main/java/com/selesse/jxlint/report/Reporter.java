@@ -5,6 +5,7 @@ import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -38,7 +39,7 @@ public abstract class Reporter {
     protected abstract void printError(LintError error);
     protected abstract void printFooter();
 
-    private class CategoryThenNameComparator implements Comparator<LintError> {
+    private static class CategoryThenNameComparator implements Comparator<LintError>, Serializable {
         @Override
         public int compare(LintError o1, LintError o2) {
             LintRule o1ViolatedRule = o1.getViolatedRule();
