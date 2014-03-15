@@ -14,14 +14,8 @@ import java.util.List;
 /**
  * Entry-point to the application.
  */
-public class Main {
-    private static String outputMessage;
-
-    public static void main(String[] args) {
-        new Main().run(args);
-    }
-
-    public void run(String[] args) {
+public class Jxlint {
+    public static void doLintAnalysis(String[] args) {
         if (args.length == 0) {
             args = new String[] { "--help" };
         }
@@ -38,8 +32,8 @@ public class Main {
             Dispatcher.dispatch(programOptions);
         }
         catch (MissingArgumentException e) {
-            exitProgramWithMessage("Missing argument for option '--" + e.getOption().getLongOpt() + "'.",
-                    ExitType.COMMAND_LINE_ERROR);
+            ProgramExitter.exitProgramWithMessage("Missing argument for option '--" + e.getOption().getLongOpt() + "'" +
+                    ".", ExitType.COMMAND_LINE_ERROR);
         }
         catch (AlreadySelectedException e) {
             OptionGroup badOptionGroup = e.getOptionGroup();
@@ -48,29 +42,12 @@ public class Main {
             for (Object option : badOptionGroup.getOptions()) {
                 optionNames.add("--" + ((Option) option).getLongOpt());
             }
-            exitProgramWithMessage("Only one of " + Joiner.on(", ").join(optionNames) + " must be selected.",
-                    ExitType.COMMAND_LINE_ERROR);
+            ProgramExitter.exitProgramWithMessage("Only one of " + Joiner.on(", ").join(optionNames) +
+                    " must be selected.", ExitType.COMMAND_LINE_ERROR);
         }
         catch (ParseException e) {
             System.out.println(e);
-            exitProgramWithMessage(CommandLineOptions.getHelpMessage(), ExitType.COMMAND_LINE_ERROR);
+            ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(), ExitType.COMMAND_LINE_ERROR);
         }
-    }
-
-    public static void exitProgram(ExitType exitType) {
-        Main.outputMessage = "";
-        System.exit(exitType.getErrorCode());
-    }
-
-    public static void exitProgramWithMessage(String outputMessage, ExitType exitType) {
-        Main.outputMessage = outputMessage;
-        if (outputMessage.trim().length() > 0) {
-            System.out.println(outputMessage);
-        }
-        System.exit(exitType.getErrorCode());
-    }
-
-    public static String getOutputMessage() {
-        return outputMessage;
     }
 }

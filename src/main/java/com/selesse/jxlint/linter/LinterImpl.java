@@ -1,7 +1,7 @@
 package com.selesse.jxlint.linter;
 
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.Main;
+import com.selesse.jxlint.ProgramExitter;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.ProgramOptions;
@@ -43,24 +43,24 @@ public class LinterImpl implements Linter {
         errors = failedRules;
 
         try {
-            Reporter reporter = Reporters.createReporterFor(failedRules, outputType, outputTypePath);
+            Reporter reporter = Reporters.createReporter(failedRules, outputType, outputTypePath);
             reporter.writeReport();
         } catch (UnableToCreateReportException e) {
-            Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+            ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
         }
 
         if (warningsAreErrors && failedRules.size() > 0) {
-            Main.exitProgram(ExitType.FAILED);
+            ProgramExitter.exitProgram(ExitType.FAILED);
         }
 
         if (failedRules.size() > 0) {
             for (LintError error : failedRules) {
                 if (error.getViolatedRule().getSeverity().ordinal() >= Severity.ERROR.ordinal()) {
-                    Main.exitProgram(ExitType.FAILED);
+                    ProgramExitter.exitProgram(ExitType.FAILED);
                 }
             }
         }
-        Main.exitProgram(ExitType.SUCCESS);
+        ProgramExitter.exitProgram(ExitType.SUCCESS);
     }
 
     @Override

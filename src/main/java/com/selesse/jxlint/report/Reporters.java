@@ -8,8 +8,8 @@ import java.io.*;
 import java.util.List;
 
 public class Reporters {
-    public static Reporter createReporterFor(List<LintError> lintErrors, OutputType outputType,
-                                             String outputPath) throws UnableToCreateReportException {
+    public static Reporter createReporter(List<LintError> lintErrors, OutputType outputType,
+                                          String outputPath) throws UnableToCreateReportException {
         Reporter reporter = new DefaultReporter(System.out, lintErrors);
 
         if (outputType == null) {

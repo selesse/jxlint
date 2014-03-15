@@ -212,7 +212,7 @@ public class DispatcherTest extends AbstractTestCase {
         LintFactory.setTestMode(true);
         LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
 
-        new Main().run(args);
+        Jxlint.doLintAnalysis(args);
     }
 
     @Test

@@ -29,7 +29,7 @@ public class AbstractTestCase {
             String[] newArgs = Arrays.copyOfRange(args, 0, args.length + 1);
             newArgs[args.length] = sourceDirectory.getAbsolutePath();
 
-            Main.main(newArgs);
+            Jxlint.doLintAnalysis(newArgs);
 
             return output.toString(Charsets.UTF_8.displayName());
         } catch (UnsupportedEncodingException e) {
@@ -55,7 +55,7 @@ public class AbstractTestCase {
         expectedSystemExit.checkAssertionAfterwards(new Assertion() {
             @Override
             public void checkAssertion() throws Exception {
-                assertEquals(expectedOutput, Main.getOutputMessage());
+                assertEquals(expectedOutput, ProgramExitter.getOutputMessage());
             }
         });
 

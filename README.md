@@ -117,7 +117,7 @@ Quick Start
   }
   ```
 
-  In `com.selesse.jxlint.Main`, set the `LintRules` singleton before `run`:
+  In `com.selesse.jxlint.Jxlint`, set the `LintRules` singleton before `run`:
 
   ```java
   public class Main {

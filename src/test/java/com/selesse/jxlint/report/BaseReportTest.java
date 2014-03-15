@@ -19,6 +19,6 @@ public class BaseReportTest extends AbstractReportTest {
         Linter linter = LintFactory.getInstance();
         assertEquals(1, linter.getLintErrors().size());
 
-        Reporters.createReporterFor(linter.getLintErrors(), OutputType.HTML, "////////////////");
+        Reporters.createReporter(linter.getLintErrors(), OutputType.HTML, "////////////////");
     }
 }

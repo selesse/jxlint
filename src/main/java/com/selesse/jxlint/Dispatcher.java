@@ -73,13 +73,13 @@ public class Dispatcher {
                     outputBuffer += "Cannot read directory.";
                 }
 
-                Main.exitProgramWithMessage(outputBuffer, ExitType.COMMAND_LINE_ERROR);
+                ProgramExitter.exitProgramWithMessage(outputBuffer, ExitType.COMMAND_LINE_ERROR);
             }
 
             LintRulesImpl.getInstance().setSourceDirectory(new File(sourceDirectoryString));
         }
         else {
-            Main.exitProgramWithMessage("Error: could not find directory to validate.", ExitType.COMMAND_LINE_ERROR);
+            ProgramExitter.exitProgramWithMessage("Error: could not find directory to validate.", ExitType.COMMAND_LINE_ERROR);
         }
 
         if (programOptions.hasOption("check")) {
@@ -120,11 +120,11 @@ public class Dispatcher {
     }
 
     private static void doHelp() {
-        Main.exitProgramWithMessage(CommandLineOptions.getHelpMessage(), ExitType.SUCCESS);
+        ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(), ExitType.SUCCESS);
     }
 
     private static void doVersion() {
-        Main.exitProgramWithMessage(ProgramSettings.getProgramName() + ": version " +
+        ProgramExitter.exitProgramWithMessage(ProgramSettings.getProgramName() + ": version " +
                 ProgramSettings.getProgramVersion(), ExitType.SUCCESS);
     }
 
@@ -139,7 +139,7 @@ public class Dispatcher {
             outputBuffer.add(lintRule.getSummaryOutput());
         }
 
-        Main.exitProgramWithMessage(Joiner.on("\n").join(outputBuffer), ExitType.SUCCESS);
+        ProgramExitter.exitProgramWithMessage(Joiner.on("\n").join(outputBuffer), ExitType.SUCCESS);
     }
 
     private static void doShow(ProgramOptions programOptions) {
@@ -161,10 +161,10 @@ public class Dispatcher {
                     outputBuffer.append(lintRule.getDetailedOutput()).append("\n\n");
                 }
             }
-            Main.exitProgramWithMessage(outputBuffer.toString(), ExitType.SUCCESS);
+            ProgramExitter.exitProgramWithMessage(outputBuffer.toString(), ExitType.SUCCESS);
         }
         catch (NonExistentLintRuleException e) {
-            Main.exitProgramWithMessage(String.format("'%s' is not a valid rule.", e.getRuleName()),
+            ProgramExitter.exitProgramWithMessage(String.format("'%s' is not a valid rule.", e.getRuleName()),
                     ExitType.COMMAND_LINE_ERROR);
         }
     }

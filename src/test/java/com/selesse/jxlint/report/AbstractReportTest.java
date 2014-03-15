@@ -2,7 +2,7 @@ package com.selesse.jxlint.report;
 
 import com.google.common.io.Files;
 import com.selesse.jxlint.AbstractTestCase;
-import com.selesse.jxlint.Main;
+import com.selesse.jxlint.Jxlint;
 import com.selesse.jxlint.TestFileCreator;
 import com.selesse.jxlint.linter.LintFactory;
 import com.selesse.jxlint.linter.Linter;
@@ -31,7 +31,7 @@ public class AbstractReportTest extends AbstractTestCase {
         LintFactory.setTestMode(true);
         LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
 
-        new Main().run(args);
+        Jxlint.doLintAnalysis(args);
     }
 
     public File ensureReportGetsCreatedWithType(OutputType type) throws UnableToCreateReportException {
@@ -48,7 +48,7 @@ public class AbstractReportTest extends AbstractTestCase {
         Linter linter = LintFactory.getInstance();
         assertEquals(1, linter.getLintErrors().size());
 
-        Reporter reporter = Reporters.createReporterFor(linter.getLintErrors(), type, desiredOutput);
+        Reporter reporter = Reporters.createReporter(linter.getLintErrors(), type, desiredOutput);
         reporter.writeReport();
 
         assertTrue(desiredFile.exists());

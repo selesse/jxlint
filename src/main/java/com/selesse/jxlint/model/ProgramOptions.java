@@ -3,7 +3,7 @@ package com.selesse.jxlint.model;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.selesse.jxlint.Main;
+import com.selesse.jxlint.ProgramExitter;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
 
@@ -78,7 +78,7 @@ public class ProgramOptions {
             try {
                 LintRulesImpl.getInstance().getLintRule(disabledRuleString);
             } catch (NonExistentLintRuleException e) {
-                Main.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+                ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }
 

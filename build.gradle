@@ -9,7 +9,6 @@ buildDir = "out"
 
 ext {
     releaseDir = "release"
-    mainClass = 'com.selesse.jxlint.Main'
 }
 
 repositories {
@@ -44,7 +43,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 jar {
     destinationDir = file(releaseDir)
     manifest {
-        attributes 'Manifest-Version': version, 'Main-Class': mainClass
+        attributes 'Manifest-Version': version
     }
 
     from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
