@@ -1,13 +1,29 @@
 package com.selesse.jxlint.report;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Maps;
 import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.rules.LintError;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 
 public class Reporters {
+    private static Map<OutputType, Class<? extends Reporter>> outputTypeReporterMap = Maps.newHashMap();
+    static {
+        outputTypeReporterMap.put(OutputType.DEFAULT, DefaultReporter.class);
+        outputTypeReporterMap.put(OutputType.HTML, HtmlReporter.class);
+        outputTypeReporterMap.put(OutputType.XML, XmlReporter.class);
+        outputTypeReporterMap.put(OutputType.QUIET, DefaultReporter.class);
+    }
+
+    public static void setCustomReporter(OutputType outputType, Class<? extends Reporter> reporter) {
+        outputTypeReporterMap.put(outputType, reporter);
+    }
+
     public static Reporter createReporter(List<LintError> lintErrors, OutputType outputType,
                                           String outputPath) throws UnableToCreateReportException {
         Reporter reporter = new DefaultReporter(System.out, lintErrors);
@@ -42,13 +58,19 @@ public class Reporters {
             }
         }
 
-        switch (outputType) {
-            case QUIET:
-                return new DefaultReporter(out, lintErrors);
-            case HTML:
-                return new HtmlReporter(out, lintErrors);
-            case XML:
-                return new XmlReporter(out, lintErrors);
+        try {
+            switch (outputType) {
+                case XML:
+                case HTML:
+                    Class<? extends Reporter> reporterType = outputTypeReporterMap.get(outputType);
+                    Constructor<?> reporterTypeConstructor = reporterType.getConstructor(PrintStream.class, List.class);
+                    return (Reporter) reporterTypeConstructor.newInstance(out, lintErrors);
+                case DEFAULT:
+                case QUIET:
+                    return new DefaultReporter(out, lintErrors);
+            }
+        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+            // We failed some part of reflection... It's okay, though, since we initialized the reporter to System.out
         }
 
         return reporter;
