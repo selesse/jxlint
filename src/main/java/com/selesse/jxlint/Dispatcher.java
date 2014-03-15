@@ -37,13 +37,13 @@ public class Dispatcher {
      *
      * </ol>
      */
-    public static void dispatch(ProgramOptions programOptions) {
+    public static void dispatch(ProgramOptions programOptions, ProgramSettings programSettings) {
         // If/else train of mutually exclusive options
         if (programOptions.hasOption("help")) {
-            doHelp();
+            doHelp(programSettings);
         }
         else if (programOptions.hasOption("version")) {
-            doVersion();
+            doVersion(programSettings);
         }
         else if (programOptions.hasOption("list")) {
             doList();
@@ -119,13 +119,13 @@ public class Dispatcher {
         linter.doLint(programOptions);
     }
 
-    private static void doHelp() {
-        ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(), ExitType.SUCCESS);
+    private static void doHelp(ProgramSettings programSettings) {
+        ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(programSettings), ExitType.SUCCESS);
     }
 
-    private static void doVersion() {
-        ProgramExitter.exitProgramWithMessage(ProgramSettings.getProgramName() + ": version " +
-                ProgramSettings.getProgramVersion(), ExitType.SUCCESS);
+    private static void doVersion(ProgramSettings programSettings) {
+        ProgramExitter.exitProgramWithMessage(programSettings.getProgramName() + ": version " +
+                programSettings.getProgramVersion(), ExitType.SUCCESS);
     }
 
     private static void doList() {

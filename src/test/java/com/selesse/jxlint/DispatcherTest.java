@@ -8,6 +8,7 @@ import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
+import com.selesse.jxlint.settings.JxlintProgramSettings;
 import com.selesse.jxlint.settings.ProgramSettings;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,8 +65,9 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testVersionProperlyExtracted() {
-        final String expectedOutput = String.format("%s: version %s", ProgramSettings.getProgramName(),
-                ProgramSettings.getProgramVersion());
+        ProgramSettings programSettings = new JxlintProgramSettings();
+        final String expectedOutput = String.format("%s: version %s", programSettings.getProgramName(),
+                programSettings.getProgramVersion());
 
         runExitTest(new String[] { "--version" }, tempDirectory, expectedOutput, ExitType.SUCCESS);
     }
@@ -212,7 +214,8 @@ public class DispatcherTest extends AbstractTestCase {
         LintFactory.setTestMode(true);
         LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
 
-        Jxlint.doLintAnalysis(args);
+        Jxlint jxlint = new Jxlint(new JxlintProgramSettings());
+        jxlint.doLintAnalysis(args);
     }
 
     @Test

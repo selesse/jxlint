@@ -72,7 +72,7 @@ public class CommandLineOptions {
         return options;
     }
 
-    public static String getHelpMessage() {
+    public static String getHelpMessage(ProgramSettings programSettings) {
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.setOptionComparator(new OptionComparator());
 
@@ -90,7 +90,7 @@ public class CommandLineOptions {
             final ByteArrayOutputStream output = new ByteArrayOutputStream();
             System.setOut(new PrintStream(output, true, Charsets.UTF_8.displayName()));
 
-            helpFormatter.printHelp(ProgramSettings.getProgramName() + " [flags] <directory>", "",
+            helpFormatter.printHelp(programSettings.getProgramName() + " [flags] <directory>", "",
                     generateJxlintOptions(), "\n" + exitStatusFooter.toString().trim());
 
             outputString = output.toString(Charsets.UTF_8.displayName());

@@ -9,6 +9,7 @@ import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
+import com.selesse.jxlint.settings.JxlintProgramSettings;
 import org.junit.Before;
 
 import java.io.File;
@@ -31,7 +32,8 @@ public class AbstractReportTest extends AbstractTestCase {
         LintFactory.setTestMode(true);
         LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
 
-        Jxlint.doLintAnalysis(args);
+        Jxlint jxlint = new Jxlint(new JxlintProgramSettings());
+        jxlint.doLintAnalysis(args);
     }
 
     public File ensureReportGetsCreatedWithType(OutputType type) throws UnableToCreateReportException {
