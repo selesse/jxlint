@@ -1,6 +1,5 @@
 package com.selesse.jxlint;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
@@ -9,16 +8,15 @@ import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
+import com.selesse.jxlint.settings.ProgramSettings;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class DispatcherTest extends AbstractTestCase {
     private File tempDirectory;
@@ -32,18 +30,12 @@ public class DispatcherTest extends AbstractTestCase {
         LintFactory.setTestMode(false);
     }
 
-    public void setupTestLinterAndRunProgramWithArgs(String[] args) {
-        LintFactory.setTestMode(true);
-
-        new Main().run(args);
-    }
-
     @Test
     public void testHelpProperlyExtracted() {
         String newLineSeparator = System.lineSeparator();
 
         final List<String> expectedOutput = Lists.newArrayList(
-                  "usage: jxlint [flags] <directory>"
+                "usage: jxlint [flags] <directory>"
                 , " -h,--help                Usage information, help message."
                 , " -v,--version             Output version information."
                 , " -l,--list                Lists lint rules with a short, summary"
@@ -72,7 +64,8 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testVersionProperlyExtracted() {
-        final String expectedOutput = String.format("%s: version %s", Main.getProgramName(), Main.getProgramVersion());
+        final String expectedOutput = String.format("%s: version %s", ProgramSettings.getProgramName(),
+                ProgramSettings.getProgramVersion());
 
         runExitTest(new String[] { "--version" }, tempDirectory, expectedOutput, ExitType.SUCCESS);
     }
@@ -185,132 +178,87 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testLintValidatesNothing() {
-        createValidXml();
+        TestFileCreator.createValidXml(tempDirectory);
         runExitTest(null, tempDirectory, ExitType.SUCCESS);
     }
 
     @Test
     public void testLintSampleRuleFailsWhenItShould() {
-        createBadAttributeFile();
+        TestFileCreator.createBadAttributeFile(tempDirectory);
         runExitTest(new String[] { "--check", "Unique attribute" }, tempDirectory, ExitType.FAILED);
     }
 
     @Test
     public void testLintSampleRulePassesWhenItShould() {
-        createValidXml();
+        TestFileCreator.createValidXml(tempDirectory);
         runExitTest(new String[] { "--check", "XML version specified" }, tempDirectory, ExitType.SUCCESS);
     }
 
     @Test
     public void testWarningsReturnProperReturnCode() {
-        createBadEncodingFile();
+        TestFileCreator.createBadEncodingFile(tempDirectory);
+
+        // The XML encoding specified is a warning. It should return exit status 0.
         runExitTest(new String[] { "--check", "XML encoding specified" }, tempDirectory, ExitType.SUCCESS);
     }
 
     @Test
-    public void testFailedRulesAreAppropriate() {
-        createBadAuthorFile();
-        createBadVersionFile();
-        createBadEncodingFile();
-        createBadAttributeFile();
+    public void testWarningsBeingErrorsProperlyTriggered() {
+        TestFileCreator.createBadEncodingFile(tempDirectory);
+        runExitTest(new String[]{"--Werror"}, tempDirectory, ExitType.FAILED);
+    }
 
-        setupTestLinterAndRunProgramWithArgs(new String[] { "--Wall", tempDirectory.getAbsolutePath() });
+    public void setupTestLinterAndRunProgramWithArgs(String[] args) {
+        LintFactory.setTestMode(true);
+        LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
+
+        new Main().run(args);
+    }
+
+    @Test
+    public void testFailedRulesAreAppropriate() {
+        TestFileCreator.createBadAuthorFile(tempDirectory);
+        TestFileCreator.createBadVersionFile(tempDirectory);
+        TestFileCreator.createBadEncodingFile(tempDirectory);
+        TestFileCreator.createBadAttributeFile(tempDirectory);
+
+        setupTestLinterAndRunProgramWithArgs(new String[]{"--Wall", tempDirectory.getAbsolutePath()});
         Linter linter = LintFactory.getInstance();
         assertEquals(8, linter.getLintErrors().size());
     }
 
-    private File createValidXml() {
-        File file = new File(tempDirectory + File.separator + "valid.xml");
-        try {
-            boolean newFile = file.createNewFile();
-            assertTrue("File creation failed, could not run test", newFile);
-            file.deleteOnExit();
+    @Test
+    public void testEnablingSpecificRulesEnablesThem() {
+        // First, create a bad author file and assert that there are no errors
+        File badAuthorFile = TestFileCreator.createBadAuthorFile(tempDirectory);
 
-            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
-            fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            fileWriter.println("<empty/>");
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setupTestLinterAndRunProgramWithArgs(new String[] { tempDirectory.getAbsolutePath() });
+        Linter linter = LintFactory.getInstance();
+        assertEquals(0, linter.getLintErrors().size());
 
-        return file;
+        // Now, let's re-run the same program with the bad author file rule enabled... We should flag it!
+
+        setupTestLinterAndRunProgramWithArgs(new String[] { "--enable", "Author tag specified",
+                tempDirectory.getAbsolutePath() });
+        linter = LintFactory.getInstance();
+        assertEquals(1, linter.getLintErrors().size());
+        assertEquals(badAuthorFile.getAbsolutePath(), linter.getLintErrors().get(0).getFile().getAbsolutePath());
     }
 
-    private File createBadVersionFile() {
-        File file = new File(tempDirectory + File.separator + "bad-version.xml");
-        try {
-            boolean newFile = file.createNewFile();
-            assertTrue("File creation failed, could not run test", newFile);
-            file.deleteOnExit();
+    @Test
+    public void testDisablingSpecificRulesDisablesThem() {
+        // First, create a bad encoding file and assert that there are errors
+        TestFileCreator.createBadEncodingFile(tempDirectory);
 
-            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
-            fileWriter.println("<?xml encoding=\"UTF-8\"?>");
-            fileWriter.println("<empty/>");
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        setupTestLinterAndRunProgramWithArgs(new String[] { tempDirectory.getAbsolutePath() });
+        Linter linter = LintFactory.getInstance();
+        assertEquals(1, linter.getLintErrors().size());
 
-        return file;
-    }
+        // Now, let's re-run the same program with the bad encoding file rule disabled... It should shut up!
 
-    private File createBadEncodingFile() {
-        File file = new File(tempDirectory + File.separator + "bad-encoding.xml");
-        try {
-            boolean newFile = file.createNewFile();
-            assertTrue("File creation failed, could not run test", newFile);
-            file.deleteOnExit();
-
-            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
-            fileWriter.println("<?xml version=\"1.0\"?>");
-            fileWriter.println("<empty/>");
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return file;
-    }
-
-    private File createBadAttributeFile() {
-        File file = new File(tempDirectory + File.separator + "bad-attribute.xml");
-        try {
-            boolean newFile = file.createNewFile();
-            assertTrue("File creation failed, could not run test", newFile);
-            file.deleteOnExit();
-
-            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
-            fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            fileWriter.println("<attribute name=\"dupe-name\" name=\"dupe-name\"/>");
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return file;
-    }
-
-    private File createBadAuthorFile() {
-        File file = new File(tempDirectory + File.separator + "author.xml");
-        try {
-            boolean newFile = file.createNewFile();
-            assertTrue("File creation failed, could not run test", newFile);
-            file.deleteOnExit();
-
-            PrintWriter fileWriter = new PrintWriter(file, Charsets.UTF_8.displayName());
-            fileWriter.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-            fileWriter.println("<author name=\"\"/>");
-            fileWriter.flush();
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return file;
+        setupTestLinterAndRunProgramWithArgs(new String[] { "--disable", "XML encoding specified",
+                tempDirectory.getAbsolutePath() });
+        linter = LintFactory.getInstance();
+        assertEquals(0, linter.getLintErrors().size());
     }
 }

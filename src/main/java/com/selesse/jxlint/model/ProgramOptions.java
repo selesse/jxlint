@@ -3,6 +3,7 @@ package com.selesse.jxlint.model;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.selesse.jxlint.Main;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
@@ -10,17 +11,15 @@ import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
 import com.selesse.jxlint.report.*;
 
 import java.io.*;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ProgramOptions {
     private Map<String, String> options;
-    private String helpMessage;
     private String sourceDirectory;
 
     public ProgramOptions() {
-        this.options = new HashMap<String, String>();
+        this.options = Maps.newHashMap();
     }
 
     /**
@@ -36,14 +35,6 @@ public class ProgramOptions {
 
     public boolean hasOption(String optionName) {
         return options.containsKey(optionName);
-    }
-
-    public String getHelpMessage() {
-        return helpMessage;
-    }
-
-    public void setHelpMessage(String helpMessage) {
-        this.helpMessage = helpMessage;
     }
 
     public String getOption(String show) {

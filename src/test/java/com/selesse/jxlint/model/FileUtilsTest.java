@@ -2,6 +2,7 @@ package com.selesse.jxlint.model;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -16,6 +17,14 @@ import static org.junit.Assert.assertTrue;
 
 public class FileUtilsTest {
     private static File rootTempDir;
+    private File rootDirectory;
+
+    @After
+    public void teardown() throws IOException {
+        if (rootDirectory != null) {
+            org.apache.commons.io.FileUtils.deleteDirectory(rootDirectory);
+        }
+    }
 
     @BeforeClass
     public static void setup() {
@@ -34,13 +43,13 @@ public class FileUtilsTest {
             boolean tempFile3NewFile = tempFile3.createNewFile();
 
             File tempDir3 = new File(rootTempDir.getAbsolutePath() + File.separator + "w");
-            boolean tempDir3mkdir = tempDir3.mkdir();
+            boolean tempDir3madeDir = tempDir3.mkdir();
 
             File tempDir4 = new File(tempDir3.getAbsolutePath() + File.separator + "y");
-            boolean tempDir4mkdir = tempDir4.mkdir();
+            boolean tempDir4madeDir = tempDir4.mkdir();
 
             File tempDir5 = new File(tempDir4.getAbsolutePath() + File.separator + "z");
-            boolean tempDir5mkdir = tempDir5.mkdir();
+            boolean tempDir5madeDir = tempDir5.mkdir();
 
             File tempFile4 = new File(tempDir3.getAbsolutePath() + File.separator + "test.xml");
             boolean tempFile4NewFile = tempFile4.createNewFile();
@@ -50,8 +59,8 @@ public class FileUtilsTest {
 
             // Wow, gross! This is done to appease FindBugs.
             assertTrue("Files were all created property for test", tempFile1NewFile && tempFile2NewFile &&
-                    tempFile3NewFile && tempFile4NewFile && tempFile5NewFile && tempDir2mkdir && tempDir3mkdir &&
-                    tempDir4mkdir && tempDir5mkdir);
+                    tempFile3NewFile && tempFile4NewFile && tempFile5NewFile && tempDir2mkdir && tempDir3madeDir &&
+                    tempDir4madeDir && tempDir5madeDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,6 +92,27 @@ public class FileUtilsTest {
         assertEquals("test.xml", fileNames.get(1));
         assertEquals("test.xml", fileNames.get(2));
     }
+
+    @Test
+    public void testListAllTxtFiles() throws IOException {
+        rootDirectory = Files.createTempDir();
+
+        File notText = new File(rootDirectory.getAbsolutePath() + File.separator + "txt-this.txt.no");
+        File notText2 = new File(rootDirectory.getAbsolutePath() + File.separator + "Test.java");
+        File text = new File(rootDirectory.getAbsolutePath() + File.separator + "Test.txt");
+
+        boolean notTextCreated = notText.createNewFile();
+        boolean notText2Created = notText2.createNewFile();
+        boolean textCreated = text.createNewFile();
+
+        assertEquals(true, notTextCreated && notText2Created && textCreated);
+
+        List<File> textFiles = FileUtils.allFilesWithExtensionIn(rootDirectory, "txt");
+
+        assertEquals(1, textFiles.size());
+        assertEquals("Test.txt", textFiles.get(0).getName());
+    }
+
 
     @Test
     public void testGetAllFilenames() {

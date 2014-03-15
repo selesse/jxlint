@@ -11,7 +11,7 @@ public class TestLinterImpl implements Linter {
     private List<LintRule> rules;
     private List<LintError> failedRules;
 
-    public TestLinterImpl(List<LintRule> rules, boolean ignored) {
+    public TestLinterImpl(List<LintRule> rules) {
         this.rules = rules;
     }
 

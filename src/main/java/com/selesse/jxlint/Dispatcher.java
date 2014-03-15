@@ -3,18 +3,18 @@ package com.selesse.jxlint;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.cli.CommandLineOptions;
 import com.selesse.jxlint.linter.LintFactory;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.*;
+import com.selesse.jxlint.settings.ProgramSettings;
 
 import java.io.File;
 import java.util.List;
 
 public class Dispatcher {
-    private static boolean warningsAreErrors = false;
-
     /**
      * The order for the dispatcher is as such:
      *
@@ -40,7 +40,7 @@ public class Dispatcher {
     public static void dispatch(ProgramOptions programOptions) {
         // If/else train of mutually exclusive options
         if (programOptions.hasOption("help")) {
-            doHelp(programOptions);
+            doHelp();
         }
         else if (programOptions.hasOption("version")) {
             doVersion();
@@ -52,6 +52,7 @@ public class Dispatcher {
             doShow(programOptions);
         }
 
+        boolean warningsAreErrors = false;
         if (programOptions.hasOption("Werror")) {
             warningsAreErrors = true;
         }
@@ -59,7 +60,7 @@ public class Dispatcher {
         // we've parsed all mutually exclusive options, now let's make sure we have a proper source directory
         if (programOptions.getSourceDirectory() != null) {
             String sourceDirectoryString = programOptions.getSourceDirectory();
-            if (!isValidSourceDirectory(sourceDirectoryString)) {
+            if (isInvalidSourceDirectory(sourceDirectoryString)) {
                 File sourceDirectory = new File(sourceDirectoryString);
                 String outputBuffer = "Invalid source directory \"" + sourceDirectoryString + "\" : ";
                 if (!sourceDirectory.exists()) {
@@ -118,12 +119,13 @@ public class Dispatcher {
         linter.doLint(programOptions);
     }
 
-    private static void doHelp(ProgramOptions programOptions) {
-        Main.exitProgramWithMessage(programOptions.getHelpMessage(), ExitType.SUCCESS);
+    private static void doHelp() {
+        Main.exitProgramWithMessage(CommandLineOptions.getHelpMessage(), ExitType.SUCCESS);
     }
 
     private static void doVersion() {
-        Main.exitProgramWithMessage(Main.getProgramName() + ": version " + Main.getProgramVersion(), ExitType.SUCCESS);
+        Main.exitProgramWithMessage(ProgramSettings.getProgramName() + ": version " +
+                ProgramSettings.getProgramVersion(), ExitType.SUCCESS);
     }
 
     private static void doList() {
@@ -167,9 +169,9 @@ public class Dispatcher {
         }
     }
 
-    private static boolean isValidSourceDirectory(String sourceDirectoryString) {
+    private static boolean isInvalidSourceDirectory(String sourceDirectoryString) {
         File sourceDirectory = new File(sourceDirectoryString);
 
-        return sourceDirectory.exists() && sourceDirectory.isDirectory() && sourceDirectory.canRead();
+        return !sourceDirectory.exists() || !sourceDirectory.isDirectory() || !sourceDirectory.canRead();
     }
 }

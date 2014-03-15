@@ -10,7 +10,7 @@ public class LintFactory {
 
     public static Linter createNewLinter(List<LintRule> rules, boolean warningsAreErrors) {
         if (isTestMode) {
-            instance = new TestLinterImpl(rules, warningsAreErrors);
+            instance = new TestLinterImpl(rules);
         }
         else {
             instance = new LinterImpl(rules, warningsAreErrors);

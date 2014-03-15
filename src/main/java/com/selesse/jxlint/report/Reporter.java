@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Abstract reporter that displays the results of an execution of jxlint.
+ */
 public abstract class Reporter {
     protected PrintStream out;
     protected List<LintError> lintErrorList;
@@ -19,6 +22,10 @@ public abstract class Reporter {
         this.lintErrorList = lintErrorList;
     }
 
+    /**
+     * Prints the header, every category-error group, and the footer.
+     * The category-error group is defined by a category header and one or more errors,
+     */
     public void outputReport() {
         Category lastCategory = null;
         printHeader();

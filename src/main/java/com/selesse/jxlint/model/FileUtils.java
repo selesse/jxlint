@@ -29,6 +29,10 @@ public class FileUtils {
         return files;
     }
 
+    /**
+     * Get all Files within a particular directory ending in a particular extension.
+     * The extension does not include the period, i.e. "txt" would match "file.txt".
+     */
     public static List<File> allFilesWithExtensionIn(File rootDir, String extension) {
         List<File> filteredFiles = Lists.newArrayList();
 

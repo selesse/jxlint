@@ -11,9 +11,8 @@ import java.util.List;
  * A wrapper so that if the CLI parser changes, code modifications will be limited to this class.
  */
 public class ProgramOptionExtractor {
-    public static ProgramOptions extractProgramOptions(CommandLine commandLine, Options options) {
+    public static ProgramOptions extractProgramOptions(CommandLine commandLine) {
         ProgramOptions programOptions = new ProgramOptions();
-        programOptions.setHelpMessage(CliHelpMessage.getMessage(options));
 
         if (commandLine.hasOption("help")) {
             programOptions.addOption("help");
