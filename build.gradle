@@ -1,11 +1,12 @@
+apply plugin: 'build-announcements'
 apply plugin: 'java'
 apply plugin: 'findbugs'
-apply plugin: 'build-announcements'
+apply plugin: 'maven-publish'
 
 defaultTasks 'clean', 'check', 'assemble'
 
+group = 'com.selesse'
 version = '1.0.0'
-buildDir = "out"
 
 ext {
     releaseDir = "release"
@@ -30,7 +31,7 @@ clean.doLast {
     ant.delete(dir: releaseDir)
 }
 
-task release(dependsOn: ['check', 'assemble']) << {
+task release(dependsOn: ['check', 'assemble', 'javadocJar', 'sourceJar']) << {
     out.println "Releasing $version"
 }
 
@@ -45,8 +46,6 @@ jar {
     manifest {
         attributes 'Manifest-Version': version
     }
-
-    from configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
 }
 
 task getVersion << {
@@ -62,5 +61,37 @@ tasks.withType(FindBugs) {
     reports {
         xml.enabled = false
         html.enabled = true
+    }
+}
+
+
+// Set up publishing info
+task javadocJar (type: Jar, dependsOn: javadoc) {
+      classifier = 'javadoc'
+      from javadoc.destinationDir
+}
+
+task sourceJar (type : Jar) {
+      classifier = 'sources'
+      from sourceSets.main.allSource
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact (sourceJar) {
+                classifier = 'sources'
+            }
+            artifact (javadocJar) {
+                classifier = 'javadoc'
+            }
+        }
+    }
+    repositories {
+        maven {
+            // Should eventually change, e.g. http://my.org/repo
+            url "$buildDir/repo"
+        }
     }
 }

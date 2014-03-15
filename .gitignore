@@ -6,6 +6,7 @@ out/
 .class
 
 .gradle
+build/
 release/
 
 src/main/java/com/selesse/jxlint/impl
