@@ -35,7 +35,7 @@ public abstract class AbstractPassFailFileTest {
         File passFile = new File(sourceDirectory + File.separator + passFileName);
 
         assertTrue(this.getClass().getName() + " failed the positive test case.\n"
-                + "It was intended to pass, but it failed.", lintRule.applyRule(passFile));
+                + "It was intended to pass, but it failed.", lintRule.passesValidation(passFile));
     }
 
     @Test
@@ -43,6 +43,6 @@ public abstract class AbstractPassFailFileTest {
         File failFile = new File(sourceDirectory + File.separator + failFileName);
 
         assertFalse(this.getClass().getName() + " failed the negative test case.\n"
-                + "It was intended to fail, but it passed.", lintRule.applyRule(failFile));
+                + "It was intended to fail, but it passed.", lintRule.passesValidation(failFile));
     }
 }

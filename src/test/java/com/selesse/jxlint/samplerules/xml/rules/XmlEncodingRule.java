@@ -1,5 +1,6 @@
 package com.selesse.jxlint.samplerules.xml.rules;
 
+import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.selesse.jxlint.model.FileUtils;
 import com.selesse.jxlint.model.rules.Category;
@@ -26,7 +27,7 @@ public class XmlEncodingRule extends LintRule {
     }
 
     @Override
-    public boolean applyRule(File file) {
+    public Optional<LintError> getLintError(File file) {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -36,13 +37,12 @@ public class XmlEncodingRule extends LintRule {
             document.getDocumentElement().normalize();
 
             if (Strings.isNullOrEmpty(document.getXmlEncoding())) {
-                failedRules.add(new LintError(this, file, "Encoding wasn't specified"));
+                return Optional.of(new LintError(this, file, "Encoding wasn't specified"));
             }
-            return !Strings.isNullOrEmpty(document.getXmlEncoding());
+            return Optional.absent();
         }
         catch (Exception e) {
-            failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML", e));
-            return false;
+            return Optional.of(new LintError(this, file, "Error checking rule, could not parse XML", e));
         }
     }
 }

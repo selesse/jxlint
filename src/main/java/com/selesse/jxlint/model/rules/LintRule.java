@@ -1,6 +1,7 @@
 package com.selesse.jxlint.model.rules;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.EnumUtils;
 
@@ -142,7 +143,10 @@ public abstract class LintRule {
 
     public void validate() {
         for (File file : getFilesToValidate()) {
-            applyRule(file);
+            Optional<LintError> errorIfLintFailed = getLintError(file);
+            if (errorIfLintFailed.isPresent()) {
+                failedRules.add(errorIfLintFailed.get());
+            }
         }
     }
 
@@ -156,5 +160,10 @@ public abstract class LintRule {
 
     public abstract List<File> getFilesToValidate();
 
-    public abstract boolean applyRule(File file);
+    public abstract Optional<LintError> getLintError(File file);
+
+    public boolean passesValidation(File file) {
+        Optional<LintError> errorIfLintFailed = getLintError(file);
+        return !errorIfLintFailed.isPresent();
+    }
 }

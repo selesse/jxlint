@@ -1,5 +1,6 @@
 package com.selesse.jxlint.samplerules.textfiles.rules;
 
+import com.google.common.base.Optional;
 import com.selesse.jxlint.model.FileUtils;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
@@ -25,18 +26,17 @@ public class MustHaveAuthor extends LintRule {
     }
 
     @Override
-    public boolean applyRule(File file) {
+    public Optional<LintError> getLintError(File file) {
         try {
             List<String> fileContents = Files.readAllLines(file.toPath(), Charset.defaultCharset());
             for (String line : fileContents) {
                 if (line.contains("@author")) {
-                    return true;
+                    return Optional.absent();
                 }
             }
-            failedRules.add(new LintError(this, file));
+            return Optional.of(new LintError(this, file));
         } catch (IOException e) {
-            failedRules.add(new LintError(this, file, e));
+            return Optional.of(new LintError(this, file, e));
         }
-        return false;
     }
 }

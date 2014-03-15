@@ -1,5 +1,6 @@
 package com.selesse.jxlint.samplerules.xml.rules;
 
+import com.google.common.base.Optional;
 import com.selesse.jxlint.model.FileUtils;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
@@ -26,7 +27,7 @@ public class UniqueAttributeRule extends LintRule {
     }
 
     @Override
-    public boolean applyRule(File file) {
+    public Optional<LintError> getLintError(File file) {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -37,18 +38,17 @@ public class UniqueAttributeRule extends LintRule {
         } catch (SAXException e) {
             String errorMessage = e.getMessage();
             if (errorMessage.matches("Attribute \"([^\"]+)\" was already specified for element \"([^\"]+)\"\\.")) {
-                failedRules.add(new LintError(this, file, errorMessage.substring(0, errorMessage.length() - 1), e));
+                return Optional.of(new LintError(this, file, errorMessage.substring(0, errorMessage.length() - 1),
+                        e));
             }
             else {
-                failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML", e));
+                return Optional.of(new LintError(this, file, "Error checking rule, could not parse XML", e));
             }
-            return false;
         } catch (Exception e) {
             // this will catch parser configuration errors as well as I/O exceptions
-            failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML", e));
-            return false;
+            return Optional.of(new LintError(this, file, "Error checking rule, could not parse XML", e));
         }
 
-        return true;
+        return Optional.absent();
     }
 }
