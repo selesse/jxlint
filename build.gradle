@@ -64,26 +64,25 @@ tasks.withType(FindBugs) {
     }
 }
 
-
 // Set up publishing info
-task javadocJar (type: Jar, dependsOn: javadoc) {
-      classifier = 'javadoc'
-      from javadoc.destinationDir
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
-task sourceJar (type : Jar) {
-      classifier = 'sources'
-      from sourceSets.main.allSource
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
 }
 
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
-            artifact (sourceJar) {
+            artifact(sourceJar) {
                 classifier = 'sources'
             }
-            artifact (javadocJar) {
+            artifact(javadocJar) {
                 classifier = 'javadoc'
             }
         }
