@@ -212,9 +212,8 @@ public class DispatcherTest extends AbstractTestCase {
 
     public void setupTestLinterAndRunProgramWithArgs(String[] args) {
         LintFactory.setTestMode(true);
-        LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
 
-        Jxlint jxlint = new Jxlint(new JxlintProgramSettings());
+        Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings());
         jxlint.doLintAnalysis(args);
     }
 

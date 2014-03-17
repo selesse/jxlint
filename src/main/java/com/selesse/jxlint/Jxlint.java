@@ -6,6 +6,8 @@ import com.selesse.jxlint.cli.CommandLineOptions;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
+import com.selesse.jxlint.model.rules.LintRules;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.settings.ProgramSettings;
 import org.apache.commons.cli.*;
 import org.fusesource.jansi.AnsiConsole;
@@ -18,8 +20,10 @@ import java.util.List;
 public class Jxlint {
     private final ProgramSettings programSettings;
 
-    public Jxlint(ProgramSettings programSettings) {
+    public Jxlint(LintRules lintRules, ProgramSettings programSettings) {
         this.programSettings = programSettings;
+
+        LintRulesImpl.setInstance(lintRules);
     }
 
     public void doLintAnalysis(String[] args) {

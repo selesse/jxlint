@@ -2,6 +2,7 @@ package com.selesse.jxlint;
 
 import com.google.common.base.Charsets;
 import com.selesse.jxlint.model.ExitType;
+import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
 import org.junit.Rule;
 import org.junit.contrib.java.lang.system.Assertion;
@@ -30,7 +31,7 @@ public class AbstractTestCase {
             String[] newArgs = Arrays.copyOfRange(args, 0, args.length + 1);
             newArgs[args.length] = sourceDirectory.getAbsolutePath();
 
-            Jxlint jxlint = new Jxlint(new JxlintProgramSettings());
+            Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings());
             jxlint.doLintAnalysis(newArgs);
 
             return output.toString(Charsets.UTF_8.displayName());
