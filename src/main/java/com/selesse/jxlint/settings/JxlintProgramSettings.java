@@ -6,7 +6,7 @@ package com.selesse.jxlint.settings;
 public class JxlintProgramSettings implements ProgramSettings {
     @Override
     public String getProgramVersion() {
-        return "1.0.0";
+        return "1.0.1";
     }
 
     @Override
