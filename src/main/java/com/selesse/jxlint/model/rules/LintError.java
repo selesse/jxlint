@@ -29,7 +29,7 @@ public class LintError {
      * For example:
      *
      * <pre>
-     *     LintError lintError = LintError.with(this, file).addLineNumber(lineNumber).addErrorMessage(
+     *     LintError lintError = LintError.with(this, file).andLineNumber(lineNumber).andErrorMessage(
      *          "You forgot to do something!").create();
      * </pre>
      */

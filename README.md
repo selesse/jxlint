@@ -28,23 +28,17 @@ Requirements
 ------------
 
 [Gradle](http://gradle.org) is required to build the code. If Gradle is not
-already installed, you can use the wrapper to install it for you. jxlint uses
-the following libraries:
+already installed, you can use the wrapper to install it for you.
 
-  * [Apache Commons CLI](http://commons.apache.org/proper/commons-cli/)
-  * [Guava](https://code.google.com/p/guava-libraries/)
-  * [Jansi](http://jansi.fusesource.org/)
-
-For running tests, jxlint uses the following libraries:
-
-  * [junit](http://junit.org/)
-  * [System Rules](http://www.stefan-birkner.de/system-rules/)
+The required libraries/dependencies can be found in
+[the Gradle build file](build.gradle).
 
 Quick Start
 -----------
 
-1. Clone this repository.
-2. Make customizations:
+1. Clone this repository. Run `./gradlew release publish`.
+2. Specify 'com.selesse:jxlint:1.0.0' as a local Maven dependency.
+3. Make customizations:
 
   Create all your rules. It's recommended to put all the rules in one directory,
   as can be seen in the [sample implementations](src/test/java/com/selesse/jxlint/samplerules).
@@ -59,11 +53,11 @@ Quick Start
 
       @Override
       public List<File> getFilesToValidate() {
-          return FileUtils.allXmlFilesIn(getSourceDirectory());
+          return FileUtils.allFilesWithExtension(getSourceDirectory(), "xml");
       }
 
       @Override
-      public boolean applyRule(File file) {
+      public Optional<LintError> getLintError(File file) {
           try {
               DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
               DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -73,14 +67,18 @@ Quick Start
               document.getDocumentElement().normalize();
 
               if (Strings.isNullOrEmpty(document.getXmlEncoding())) {
-                  failedRules.add(new LintError(this, file, "Encoding wasn't specified"));
+                  return Optional.of(LintError.with(this, file).
+                      addMessage("Encoding wasn't specified").create());
               }
-              return !Strings.isNullOrEmpty(document.getXmlEncoding());
           }
           catch (Exception e) {
-              failedRules.add(new LintError(this, file, "Error checking rule, could not parse XML"));
-              return false;
+              return Optional.of(LintError.with(this, file).
+                  addMessage("Error checking rule, could not parse XML").
+                  addException(e).create());
           }
+
+          // Returning Optional.absent as there was no LintError...
+          return Optional.absent();
       }
   }
   ```
@@ -117,27 +115,25 @@ Quick Start
   }
   ```
 
-  In `com.selesse.jxlint.Jxlint`, set the `LintRules` singleton before `run`:
+  In your application's Main class:
 
   ```java
   public class Main {
-      ...
-
       public static void main(String[] args) {
-          LintRulesImpl.setInstance(new MyXmlLintRulesImpl());
-          new Main().run(args);
+          Jxlint jxlint = new Jxlint(new MyXmlLintRulesImpl(),
+              new MyProgramSettings());
+          jxlint.parseArgumentsAndDispatch(args);
       }
   }
   ```
 
-3. Type `gradle`.
+4. Build your application.
 
 Building the Code
 -----------------
 
 To build the code, run `gradle`. This will create a jxlint jar. If you do
-not have gradle installed, type `gradlew`. (TODO: create a portable, general
-bash script that runs the jar).
+not have gradle installed, type `gradlew`.
 
 Examples
 --------
@@ -152,6 +148,8 @@ idea of what you get "for free" if you use jxlint:
      -v,--version             Output version information.
      -l,--list                Lists lint rules with a short, summary
                               explanation.
+     -r,--rules               Prints a HTML file containing the program's
+                              rules.
      -s,--show <RULE[s]>      Lists a verbose rule explanation.
      -c,--check <RULE[s]>     Only check for these rules.
      -d,--disable <RULE[s]>   Disable the list of rules.
@@ -173,7 +171,7 @@ idea of what you get "for free" if you use jxlint:
 TODO
 ----
 
-* Context for errors.
+* Better context for errors.
 
 License
 -------
