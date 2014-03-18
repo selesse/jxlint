@@ -6,7 +6,6 @@ import com.selesse.jxlint.report.color.Color;
  * Yet another severity interpretation!
  */
 public enum Severity {
-    SUSPICIOUS(Color.PURPLE),
     WARNING(Color.YELLOW),
     ERROR(Color.CYAN),
     FATAL(Color.RED);
