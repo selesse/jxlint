@@ -32,7 +32,7 @@ public class AbstractReportTest extends AbstractTestCase {
         LintRulesImpl.setTestMode(true);
 
         Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings());
-        jxlint.doLintAnalysis(args);
+        jxlint.parseArgumentsAndDispatch(args);
     }
 
     public File ensureReportGetsCreatedWithType(OutputType type) throws UnableToCreateReportException {

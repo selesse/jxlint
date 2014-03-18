@@ -1,6 +1,8 @@
 package com.selesse.jxlint.report.color;
 
-@SuppressWarnings("unused")
+/**
+ * Yet another ansi color mapping.
+ */
 public enum Color {
     RESET("\u001B[0m"),
     BLACK("\u001B[30m"),

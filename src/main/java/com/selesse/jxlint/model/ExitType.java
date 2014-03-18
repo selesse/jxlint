@@ -1,5 +1,8 @@
 package com.selesse.jxlint.model;
 
+/**
+ * Different exit codes that our program will output.
+ */
 public enum ExitType {
     SUCCESS(0, "Success"),
     FAILED(1, "Failed"),

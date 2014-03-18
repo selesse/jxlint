@@ -1,8 +1,8 @@
 package com.selesse.jxlint.model.rules;
 
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.model.FileUtils;
 import com.selesse.jxlint.model.ProgramOptions;
+import com.selesse.jxlint.utils.FileUtils;
 
 import java.io.File;
 import java.util.Collections;
@@ -21,6 +21,9 @@ import java.util.List;
  */
 public abstract class AbstractLintRules implements LintRules {
     protected List<LintRule> lintRules;
+    /**
+     * The source/root directory in which we will be performing all validations.
+     */
     protected File sourceDirectory;
 
     public AbstractLintRules() {
@@ -28,6 +31,9 @@ public abstract class AbstractLintRules implements LintRules {
         initializeLintRules();
     }
 
+    /**
+     * Add all desired {@link LintRule}s to {@link #lintRules}.
+     */
     public abstract void initializeLintRules();
 
     @Override

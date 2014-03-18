@@ -1,5 +1,8 @@
 package com.selesse.jxlint.model.rules;
 
+/**
+ * Specific {@link java.lang.Exception} for the case where a lint rule was queried but did not exist.
+ */
 public class NonExistentLintRuleException extends Exception {
     private String ruleName;
 
@@ -8,6 +11,9 @@ public class NonExistentLintRuleException extends Exception {
         this.ruleName = ruleName;
     }
 
+    /**
+     * Returns the rule name that was queried but wasn't found.
+     */
     public String getRuleName() {
         return ruleName;
     }

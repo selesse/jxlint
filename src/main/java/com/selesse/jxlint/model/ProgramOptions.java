@@ -10,8 +10,12 @@ import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * jxlint program options. This contains information relating to {@link com.selesse.jxlint.model.JxlintOption}s.
+ * It is a {@link java.util.Map} of {@link com.selesse.jxlint.model.JxlintOption}s to {@link java.lang.String}s.
+ */
 public class ProgramOptions {
-    private Map<String, String> options;
+    private Map<JxlintOption, String> options;
     private String sourceDirectory;
 
     public ProgramOptions() {
@@ -21,24 +25,30 @@ public class ProgramOptions {
     /**
      * Used for options that don't have any associated information (i.e. option == true).
      */
-    public void addOption(String optionName) {
-        options.put(optionName, "true");
+    public void addOption(JxlintOption option) {
+        options.put(option, "true");
     }
 
-    public void addOption(String optionName, String value) {
-        options.put(optionName, value);
+    /**
+     * Adds a {@link com.selesse.jxlint.model.JxlintOption} with a particular value.
+     */
+    public void addOption(JxlintOption option, String value) {
+        options.put(option, value);
     }
 
-    public boolean hasOption(String optionName) {
-        return options.containsKey(optionName);
+    public boolean hasOption(JxlintOption option) {
+        return options.containsKey(option);
     }
 
-    public String getOption(String show) {
-        return options.get(show);
+    public String getOption(JxlintOption option) {
+        return options.get(option);
     }
 
+    /**
+     * Get the program's {@link com.selesse.jxlint.model.OutputType}.
+     */
     public OutputType getOutputType() {
-        String outputType = options.get("outputType");
+        String outputType = options.get(JxlintOption.OUTPUT_TYPE);
 
         if (outputType == null) {
             return OutputType.DEFAULT;
@@ -56,10 +66,18 @@ public class ProgramOptions {
         }
     }
 
+    /**
+     * Get the source/root directory. This is the directory that was passed to the program,
+     * i.e. "java -jar myjar.jar sourceDirectory".
+     */
     public String getSourceDirectory() {
         return sourceDirectory;
     }
 
+    /**
+     * Set the source/root directory. This is the directory that was passed to the program,
+     * i.e. "java -jar myjar.jar sourceDirectory".
+     */
     public void setSourceDirectory(String sourceDirectory) {
         this.sourceDirectory = sourceDirectory;
     }

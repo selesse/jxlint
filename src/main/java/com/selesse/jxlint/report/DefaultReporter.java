@@ -2,16 +2,19 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.selesse.jxlint.model.EnumUtils;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.report.color.Color;
+import com.selesse.jxlint.utils.EnumUtils;
 
 import java.io.PrintStream;
 import java.util.List;
 
+/**
+ * The DefaultReporter is the default CLI {@link com.selesse.jxlint.report.Reporter}.
+ */
 public class DefaultReporter extends Reporter {
 
     public DefaultReporter(PrintStream out, List<LintError> lintErrorList) {

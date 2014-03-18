@@ -3,11 +3,44 @@ package com.selesse.jxlint.model.rules;
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.model.EnumUtils;
+import com.selesse.jxlint.utils.EnumUtils;
 
 import java.io.File;
 import java.util.List;
 
+/**
+ * A lint rule model object. Should be extended to create rules. A full implementation is completed by extending this
+ * class, and implementing the methods the compiler complains about. A sample implementation is demonstrated below.
+ *
+ * <pre><code>
+ * public class MyRule extends LintRule {
+ *     {@literal @}Override
+ *     public MyRule() {
+ *         super("My name", "My summary", "My detailed description", Severity.ERROR, Category.LINT);
+ *     }
+ *
+ *     {@literal @}Override
+ *     public List&lt;File&gt; getFilesToValidate() {
+ *         return FileUtils.allFiles(getSourceDirectory());
+ *     }
+ *
+ *     {@literal @}Override
+ *     public Optional&lt;LintError&gt; getLintError(File file) {
+ *         List&lt;String&gt; fileContents = Files.readLines(file, Charset.defaultCharset());
+ *
+ *         for (String line : fileContents) {
+ *             if (line.contains("Hello, world!")) {
+ *                 // There is no error, we passed the rule!
+ *                 return Optional.absent();
+ *             }
+ *         }
+ *
+ *         return Optional.of(LintError.with(this, file).andErrorMessage("Must say hello world!").create());
+ *     }
+ * }
+ * </code>
+ * </pre>
+ */
 public abstract class LintRule {
     private String name;
     private String summary;
@@ -15,7 +48,7 @@ public abstract class LintRule {
     private Severity severity;
     private Category category;
     private boolean enabled = true;
-    protected List<LintError> failedRules;
+    protected List<LintError> lintErrors;
 
     public LintRule(String name, String summary, String detailedDescription, Severity severity, Category category) {
         this.name = name;
@@ -23,7 +56,7 @@ public abstract class LintRule {
         this.detailedDescription = detailedDescription;
         this.severity = severity;
         this.category = category;
-        this.failedRules = Lists.newArrayList();
+        this.lintErrors = Lists.newArrayList();
     }
 
     public LintRule(String name, String summary, String detailedDescription, Severity severity, Category category,
@@ -32,6 +65,10 @@ public abstract class LintRule {
         this.enabled = isEnabledByDefault;
     }
 
+    /**
+     * Gets the name of the rule. This name is used with command line switches and in displaying summary information.
+     * Can contain spaces, but should be relatively short.
+     */
     public String getName() {
         return name;
     }
@@ -40,6 +77,10 @@ public abstract class LintRule {
         this.name = name;
     }
 
+    /**
+     * Gets a one or two line summary of the rule. This is used when displaying summary information via
+     * {@link #getSummaryOutput()}.
+     */
     public String getSummary() {
         return summary;
     }
@@ -48,6 +89,10 @@ public abstract class LintRule {
         this.summary = summary;
     }
 
+    /**
+     * Gets a detailed description of the rule in question. Should be as specific as possible and contain examples.
+     * Used in {@link #getDetailedOutput()}.
+     */
     public String getDetailedDescription() {
         return detailedDescription;
     }
@@ -80,13 +125,24 @@ public abstract class LintRule {
         this.enabled = enabled;
     }
 
+    /**
+     * Return a short summary output:
+     * <pre>
+     *     "Rule Name" : Summary information
+     *     "Rule that is not enabled by default"* : This rule is not enabled by default.
+     * </pre>
+     */
     public String getSummaryOutput() {
         return String.format("\"%s\"%s : %s", getName(), isEnabled() ? "" : "*", getSummary());
     }
 
+    /**
+     * Return a detailed output of this rule. Prints all of its relevant information.
+     */
     public String getDetailedOutput() {
         List<String> detailedOutput = Lists.newArrayList(
                 getName(),
+                // Underline the name with "-"s. Hacky-ish, but works well.
                 new String(new char[getName().length()]).replace("\0", "-"),
                 "Summary: " + getSummary(),
                 isEnabled() ? "" : "\n** Disabled by default **\n",
@@ -107,17 +163,13 @@ public abstract class LintRule {
         result = 31 * result + (severity != null ? severity.hashCode() : 0);
         result = 31 * result + (category != null ? category.hashCode() : 0);
         result = 31 * result + (enabled ? 1 : 0);
-        result = 31 * result + (failedRules != null ? failedRules.hashCode() : 0);
+        result = 31 * result + (lintErrors != null ? lintErrors.hashCode() : 0);
         return result;
     }
 
     /**
-     * Ad-hoc <code>equals</code>: we return true as long as the {@link String}, or {@link #getName()} is * the same.
-     * This means that <code>"RuleName".equals(new LintRule("RuleName", ...)) == true</code>
-     *
-     * <p>
-     *     Any object that isn't an <code>instanceof</code> {@link String} or {@link LintRule} will return false.
-     * </p>
+     * Ad-hoc <code>equals</code>. If the object is a LintRule, we compare getName() with the object's
+     * getName, in a case-insensitive way.
      */
     @Override
     public boolean equals(Object obj) {
@@ -141,27 +193,55 @@ public abstract class LintRule {
         return false;
     }
 
+    /**
+     * Goes through every file and calls {@link #getLintError(java.io.File)} on it. If there is an error,
+     * it is added to {@link #lintErrors}. This implementation does not support multiple errors for one rule,
+     * but could be overwritten to.
+     */
     public void validate() {
         for (File file : getFilesToValidate()) {
             Optional<LintError> errorIfLintFailed = getLintError(file);
             if (errorIfLintFailed.isPresent()) {
-                failedRules.add(errorIfLintFailed.get());
+                lintErrors.add(errorIfLintFailed.get());
             }
         }
     }
 
-    public List<LintError> getFailedRules() {
-        return failedRules;
+    public List<LintError> getLintErrors() {
+        return lintErrors;
     }
 
+    /**
+     * Get the source/root directory. This is the directory that was passed to the program,
+     * i.e. "java -jar myjar.jar sourceDirectory".
+     */
     public File getSourceDirectory() {
         return LintRulesImpl.getInstance().getSourceDirectory();
     }
 
+    /**
+     * Return a list of {@link File}s to perform this rule's validation on. Several utility methods have been created
+     * in {@link com.selesse.jxlint.utils.FileUtils} to make this easy and are sampled below.
+     *
+     * <pre>{@code
+     *      FileUtils.allFiles(getSourceDirectory()); // All the files in directory we're validating (recursive)
+     *      FileUtils.allFilesWithExtension(getSourceDirectory, "txt"); // All .txt files in directory we're validating
+     * }</pre>
+     */
     public abstract List<File> getFilesToValidate();
 
+    /**
+     * Get a {@link com.selesse.jxlint.model.rules.LintError} from a file. There will either be a lint error,
+     * or there won't be anything. This is the function that actually performs the validation for a given file.
+     *
+     * If there is a lint error, <pre>{@code return Optional.of(lintError)}</pre>. If there is no lint error,
+     * return <pre>{@code return Optional.absent();}</pre>.
+     */
     public abstract Optional<LintError> getLintError(File file);
 
+    /**
+     * Checks to see if a particular file passes this rule.
+     */
     public boolean passesValidation(File file) {
         Optional<LintError> errorIfLintFailed = getLintError(file);
         return !errorIfLintFailed.isPresent();

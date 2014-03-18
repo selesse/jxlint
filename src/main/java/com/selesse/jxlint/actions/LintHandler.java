@@ -4,6 +4,7 @@ import com.selesse.jxlint.ProgramExitter;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.ExitType;
+import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
@@ -16,6 +17,10 @@ import com.selesse.jxlint.report.UnableToCreateReportException;
 
 import java.util.List;
 
+/**
+ * Handler of action-based logic relating to linting. This particular LintHandler's core logic is in
+ * {@link #lintAndReportAndExit()}.
+ */
 public class LintHandler {
     private final List<LintRule> lintRules;
     private final boolean warningsAreErrors;
@@ -27,20 +32,27 @@ public class LintHandler {
         this.options = options;
     }
 
-    public void handleLint() {
+    /**
+     * Performs the linting via the {@link Linter}, reports the errors, and exits the program via
+     * {@link com.selesse.jxlint.ProgramExitter}. If we are in test mode (defined via
+     * {@link com.selesse.jxlint.model.rules.LintRulesImpl#isTestMode()} ), we will not exit.
+     * The {@link com.selesse.jxlint.report.Reporter} created is based on the
+     * {@link com.selesse.jxlint.model.ProgramOptions} passed in the constructor.
+     */
+    public void lintAndReportAndExit() {
         Linter linter = LinterFactory.createNewLinter(lintRules);
-        linter.doLint(options);
+        linter.performLintValidations();
         List<LintError> lintErrors = linter.getLintErrors();
 
         reportLintErrors(lintErrors);
         if (!LintRulesImpl.isTestMode()) {
-            exitWithStatus(lintErrors);
+            exitWithAppropriateStatus(lintErrors);
         }
     }
 
     private void reportLintErrors(List<LintError> lintErrors) {
         OutputType outputType = options.getOutputType();
-        String outputTypePath = options.getOption("outputTypePath");
+        String outputTypePath = options.getOption(JxlintOption.OUTPUT_TYPE_PATH);
 
         try {
             Reporter reporter = Reporters.createReporter(lintErrors, outputType, outputTypePath);
@@ -50,7 +62,7 @@ public class LintHandler {
         }
     }
 
-    private void exitWithStatus(List<LintError> lintErrors) {
+    private void exitWithAppropriateStatus(List<LintError> lintErrors) {
         if (warningsAreErrors && lintErrors.size() > 0) {
             ProgramExitter.exitProgram(ExitType.FAILED);
         }

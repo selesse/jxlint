@@ -1,11 +1,11 @@
 package com.selesse.jxlint.samplerules.xml.rules;
 
 import com.google.common.base.Optional;
-import com.selesse.jxlint.model.FileUtils;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
+import com.selesse.jxlint.utils.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -61,15 +61,16 @@ public class AuthorTagRule extends LintRule {
                         }
                         failedRuleString += "element does not contain \"creationDate\" attribute";
                     }
-                    return Optional.of(new LintError(this, file, failedRuleString));
+                    return Optional.of(LintError.with(this, file).andErrorMessage(failedRuleString).create());
                 }
                 return Optional.absent();
             }
         } catch (Exception e) {
             // this will catch parser configuration errors, XML parse errors, as well as I/O exceptions
-            return Optional.of(new LintError(this, file, "Error checking rule, could not parse XML", e));
+            return Optional.of(LintError.with(this, file).andErrorMessage("Error checking rule, " +
+                    "could not parse XML").andException(e).create());
         }
 
-        return Optional.of(new LintError(this, file, "Author element was not root element"));
+        return Optional.of(LintError.with(this, file).andErrorMessage("Author element was not root element").create());
     }
 }

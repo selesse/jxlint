@@ -1,4 +1,4 @@
-package com.selesse.jxlint.model;
+package com.selesse.jxlint.utils;
 
 import com.google.common.base.CaseFormat;
 

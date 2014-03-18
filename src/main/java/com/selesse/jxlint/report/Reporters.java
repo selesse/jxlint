@@ -10,6 +10,26 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Manager of {@link com.selesse.jxlint.report.Reporter}s.
+ *
+ * <p>
+ *     Keeps a mapping of {@link com.selesse.jxlint.model.OutputType} and {@link com.selesse.jxlint.report.Reporter}
+ *     classes. Can be configured to overwrite reporters, or queried to create a reporter.
+ * </p>
+ *
+ * <p>
+ *     To overwrite a reporter, extend a Reporter, implement the appropriate methods, and call this function:
+ *
+ *     <pre>{@code
+ *     Reporters.setCustomReporter(OutputType.HTML, MyPrettyHtmlReporter.class);
+ *     }</pre>
+ *
+ *     This should be done before calling {@link com.selesse.jxlint.Jxlint#parseArgumentsAndDispatch(String[])}.
+ * </p>
+ *
+ *
+ */
 public class Reporters {
     private static Map<OutputType, Class<? extends Reporter>> outputTypeReporterMap = Maps.newHashMap();
     static {
@@ -20,10 +40,17 @@ public class Reporters {
     }
 
     @SuppressWarnings("UnusedDeclaration")
+    /**
+     * Add a custom {@link com.selesse.jxlint.report.Reporter} for a particular
+     * {@link com.selesse.jxlint.model.OutputType}. It will be instantiated using reflection.
+     */
     public static void setCustomReporter(OutputType outputType, Class<? extends Reporter> reporter) {
         outputTypeReporterMap.put(outputType, reporter);
     }
 
+    /**
+     * Creates the appropriate {@link com.selesse.jxlint.report.Reporter} given the OutputType.
+     */
     public static Reporter createReporter(List<LintError> lintErrors, OutputType outputType,
                                           String outputPath) throws UnableToCreateReportException {
         Reporter reporter = new DefaultReporter(System.out, lintErrors);

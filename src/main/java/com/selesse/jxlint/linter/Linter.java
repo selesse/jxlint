@@ -1,11 +1,42 @@
 package com.selesse.jxlint.linter;
 
-import com.selesse.jxlint.model.ProgramOptions;
+import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRule;
 
 import java.util.List;
 
-public interface Linter {
-    void doLint(ProgramOptions programOptions);
-    List<LintError> getLintErrors();
+/**
+ * Simple implementation of a Linter. Goes through all the {@link LintRule}s and calls
+ * {@link com.selesse.jxlint.model.rules.LintRule#validate()}. If there are any errors, this class
+ * accumulates them. Call {@link #getLintErrors()} to retrieve them.
+ */
+public class Linter {
+    private List<LintRule> rules;
+    private List<LintError> lintErrors;
+
+    public Linter(List<LintRule> rules) {
+        this.rules = rules;
+        lintErrors = Lists.newArrayList();
+    }
+
+    /**
+     * This validates (or invalidates) every lint rule. {@link com.selesse.jxlint.model.rules.LintError}s may arise
+     * through failed validations. For every rule that fails a validation, there should be a corresponding
+     * {@link com.selesse.jxlint.model.rules.LintError}.
+     */
+    public void performLintValidations() {
+        for (LintRule lintRule : rules) {
+            lintRule.validate();
+            lintErrors.addAll(lintRule.getLintErrors());
+        }
+    }
+
+    /**
+     * Returns all the {@link com.selesse.jxlint.model.rules.LintError}s that have been found through validations
+     * performed in {@link #performLintValidations()}.
+     */
+    public List<LintError> getLintErrors() {
+        return lintErrors;
+    }
 }

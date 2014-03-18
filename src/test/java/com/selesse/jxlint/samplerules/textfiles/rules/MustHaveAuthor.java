@@ -1,11 +1,11 @@
 package com.selesse.jxlint.samplerules.textfiles.rules;
 
 import com.google.common.base.Optional;
-import com.selesse.jxlint.model.FileUtils;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
+import com.selesse.jxlint.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,9 +34,9 @@ public class MustHaveAuthor extends LintRule {
                     return Optional.absent();
                 }
             }
-            return Optional.of(new LintError(this, file));
+            return Optional.of(LintError.with(this, file).create());
         } catch (IOException e) {
-            return Optional.of(new LintError(this, file, e));
+            return Optional.of(LintError.with(this, file).andException(e).create());
         }
     }
 }

@@ -214,7 +214,7 @@ public class DispatcherTest extends AbstractTestCase {
         Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings());
         LintRulesImpl.setTestMode(true);
 
-        jxlint.doLintAnalysis(args);
+        jxlint.parseArgumentsAndDispatch(args);
     }
 
     @Test

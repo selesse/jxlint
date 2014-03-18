@@ -11,9 +11,13 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Abstract reporter that displays the results of an execution of jxlint.
+ * Abstract reporter that displays the results of an execution of jxlint. Custom reporters can easily be created by
+ * extending this class and overriding the appropriate methods.
  */
 public abstract class Reporter {
+    /**
+     * The stream to write to when reporting.
+     */
     protected PrintStream out;
     protected List<LintError> lintErrorList;
 
@@ -41,9 +45,26 @@ public abstract class Reporter {
         printFooter();
     }
 
+    /**
+     * Print the header. This is printed once at the beginning of the document. Refer to {@link #writeReport()} for
+     * the print order.
+     */
     protected abstract void printHeader();
+
+    /**
+     * Print a header for a particular category. Refer to {@link #writeReport()} for the print order.
+     */
     protected abstract void printCategoryHeader(Category category);
+
+    /**
+     * Print a particular {@link LintError}. Refer to {@link #writeReport()} for the print order.
+     */
     protected abstract void printError(LintError error);
+
+    /**
+     * Print the header. This is printed once at the end of the document. Refer to {@link #writeReport()} for the
+     * print order.
+     */
     protected abstract void printFooter();
 
     private static class CategoryThenNameComparator implements Comparator<LintError>, Serializable {

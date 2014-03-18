@@ -15,18 +15,41 @@ import org.fusesource.jansi.AnsiConsole;
 import java.util.List;
 
 /**
- * Entry-point to the application.
+ * Entry-point to the jxlint framework. This should be called only after customizing
+ * {@link com.selesse.jxlint.report.Reporter}s (if desired). Pass your program's command line arguments to
+ * {@link #parseArgumentsAndDispatch(String[])}}, jxlint will do the rest! Sample implementation is shown below:
+ *
+ * <pre>
+ *     {@code
+ *     public class MyApplication {
+ *         public static void main (String[] args) {
+ *             Jxlint jxlint = new Jxlint(new MyLintRules(), new MyProgramSettings());
+ *             jxlint.parseArgumentsAndDispatch(args);
+ *         }
+ *     }
+ *     }
+ * </pre>
  */
 public class Jxlint {
     private final ProgramSettings programSettings;
 
+    /**
+     * Initializes jxlint with a set of rules ({@link com.selesse.jxlint.model.rules.LintRules}
+     * and program settings {@link com.selesse.jxlint.settings.ProgramSettings})..
+     */
     public Jxlint(LintRules lintRules, ProgramSettings programSettings) {
         this.programSettings = programSettings;
 
         LintRulesImpl.setInstance(lintRules);
     }
 
-    public void doLintAnalysis(String[] args) {
+    /**
+     * Parses the command line arguments, and calls the {@link com.selesse.jxlint.Dispatcher} to decide what to do
+     * next. Makes sure that there are no {@link java.lang.Exception}s thrown when parsing the command line arguments.
+     *
+     * @param args Your program's command line arguments.
+     */
+    public void parseArgumentsAndDispatch(String[] args) {
         if (args.length == 0) {
             args = new String[] { "--help" };
         }

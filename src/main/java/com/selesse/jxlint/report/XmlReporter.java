@@ -3,14 +3,24 @@ package com.selesse.jxlint.report;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.xml.XmlEscapers;
-import com.selesse.jxlint.model.EnumUtils;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.utils.EnumUtils;
 
 import java.io.PrintStream;
 import java.util.List;
 
+/**
+ * The XmlReporter provides a basic XML report. The schema is:
+ *
+ * <pre>{@code
+ * <issues>
+ *     <issue name severity message category summary explanation location />
+ * </issues>
+ * }</pre>
+ *
+ */
 public class XmlReporter extends Reporter {
     public XmlReporter(PrintStream out, List<LintError> lintErrorList) {
         super(out, lintErrorList);

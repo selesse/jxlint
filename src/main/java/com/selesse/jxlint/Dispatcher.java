@@ -5,6 +5,7 @@ import com.selesse.jxlint.actions.LintHandler;
 import com.selesse.jxlint.actions.LintRuleInformation;
 import com.selesse.jxlint.cli.CommandLineOptions;
 import com.selesse.jxlint.model.ExitType;
+import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
@@ -14,6 +15,12 @@ import com.selesse.jxlint.settings.ProgramSettings;
 import java.io.File;
 import java.util.List;
 
+/**
+ * The Dispatcher guides the application's logic flow. It looks at the options provided in
+ * {@link com.selesse.jxlint.model.ProgramOptions} and decides what objects, functions, etc. to call based on the
+ * options. Its logical route is documented in
+ * {@link #dispatch(com.selesse.jxlint.model.ProgramOptions, com.selesse.jxlint.settings.ProgramSettings)}.
+ */
 public class Dispatcher {
     /**
      * The order for the dispatcher is as such:
@@ -39,21 +46,21 @@ public class Dispatcher {
      */
     public static void dispatch(ProgramOptions programOptions, ProgramSettings programSettings) {
         // If/else train of mutually exclusive options
-        if (programOptions.hasOption("help")) {
+        if (programOptions.hasOption(JxlintOption.HELP)) {
             doHelp(programSettings);
         }
-        else if (programOptions.hasOption("version")) {
+        else if (programOptions.hasOption(JxlintOption.VERSION)) {
             doVersion(programSettings);
         }
-        else if (programOptions.hasOption("list")) {
+        else if (programOptions.hasOption(JxlintOption.LIST)) {
             LintRuleInformation.listRules();
         }
-        else if (programOptions.hasOption("show")) {
+        else if (programOptions.hasOption(JxlintOption.SHOW)) {
             LintRuleInformation.showRules(programOptions);
         }
 
         boolean warningsAreErrors = false;
-        if (programOptions.hasOption("Werror")) {
+        if (programOptions.hasOption(JxlintOption.WARNINGS_ARE_ERRORS)) {
             warningsAreErrors = true;
         }
 
@@ -82,8 +89,8 @@ public class Dispatcher {
             ProgramExitter.exitProgramWithMessage("Error: could not find directory to validate.", ExitType.COMMAND_LINE_ERROR);
         }
 
-        if (programOptions.hasOption("check")) {
-            String checkRules = programOptions.getOption("check");
+        if (programOptions.hasOption(JxlintOption.CHECK)) {
+            String checkRules = programOptions.getOption(JxlintOption.CHECK);
             List<String> checkRulesList = ProgramOptions.getListFromRawOptionStringOrDie(checkRules);
 
             handleLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), warningsAreErrors, programOptions);
@@ -93,22 +100,22 @@ public class Dispatcher {
         // We adjust this according to the options below.
         List<LintRule> lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllEnabledRules());
 
-        if (programOptions.hasOption("Wall")) {
+        if (programOptions.hasOption(JxlintOption.ALL_WARNINGS)) {
             lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllRules());
         }
-        else if (programOptions.hasOption("nowarn")) {
+        else if (programOptions.hasOption(JxlintOption.NO_WARNINGS)) {
             lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllRulesWithSeverity(Severity.ERROR));
             lintRuleList.addAll(LintRulesImpl.getInstance().getAllRulesWithSeverity(Severity.FATAL));
         }
 
         // Options that are "standalone"
-        if (programOptions.hasOption("disable")) {
-            String disabledRules = programOptions.getOption("disable");
+        if (programOptions.hasOption(JxlintOption.DISABLE)) {
+            String disabledRules = programOptions.getOption(JxlintOption.DISABLE);
             List<String> disabledRulesList = ProgramOptions.getListFromRawOptionStringOrDie(disabledRules);
             lintRuleList.removeAll(LintRulesImpl.getInstance().getOnlyRules(disabledRulesList));
         }
-        if (programOptions.hasOption("enable")) {
-            String enabledRules = programOptions.getOption("enable");
+        if (programOptions.hasOption(JxlintOption.ENABLE)) {
+            String enabledRules = programOptions.getOption(JxlintOption.ENABLE);
             List<String> enabledRulesList = ProgramOptions.getListFromRawOptionStringOrDie(enabledRules);
             lintRuleList.addAll(LintRulesImpl.getInstance().getOnlyRules(enabledRulesList));
         }
@@ -118,7 +125,7 @@ public class Dispatcher {
 
     private static void handleLint(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options) {
         LintHandler lintHandler = new LintHandler(lintRules, warningsAreErrors, options);
-        lintHandler.handleLint();
+        lintHandler.lintAndReportAndExit();
     }
 
     private static void doHelp(ProgramSettings programSettings) {

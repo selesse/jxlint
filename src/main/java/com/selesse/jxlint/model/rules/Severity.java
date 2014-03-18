@@ -2,8 +2,11 @@ package com.selesse.jxlint.model.rules;
 
 import com.selesse.jxlint.report.color.Color;
 
-@SuppressWarnings("unused")
+/**
+ * Yet another severity interpretation!
+ */
 public enum Severity {
+    SUSPICIOUS(Color.PURPLE),
     WARNING(Color.YELLOW),
     ERROR(Color.CYAN),
     FATAL(Color.RED);

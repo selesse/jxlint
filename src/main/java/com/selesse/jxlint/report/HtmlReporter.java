@@ -5,14 +5,17 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.html.HtmlEscapers;
-import com.selesse.jxlint.model.EnumUtils;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.utils.EnumUtils;
 
 import java.io.PrintStream;
 import java.util.List;
 
+/**
+ * The HtmlReporter provides a basic HTML page with the error report included as a table.
+ */
 public class HtmlReporter extends Reporter {
 
     public HtmlReporter(PrintStream out, List<LintError> lintErrorList) {

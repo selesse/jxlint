@@ -1,4 +1,4 @@
-package com.selesse.jxlint.model;
+package com.selesse.jxlint.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;

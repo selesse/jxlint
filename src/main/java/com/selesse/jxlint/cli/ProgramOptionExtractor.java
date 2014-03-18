@@ -1,5 +1,6 @@
 package com.selesse.jxlint.cli;
 
+import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.ProgramOptions;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
@@ -15,48 +16,48 @@ public class ProgramOptionExtractor {
         ProgramOptions programOptions = new ProgramOptions();
 
         if (commandLine.hasOption("help")) {
-            programOptions.addOption("help");
+            programOptions.addOption(JxlintOption.HELP);
         }
         if (commandLine.hasOption("version")) {
-            programOptions.addOption("version");
+            programOptions.addOption(JxlintOption.VERSION);
         }
         if (commandLine.hasOption("list")) {
-            programOptions.addOption("list");
+            programOptions.addOption(JxlintOption.LIST);
         }
         if (commandLine.hasOption("show")) {
-            programOptions.addOption("show", commandLine.getOptionValue("show"));
+            programOptions.addOption(JxlintOption.SHOW, commandLine.getOptionValue("show"));
         }
         if (commandLine.hasOption("disable")) {
-            programOptions.addOption("disable", commandLine.getOptionValue("disable"));
+            programOptions.addOption(JxlintOption.DISABLE, commandLine.getOptionValue("disable"));
         }
         if (commandLine.hasOption("enable")) {
-            programOptions.addOption("enable", commandLine.getOptionValue("enable"));
+            programOptions.addOption(JxlintOption.ENABLE, commandLine.getOptionValue("enable"));
         }
         if (commandLine.hasOption("check")) {
-            programOptions.addOption("check", commandLine.getOptionValue("check"));
+            programOptions.addOption(JxlintOption.CHECK, commandLine.getOptionValue("check"));
         }
         if (commandLine.hasOption("nowarn")) {
-            programOptions.addOption("nowarn");
+            programOptions.addOption(JxlintOption.NO_WARNINGS);
         }
         if (commandLine.hasOption("Wall")) {
-            programOptions.addOption("Wall");
+            programOptions.addOption(JxlintOption.ALL_WARNINGS);
         }
         if (commandLine.hasOption("Werror")) {
-            programOptions.addOption("Werror");
+            programOptions.addOption(JxlintOption.WARNINGS_ARE_ERRORS);
         }
         if (commandLine.hasOption("quiet")) {
-            programOptions.addOption("outputType", "quiet");
+            programOptions.addOption(JxlintOption.OUTPUT_TYPE, "quiet");
         }
         if (commandLine.hasOption("html")) {
-            programOptions.addOption("outputType", "html");
+            programOptions.addOption(JxlintOption.OUTPUT_TYPE, "html");
             if (commandLine.getOptionValue("html") != null) {
-                programOptions.addOption("outputTypePath", commandLine.getOptionValue("html"));
+                programOptions.addOption(JxlintOption.OUTPUT_TYPE_PATH, commandLine.getOptionValue("html"));
             }
         }
         if (commandLine.hasOption("xml")) {
-            programOptions.addOption("outputType", "xml");
+            programOptions.addOption(JxlintOption.OUTPUT_TYPE, "xml");
             if (commandLine.getOptionValue("xml") != null) {
-                programOptions.addOption("outputTypePath", commandLine.getOptionValue("xml"));
+                programOptions.addOption(JxlintOption.OUTPUT_TYPE_PATH, commandLine.getOptionValue("xml"));
             }
         }
 

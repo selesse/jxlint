@@ -32,7 +32,7 @@ public class AbstractTestCase {
             newArgs[args.length] = sourceDirectory.getAbsolutePath();
 
             Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings());
-            jxlint.doLintAnalysis(newArgs);
+            jxlint.parseArgumentsAndDispatch(newArgs);
 
             return output.toString(Charsets.UTF_8.displayName());
         } catch (UnsupportedEncodingException e) {

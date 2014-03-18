@@ -17,6 +17,11 @@ import java.util.Comparator;
  * are jxlint's defaults, but can be extended.
  */
 public class CommandLineOptions {
+    /**
+     * Populate the {@link Options} for our command line parser. This sets up all the option short names,
+     * long names, and help messages. It can also specify whether the argument takes arguments
+     * (i.e. "--html index.html"), and whether options are mutually exclusive.
+     */
     public static Options generateJxlintOptions() {
         Options options = new Options();
 
@@ -72,6 +77,10 @@ public class CommandLineOptions {
         return options;
     }
 
+    /**
+     * Return the command line's help message based on the {@link org.apache.commons.cli.Options} created in {@link
+     * #generateJxlintOptions()}.
+     */
     public static String getHelpMessage(ProgramSettings programSettings) {
         HelpFormatter helpFormatter = new HelpFormatter();
         helpFormatter.setOptionComparator(new OptionComparator());
@@ -103,10 +112,17 @@ public class CommandLineOptions {
         return outputString;
     }
 
+    /**
+     * Our desired options order. This gives us control on how our help gets printed, via
+     * {@link com.selesse.jxlint.cli.CommandLineOptions.OptionComparator}.
+     */
     private static String getOptionsOrder() {
         return "hvlscdewWallWerrorqtx";
     }
 
+    /**
+     * Comparator that will return options in the order they appear in {@link #getOptionsOrder()} first.
+     */
     private static class OptionComparator implements Comparator<Option>, Serializable {
         @Override
         public int compare(Option o1, Option o2) {
