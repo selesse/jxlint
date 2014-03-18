@@ -120,8 +120,7 @@ Quick Start
   ```java
   public class Main {
       public static void main(String[] args) {
-          Jxlint jxlint = new Jxlint(new MyXmlLintRulesImpl(),
-              new MyProgramSettings());
+          Jxlint jxlint = new Jxlint(new MyXmlLintRulesImpl(), new MyProgramSettings());
           jxlint.parseArgumentsAndDispatch(args);
       }
   }
