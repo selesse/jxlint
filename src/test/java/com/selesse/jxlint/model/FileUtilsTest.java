@@ -73,16 +73,16 @@ public class FileUtilsTest {
 
     @Test
     public void testListAllFiles() {
-        assertEquals(5, FileUtils.allFilesIn(rootTempDir).size());
+        assertEquals(5, FileUtils.allFiles(rootTempDir).size());
     }
 
     @Test
     public void testListAllXmlFiles() {
-        assertEquals(3, FileUtils.allXmlFilesIn(rootTempDir).size());
+        assertEquals(3, FileUtils.allFilesWithExtension(rootTempDir, "xml").size());
 
         List<String> fileNames = Lists.newArrayList();
 
-        for (File file : FileUtils.allXmlFilesIn(rootTempDir)) {
+        for (File file : FileUtils.allFilesWithExtension(rootTempDir, "xml")) {
             fileNames.add(file.getName());
         }
 
@@ -107,7 +107,7 @@ public class FileUtilsTest {
 
         assertEquals(true, notTextCreated && notText2Created && textCreated);
 
-        List<File> textFiles = FileUtils.allFilesWithExtensionIn(rootDirectory, "txt");
+        List<File> textFiles = FileUtils.allFilesWithExtension(rootDirectory, "txt");
 
         assertEquals(1, textFiles.size());
         assertEquals("Test.txt", textFiles.get(0).getName());
@@ -116,7 +116,7 @@ public class FileUtilsTest {
 
     @Test
     public void testGetAllFilenames() {
-        List<File> files = FileUtils.allFilesWithFilenameIn(rootTempDir, "test.xml");
+        List<File> files = FileUtils.allFilesWithFilename(rootTempDir, "test.xml");
 
         assertTrue(files.size() == 2);
         assertEquals(files.get(0).getName(), "test.xml");

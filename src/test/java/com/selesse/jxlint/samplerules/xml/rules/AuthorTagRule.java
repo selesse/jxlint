@@ -30,7 +30,7 @@ public class AuthorTagRule extends LintRule {
 
     @Override
     public List<File> getFilesToValidate() {
-        return FileUtils.allFilesWithFilenameIn(getSourceDirectory(), "author.xml");
+        return FileUtils.allFilesWithFilename(getSourceDirectory(), "author.xml");
     }
 
     @Override

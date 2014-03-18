@@ -9,19 +9,12 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 public class FileUtils {
-    public static List<File> allXmlFilesIn(File rootDir) {
-        if (rootDir == null) {
-            throw new NullPointerException("Impossible to get all children files of null directory.");
-        }
-        return allFilesWithExtensionIn(rootDir, "XML");
-    }
-
-    public static List<File> allFilesIn(File rootDir) {
+    public static List<File> allFiles(File rootDir) {
         List<File> files = Lists.newArrayList();
 
         for (File file : rootDir.listFiles()) {
             if (file.isDirectory()) {
-                files.addAll(FileUtils.allFilesIn(file));
+                files.addAll(FileUtils.allFiles(file));
             }
             else {
                 files.add(file);
@@ -35,10 +28,10 @@ public class FileUtils {
      * Get all Files within a particular directory ending in a particular extension.
      * The extension does not include the period, i.e. "txt" would match "file.txt".
      */
-    public static List<File> allFilesWithExtensionIn(File rootDir, String extension) {
+    public static List<File> allFilesWithExtension(File rootDir, String extension) {
         List<File> filteredFiles = Lists.newArrayList();
 
-        List<File> allFiles = allFilesIn(rootDir);
+        List<File> allFiles = allFiles(rootDir);
         for (File file : allFiles) {
             if (Files.getFileExtension(file.getAbsolutePath()).equalsIgnoreCase(extension)) {
                 filteredFiles.add(file);
@@ -48,10 +41,10 @@ public class FileUtils {
         return filteredFiles;
     }
 
-    public static List<File> allFilesWithFilenameIn(File rootDir, String filename) {
+    public static List<File> allFilesWithFilename(File rootDir, String filename) {
         List<File> filteredFiles = Lists.newArrayList();
 
-        List<File> allFiles = allFilesIn(rootDir);
+        List<File> allFiles = allFiles(rootDir);
         for (File file : allFiles) {
             if (file.getName().equals(filename)) {
                 filteredFiles.add(file);

@@ -23,7 +23,7 @@ public class UniqueAttributeRule extends LintRule {
 
     @Override
     public List<File> getFilesToValidate() {
-        return FileUtils.allXmlFilesIn(getSourceDirectory());
+        return FileUtils.allFilesWithExtension(getSourceDirectory(), "xml");
     }
 
     @Override

@@ -22,7 +22,7 @@ public class MustHaveAuthor extends LintRule {
 
     @Override
     public List<File> getFilesToValidate() {
-        return FileUtils.allFilesIn(getSourceDirectory());
+        return FileUtils.allFiles(getSourceDirectory());
     }
 
     @Override
