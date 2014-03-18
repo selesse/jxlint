@@ -58,6 +58,9 @@ public class Dispatcher {
         else if (programOptions.hasOption(JxlintOption.SHOW)) {
             LintRuleInformation.showRules(programOptions);
         }
+        else if (programOptions.hasOption(JxlintOption.REPORT_RULES)) {
+            LintRuleInformation.printHtmlRuleReport(programSettings);
+        }
 
         boolean warningsAreErrors = false;
         if (programOptions.hasOption(JxlintOption.WARNINGS_ARE_ERRORS)) {

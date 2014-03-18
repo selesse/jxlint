@@ -1,0 +1,46 @@
+<!doctype html>
+<head>
+<title>Rules for jxlint - 1.0.0</title>
+</head>
+<body>
+<table>
+<tr>
+<th> Name </th>
+<th> Category </th>
+<th> Severity </th>
+<th> Summary </th>
+<th> Explanation </th>
+<th> Enabled by default? </th>
+</tr>
+<tr><td> Unique attribute </td>
+<td> Lint </td>
+<td> Error </td>
+<td> Attributes within a tag must be unique. </td>
+<td> Attributes within an XML tag must be unique. That is, &lt;tag a=&quot;x&quot; a=&quot;y&quot;&gt; is invalid. </td>
+<td> true </td></tr>
+<tr><td> XML version specified </td>
+<td> Lint </td>
+<td> Fatal </td>
+<td> Version of XML must be specified. </td>
+<td> The XML version should be specified. For example, &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;. </td>
+<td> true </td></tr>
+<tr><td> XML encoding specified </td>
+<td> Lint </td>
+<td> Warning </td>
+<td> Encoding of the XML must be specified. </td>
+<td> The XML encoding should be specified. For example, &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;. </td>
+<td> true </td></tr>
+<tr><td> Author tag specified </td>
+<td> Style </td>
+<td> Warning </td>
+<td> author.xml files must contain a valid root-element &lt;author&gt; tag. </td>
+<td> For style purposes, every author.xml file must contain an &lt;author&gt; tag as the root element. This tag should also have the &#39;name&#39; and &#39;creationDate&#39; attributes. For example:
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;&gt;
+&lt;author name=&quot;Steve Holt&quot; creationDate=&quot;2013-09-28&quot;&gt;
+  .. content ..
+&lt;/author&gt; </td>
+<td> false </td></tr>
+</table>
+</body>
+</html>
+

@@ -1,8 +1,10 @@
 package com.selesse.jxlint;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.ExitType;
@@ -15,6 +17,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -41,6 +44,8 @@ public class DispatcherTest extends AbstractTestCase {
                 , " -v,--version             Output version information."
                 , " -l,--list                Lists lint rules with a short, summary"
                 , "                          explanation."
+                , " -r,--rules               Prints a HTML file containing the program's"
+                , "                          rules."
                 , " -s,--show <RULE[s]>      Lists a verbose rule explanation."
                 , " -c,--check <RULE[s]>     Only check for these rules."
                 , " -d,--disable <RULE[s]>   Disable the list of rules."
@@ -70,6 +75,15 @@ public class DispatcherTest extends AbstractTestCase {
                 programSettings.getProgramVersion());
 
         runExitTest(new String[] { "--version" }, tempDirectory, expectedOutput, ExitType.SUCCESS);
+    }
+
+    @Test
+    public void testHtmlReportProperlyDumped() throws URISyntaxException, IOException {
+        File htmlDump = new File(Resources.getResource("html-dump.html").toURI());
+        List<String> htmlDumpContents = Files.readLines(htmlDump, Charsets.UTF_8);
+        String expectedOutput = Joiner.on("\n").join(htmlDumpContents);
+
+        runExitTest(new String[] { "-r" }, tempDirectory, expectedOutput, ExitType.SUCCESS);
     }
 
     @Test

@@ -11,6 +11,9 @@ import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
+import com.selesse.jxlint.settings.ProgramSettings;
+import com.selesse.jxlint.utils.EnumUtils;
+import com.selesse.jxlint.utils.HtmlUtils;
 
 import java.util.List;
 
@@ -70,5 +73,44 @@ public class LintRuleInformation {
             ProgramExitter.exitProgramWithMessage(String.format("'%s' is not a valid rule.", e.getRuleName()),
                     ExitType.COMMAND_LINE_ERROR);
         }
+    }
+
+    public static void printHtmlRuleReport(ProgramSettings settings) {
+        StringBuilder outputStringBuilder = new StringBuilder();
+        // print header
+        outputStringBuilder.append("<!doctype html>\n<head>\n<title>").append("Rules for ").append(settings
+                .getProgramName()).append(" - ").append(settings.getProgramVersion()).append
+                ("</title>\n</head>\n<body>\n");
+
+        // print table with header row
+        outputStringBuilder.append("<table>\n<tr>\n");
+        outputStringBuilder.append(Joiner.on("\n").join(
+                HtmlUtils.surroundAndHtmlEscapeAll(getReportColumnNames(), "<th> ", " </th>"))).append("\n");
+        outputStringBuilder.append("</tr>\n");
+
+        for (LintRule lintRule : LintRulesImpl.getInstance().getAllRules()) {
+            outputStringBuilder.append("<tr>");
+            outputStringBuilder.append(Joiner.on("\n").join(
+                    HtmlUtils.surroundAndHtmlEscapeAll(getReportColumnValues(lintRule), "<td> ", " </td>")));
+            outputStringBuilder.append("</tr>\n");
+        }
+        outputStringBuilder.append("</table>\n</body>\n</html>\n");
+
+        ProgramExitter.exitProgramWithMessage(outputStringBuilder.toString(), ExitType.SUCCESS);
+    }
+
+    private static List<String> getReportColumnNames() {
+        return Lists.newArrayList("Name", "Category", "Severity", "Summary", "Explanation", "Enabled by default?");
+    }
+
+    private static List<String> getReportColumnValues(LintRule rule) {
+        return Lists.newArrayList(
+                rule.getName(),
+                EnumUtils.toHappyString(rule.getCategory()),
+                EnumUtils.toHappyString(rule.getSeverity()),
+                rule.getSummary(),
+                rule.getDetailedDescription(),
+                rule.isEnabled() ? "true" : "false"
+        );
     }
 }

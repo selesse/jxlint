@@ -1,14 +1,12 @@
 package com.selesse.jxlint.report;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.common.html.HtmlEscapers;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.utils.EnumUtils;
+import com.selesse.jxlint.utils.HtmlUtils;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -34,22 +32,11 @@ public class HtmlReporter extends Reporter {
                 "<body>",
                 "<table>",
                 "<tr>",
-                Joiner.on("\n").join(surroundAndHtmlEscapeAll(headers, "<th> ", " </th>")),
+                Joiner.on("\n").join(HtmlUtils.surroundAndHtmlEscapeAll(headers, "<th> ", " </th>")),
                 "</tr>"
         );
 
         out.println(Joiner.on("\n").join(headerStringList));
-    }
-
-    private Iterable<String> surroundAndHtmlEscapeAll(Iterable<String> iterable,
-                                                      final String before, final String after) {
-        return Iterables.transform(iterable, new Function<String, String>() {
-
-            @Override
-            public String apply(String input) {
-                return before + htmlEncode(input) + after;
-            }
-        });
     }
 
     @Override
@@ -60,12 +47,8 @@ public class HtmlReporter extends Reporter {
         List<String> parameterValues = getParameterValues(error);
 
         out.println("<tr>");
-        out.println(Joiner.on("\n").join(surroundAndHtmlEscapeAll(parameterValues, "<td> ", " </td>")));
+        out.println(Joiner.on("\n").join(HtmlUtils.surroundAndHtmlEscapeAll(parameterValues, "<td> ", " </td>")));
         out.println("</tr>");
-    }
-
-    private String htmlEncode(String string) {
-        return HtmlEscapers.htmlEscaper().escape(string);
     }
 
     @Override

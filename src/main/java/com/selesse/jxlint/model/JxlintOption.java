@@ -12,7 +12,8 @@ public enum JxlintOption {
     NO_WARNINGS("nowarn"),
     DISABLE("disable"),
     ENABLE("enable"),
-    OUTPUT_TYPE_PATH("outputTypePath");
+    OUTPUT_TYPE_PATH("outputTypePath"),
+    REPORT_RULES("rules");
 
     private String optionString;
 
