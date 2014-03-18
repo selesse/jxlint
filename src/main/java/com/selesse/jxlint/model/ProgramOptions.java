@@ -44,15 +44,15 @@ public class ProgramOptions {
             return OutputType.DEFAULT;
         }
 
-        switch (outputType.toLowerCase()) {
-            case "quiet":
-                return OutputType.QUIET;
-            case "html":
-                return OutputType.HTML;
-            case "xml":
-                return OutputType.XML;
-            default:
-                return OutputType.DEFAULT;
+        String outputTypeString = outputType.toLowerCase();
+        if (outputTypeString.equals("quiet")) {
+            return OutputType.QUIET;
+        } else if (outputTypeString.equals("html")) {
+            return OutputType.HTML;
+        } else if (outputTypeString.equals("xml")) {
+            return OutputType.XML;
+        } else {
+            return OutputType.DEFAULT;
         }
     }
 

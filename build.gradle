@@ -52,11 +52,6 @@ task getVersion << {
     out.println version
 }
 
-tasks.withType(JavaCompile) {
-    sourceCompatibility = '1.7'
-    targetCompatibility = '1.7'
-}
-
 tasks.withType(FindBugs) {
     reports {
         xml.enabled = false

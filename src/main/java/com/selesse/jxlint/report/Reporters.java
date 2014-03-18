@@ -7,7 +7,6 @@ import com.selesse.jxlint.model.rules.LintError;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +68,7 @@ public class Reporters {
                 case QUIET:
                     return new DefaultReporter(out, lintErrors);
             }
-        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+        } catch (ReflectiveOperationException e) {
             // We failed some part of reflection... It's okay, though, since we initialized the reporter to System.out
         }
 
