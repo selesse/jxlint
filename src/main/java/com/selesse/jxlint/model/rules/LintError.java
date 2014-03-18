@@ -1,5 +1,7 @@
 package com.selesse.jxlint.model.rules;
 
+import com.selesse.jxlint.model.FileUtils;
+
 import java.io.File;
 
 public class LintError {
@@ -11,7 +13,7 @@ public class LintError {
 
     public LintError(LintRule lintRule, File faultyFile) {
         this.lintRule = lintRule;
-        this.faultyFile = faultyFile;
+        this.faultyFile = FileUtils.normalizeFile(faultyFile);
         this.lineNumber = 0;
         this.errorMessage = "";
     }

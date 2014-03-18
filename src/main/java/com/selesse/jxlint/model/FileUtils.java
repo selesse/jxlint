@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class FileUtils {
@@ -58,4 +60,22 @@ public class FileUtils {
 
         return filteredFiles;
     }
+
+    /**
+     * Normalize the input file. This helps when printing paths.
+     * i.e. "java -jar jxlint.jar ." would print "/home/alex/git/jxlint/./text.txt"
+     */
+    public static File normalizeFile(File file) {
+        try {
+            URI uri = new URI(file.getAbsolutePath());
+            uri = uri.normalize();
+            String normalizedPath = uri.getPath();
+            return new File(normalizedPath);
+        } catch (URISyntaxException e) {
+            System.err.println("Failed to normalize " + file);
+        }
+
+        return file;
+    }
+
 }

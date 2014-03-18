@@ -1,6 +1,7 @@
 package com.selesse.jxlint.model.rules;
 
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.model.FileUtils;
 import com.selesse.jxlint.model.ProgramOptions;
 
 import java.io.File;
@@ -154,7 +155,7 @@ public abstract class AbstractLintRules implements LintRules {
 
     @Override
     public void setSourceDirectory(File sourceDirectory) {
-        this.sourceDirectory = sourceDirectory;
+        this.sourceDirectory = FileUtils.normalizeFile(sourceDirectory);
     }
 
     @Override
