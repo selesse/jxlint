@@ -3,8 +3,8 @@ package com.selesse.jxlint;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.selesse.jxlint.linter.LintFactory;
 import com.selesse.jxlint.linter.Linter;
+import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
@@ -28,7 +28,7 @@ public class DispatcherTest extends AbstractTestCase {
         tempDirectory.deleteOnExit();
 
         LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
-        LintFactory.setTestMode(false);
+        LintRulesImpl.setTestMode(false);
     }
 
     @Test
@@ -211,9 +211,9 @@ public class DispatcherTest extends AbstractTestCase {
     }
 
     public void setupTestLinterAndRunProgramWithArgs(String[] args) {
-        LintFactory.setTestMode(true);
-
         Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings());
+        LintRulesImpl.setTestMode(true);
+
         jxlint.doLintAnalysis(args);
     }
 
@@ -225,7 +225,7 @@ public class DispatcherTest extends AbstractTestCase {
         TestFileCreator.createBadAttributeFile(tempDirectory);
 
         setupTestLinterAndRunProgramWithArgs(new String[]{"--Wall", tempDirectory.getAbsolutePath()});
-        Linter linter = LintFactory.getInstance();
+        Linter linter = LinterFactory.getInstance();
         assertEquals(8, linter.getLintErrors().size());
     }
 
@@ -235,13 +235,13 @@ public class DispatcherTest extends AbstractTestCase {
         File badAuthorFile = TestFileCreator.createBadAuthorFile(tempDirectory);
 
         setupTestLinterAndRunProgramWithArgs(new String[] { tempDirectory.getAbsolutePath() });
-        Linter linter = LintFactory.getInstance();
+        Linter linter = LinterFactory.getInstance();
         assertEquals(0, linter.getLintErrors().size());
 
         // Now, let's re-run the same program with the bad author file rule enabled... We should flag it!
         setupTestLinterAndRunProgramWithArgs(new String[] { "--enable", "Author tag specified",
                 tempDirectory.getAbsolutePath() });
-        linter = LintFactory.getInstance();
+        linter = LinterFactory.getInstance();
         assertEquals(1, linter.getLintErrors().size());
         assertEquals(badAuthorFile.getAbsolutePath(), linter.getLintErrors().get(0).getFile().getAbsolutePath());
     }
@@ -252,13 +252,13 @@ public class DispatcherTest extends AbstractTestCase {
         TestFileCreator.createBadEncodingFile(tempDirectory);
 
         setupTestLinterAndRunProgramWithArgs(new String[] { tempDirectory.getAbsolutePath() });
-        Linter linter = LintFactory.getInstance();
+        Linter linter = LinterFactory.getInstance();
         assertEquals(1, linter.getLintErrors().size());
 
         // Now, let's re-run the same program with the bad encoding file rule disabled... It should shut up!
         setupTestLinterAndRunProgramWithArgs(new String[] { "--disable", "XML encoding specified",
                 tempDirectory.getAbsolutePath() });
-        linter = LintFactory.getInstance();
+        linter = LinterFactory.getInstance();
         assertEquals(0, linter.getLintErrors().size());
     }
 
@@ -268,12 +268,12 @@ public class DispatcherTest extends AbstractTestCase {
         TestFileCreator.createBadEncodingFile(tempDirectory);
 
         setupTestLinterAndRunProgramWithArgs(new String[] { tempDirectory.getAbsolutePath() });
-        Linter linter = LintFactory.getInstance();
+        Linter linter = LinterFactory.getInstance();
         assertEquals(1, linter.getLintErrors().size());
 
         // Now, let's re-run the same program without pesky warnings... It should shut up!
         setupTestLinterAndRunProgramWithArgs(new String[] { "--nowarn", tempDirectory.getAbsolutePath() });
-        linter = LintFactory.getInstance();
+        linter = LinterFactory.getInstance();
         assertEquals(0, linter.getLintErrors().size());
     }
 }

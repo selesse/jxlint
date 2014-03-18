@@ -19,6 +19,7 @@ public class Reporters {
         outputTypeReporterMap.put(OutputType.QUIET, DefaultReporter.class);
     }
 
+    @SuppressWarnings("UnusedDeclaration")
     public static void setCustomReporter(OutputType outputType, Class<? extends Reporter> reporter) {
         outputTypeReporterMap.put(outputType, reporter);
     }

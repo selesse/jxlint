@@ -4,8 +4,8 @@ import com.google.common.io.Files;
 import com.selesse.jxlint.AbstractTestCase;
 import com.selesse.jxlint.Jxlint;
 import com.selesse.jxlint.TestFileCreator;
-import com.selesse.jxlint.linter.LintFactory;
 import com.selesse.jxlint.linter.Linter;
+import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
@@ -25,11 +25,11 @@ public class AbstractReportTest extends AbstractTestCase {
         tempDirectory.deleteOnExit();
 
         LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
-        LintFactory.setTestMode(false);
+        LintRulesImpl.setTestMode(false);
     }
 
     protected void setupTestLinterAndRunProgramWithArgs(String[] args) {
-        LintFactory.setTestMode(true);
+        LintRulesImpl.setTestMode(true);
 
         Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings());
         jxlint.doLintAnalysis(args);
@@ -46,7 +46,7 @@ public class AbstractReportTest extends AbstractTestCase {
 
         setupTestLinterAndRunProgramWithArgs(new String[]{"--" + type.extension(), desiredOutput,
                 tempDirectory.getAbsolutePath()});
-        Linter linter = LintFactory.getInstance();
+        Linter linter = LinterFactory.getInstance();
         assertEquals(1, linter.getLintErrors().size());
 
         Reporter reporter = Reporters.createReporter(linter.getLintErrors(), type, desiredOutput);

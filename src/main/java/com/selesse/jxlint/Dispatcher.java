@@ -1,14 +1,14 @@
 package com.selesse.jxlint;
 
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.actions.LintHandler;
+import com.selesse.jxlint.actions.LintRuleInformation;
 import com.selesse.jxlint.cli.CommandLineOptions;
-import com.selesse.jxlint.linter.LintFactory;
-import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
-import com.selesse.jxlint.model.rules.*;
+import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
+import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.settings.ProgramSettings;
 
 import java.io.File;
@@ -33,7 +33,7 @@ public class Dispatcher {
      *
      * <li> Finally, we check to see if "enable" or "disable" are set and modify our list of rules accordingly. </li>
      *
-     * <li> Perform the lint validation. </li>
+     * <li> Dispatch to {@link com.selesse.jxlint.actions.LintHandler}. </li>
      *
      * </ol>
      */
@@ -46,10 +46,10 @@ public class Dispatcher {
             doVersion(programSettings);
         }
         else if (programOptions.hasOption("list")) {
-            doList();
+            LintRuleInformation.listRules();
         }
         else if (programOptions.hasOption("show")) {
-            doShow(programOptions);
+            LintRuleInformation.showRules(programOptions);
         }
 
         boolean warningsAreErrors = false;
@@ -86,9 +86,7 @@ public class Dispatcher {
             String checkRules = programOptions.getOption("check");
             List<String> checkRulesList = ProgramOptions.getListFromRawOptionStringOrDie(checkRules);
 
-            Linter linter = LintFactory.createNewLinter(LintRulesImpl.getInstance().getOnlyRules(checkRulesList),
-                    warningsAreErrors);
-            linter.doLint(programOptions);
+            handleLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), warningsAreErrors, programOptions);
         }
 
         // By default, we only check enabled rules.
@@ -115,8 +113,12 @@ public class Dispatcher {
             lintRuleList.addAll(LintRulesImpl.getInstance().getOnlyRules(enabledRulesList));
         }
 
-        Linter linter = LintFactory.createNewLinter(lintRuleList, warningsAreErrors);
-        linter.doLint(programOptions);
+        handleLint(lintRuleList, warningsAreErrors, programOptions);
+    }
+
+    private static void handleLint(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options) {
+        LintHandler lintHandler = new LintHandler(lintRules, warningsAreErrors, options);
+        lintHandler.handleLint();
     }
 
     private static void doHelp(ProgramSettings programSettings) {
@@ -126,47 +128,6 @@ public class Dispatcher {
     private static void doVersion(ProgramSettings programSettings) {
         ProgramExitter.exitProgramWithMessage(programSettings.getProgramName() + ": version " +
                 programSettings.getProgramVersion(), ExitType.SUCCESS);
-    }
-
-    private static void doList() {
-        List<String> outputBuffer = Lists.newArrayList();
-
-        LintRules lintRules = LintRulesImpl.getInstance();
-        if (lintRules.getAllRules().size() == 0) {
-            outputBuffer.add("There are no rules defined.");
-        }
-        for (LintRule lintRule : lintRules.getAllRules()) {
-            outputBuffer.add(lintRule.getSummaryOutput());
-        }
-
-        ProgramExitter.exitProgramWithMessage(Joiner.on("\n").join(outputBuffer), ExitType.SUCCESS);
-    }
-
-    private static void doShow(ProgramOptions programOptions) {
-        try {
-            StringBuilder outputBuffer = new StringBuilder();
-            if (programOptions.hasOption("show") && programOptions.getOption("show") == null) {
-                for (LintRule rule : LintRulesImpl.getInstance().getAllRules()) {
-                    outputBuffer.append(rule.getDetailedOutput()).append("\n\n");
-                }
-                outputBuffer.append("There are ").append(
-                        LintRulesImpl.getInstance().getAllRules().size()).append(" rules.");
-            }
-            else {
-                Splitter splitter = Splitter.on(",").trimResults().omitEmptyStrings();
-
-                List<String> rules = Lists.newArrayList(splitter.split(programOptions.getOption("show")));
-                for (String rule : rules) {
-                    LintRule lintRule = LintRulesImpl.getInstance().getLintRule(rule.trim());
-                    outputBuffer.append(lintRule.getDetailedOutput()).append("\n\n");
-                }
-            }
-            ProgramExitter.exitProgramWithMessage(outputBuffer.toString(), ExitType.SUCCESS);
-        }
-        catch (NonExistentLintRuleException e) {
-            ProgramExitter.exitProgramWithMessage(String.format("'%s' is not a valid rule.", e.getRuleName()),
-                    ExitType.COMMAND_LINE_ERROR);
-        }
     }
 
     private static boolean isInvalidSourceDirectory(String sourceDirectoryString) {
