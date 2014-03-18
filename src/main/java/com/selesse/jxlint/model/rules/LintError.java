@@ -40,6 +40,7 @@ public class LintError {
     private LintError(LintRule violatedRule, File faultyFile) {
         this.violatedRule = violatedRule;
         this.faultyFile = FileUtils.normalizeFile(faultyFile);
+        this.errorMessage = "";
     }
 
     public LintRule getViolatedRule() {

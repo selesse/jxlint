@@ -1,6 +1,7 @@
 package com.selesse.jxlint.report;
 
 import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
@@ -37,7 +38,9 @@ public class DefaultReporter extends Reporter {
         LintRule violatedRule = error.getViolatedRule();
         out.println(String.format("[%s] \"%s\" in %s",  colorSeverity(violatedRule.getSeverity()),
                 Color.WHITE.wrapAround(violatedRule.getName()), error.getFile().getAbsolutePath()));
-        out.println("    " + error.getMessage());
+        if (!Strings.isNullOrEmpty(error.getMessage())) {
+            out.println("    " + error.getMessage());
+        }
         out.println();
     }
 
