@@ -31,8 +31,13 @@ clean.doLast {
     ant.delete(dir: releaseDir)
 }
 
-task release(dependsOn: ['check', 'assemble', 'javadocJar', 'sourceJar']) << {
-    out.println "Releasing $version"
+task release(dependsOn: ['clean', 'check', 'assemble', 'javadocJar', 'sourceJar']) << {
+    out.println "Releasing jxlint-$version"
+}
+
+configure(release) {
+    group = 'Publishing'
+    description = 'Assemble all JARs needed for publishing (Javadoc, source, library).'
 }
 
 gradle.taskGraph.whenReady { taskGraph ->
@@ -46,10 +51,6 @@ jar {
     manifest {
         attributes 'Manifest-Version': version
     }
-}
-
-task getVersion << {
-    out.println version
 }
 
 tasks.withType(FindBugs) {
