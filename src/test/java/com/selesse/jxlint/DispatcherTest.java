@@ -31,7 +31,7 @@ public class DispatcherTest extends AbstractTestCase {
         tempDirectory.deleteOnExit();
 
         LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
-        LintRulesImpl.setTestMode(false);
+        LintRulesImpl.setExitAfterReporting(true);
     }
 
     @Test
@@ -228,7 +228,7 @@ public class DispatcherTest extends AbstractTestCase {
 
     public void setupTestLinterAndRunProgramWithArgs(String[] args) {
         Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings());
-        LintRulesImpl.setTestMode(true);
+        LintRulesImpl.setExitAfterReporting(false);
 
         jxlint.parseArgumentsAndDispatch(args);
     }

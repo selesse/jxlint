@@ -9,7 +9,6 @@ import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
-import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.report.Reporter;
 import com.selesse.jxlint.report.Reporters;
@@ -19,7 +18,7 @@ import java.util.List;
 
 /**
  * Handler of action-based logic relating to linting. This particular LintHandler's core logic is in
- * {@link #lintAndReportAndExit()}.
+ * {@link #lintAndReportAndExit(boolean)}.
  */
 public class LintHandler {
     private final List<LintRule> lintRules;
@@ -34,18 +33,17 @@ public class LintHandler {
 
     /**
      * Performs the linting via the {@link Linter}, reports the errors, and exits the program via
-     * {@link com.selesse.jxlint.ProgramExitter}. If we are in test mode (defined via
-     * {@link com.selesse.jxlint.model.rules.LintRulesImpl#isTestMode()} ), we will not exit.
+     * {@link com.selesse.jxlint.ProgramExitter}, if exitAfterReport is true.
      * The {@link com.selesse.jxlint.report.Reporter} created is based on the
      * {@link com.selesse.jxlint.model.ProgramOptions} passed in the constructor.
      */
-    public void lintAndReportAndExit() {
+    public void lintAndReportAndExit(boolean exitAfterReport) {
         Linter linter = LinterFactory.createNewLinter(lintRules);
         linter.performLintValidations();
         List<LintError> lintErrors = linter.getLintErrors();
 
         reportLintErrors(lintErrors);
-        if (!LintRulesImpl.isTestMode()) {
+        if (exitAfterReport) {
             exitWithAppropriateStatus(lintErrors);
         }
     }

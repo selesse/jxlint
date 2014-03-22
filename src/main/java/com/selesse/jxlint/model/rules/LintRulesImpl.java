@@ -6,7 +6,7 @@ package com.selesse.jxlint.model.rules;
  */
 public class LintRulesImpl {
     private static LintRules instance;
-    private static boolean isTestMode;
+    private static boolean willExitAfterReporting;
 
     public static LintRules getInstance() {
         if (instance == null) {
@@ -20,17 +20,18 @@ public class LintRulesImpl {
     }
 
     /**
-     * Returns whether or not the program is currently in test mode. If the program is in test mode,
-     * it will not System.exit after reporting.
+     * Returns whether or not the program will exit after reporting. Specifically,
+     * if it will call {@link System#exit(int)}.
      */
-    public static boolean isTestMode() {
-        return LintRulesImpl.isTestMode;
+    public static boolean willExitAfterReporting() {
+        return LintRulesImpl.willExitAfterReporting;
     }
 
     /**
-     * Sets the program's test mode. If the program is in test mode, it will not System.exit after reporting.
+     * Set whether or not the program will exit after reporting. Specifically,
+     * it will call {@link System#exit(int)} if exitAfterReporting is true.
      */
-    public static void setTestMode(boolean testMode) {
-        LintRulesImpl.isTestMode = testMode;
+    public static void setExitAfterReporting(boolean exitAfterReporting) {
+        LintRulesImpl.willExitAfterReporting = exitAfterReporting;
     }
 }

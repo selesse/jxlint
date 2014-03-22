@@ -128,7 +128,7 @@ public class Dispatcher {
 
     private static void handleLint(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options) {
         LintHandler lintHandler = new LintHandler(lintRules, warningsAreErrors, options);
-        lintHandler.lintAndReportAndExit();
+        lintHandler.lintAndReportAndExit(LintRulesImpl.willExitAfterReporting());
     }
 
     private static void doHelp(ProgramSettings programSettings) {

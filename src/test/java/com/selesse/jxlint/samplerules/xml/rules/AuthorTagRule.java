@@ -1,11 +1,11 @@
 package com.selesse.jxlint.samplerules.xml.rules;
 
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.utils.FileUtils;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
+import com.selesse.jxlint.utils.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
