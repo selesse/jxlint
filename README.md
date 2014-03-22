@@ -57,7 +57,8 @@ Quick Start
       }
 
       @Override
-      public Optional<LintError> getLintError(File file) {
+      public List<LintError> getLintErrors(File file) {
+          List<LintError> lintErrorList = Lists.newArrayList();
           try {
               DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
               DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -67,18 +68,17 @@ Quick Start
               document.getDocumentElement().normalize();
 
               if (Strings.isNullOrEmpty(document.getXmlEncoding())) {
-                  return Optional.of(LintError.with(this, file).
+                  lintErrorList.add(LintError.with(this, file).
                       addMessage("Encoding wasn't specified").create());
               }
           }
           catch (Exception e) {
-              return Optional.of(LintError.with(this, file).
+              lintErrorList.add(LintError.with(this, file).
                   addMessage("Error checking rule, could not parse XML").
                   addException(e).create());
           }
 
-          // Returning Optional.absent as there was no LintError...
-          return Optional.absent();
+          return lintErrorList;
       }
   }
   ```

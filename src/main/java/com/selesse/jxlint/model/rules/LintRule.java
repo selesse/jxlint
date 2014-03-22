@@ -1,7 +1,6 @@
 package com.selesse.jxlint.model.rules;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.utils.EnumUtils;
 
@@ -25,17 +24,20 @@ import java.util.List;
  *     }
  *
  *     {@literal @}Override
- *     public Optional&lt;LintError&gt; getLintError(File file) {
+ *     public List&lt;LintError&gt; getLintErrors(File file) {
+ *         List&lt;LintError&gt; lintErrorList = Lists.newArrayList();
+ *
  *         List&lt;String&gt; fileContents = Files.readLines(file, Charset.defaultCharset());
  *
  *         for (String line : fileContents) {
  *             if (line.contains("Hello, world!")) {
  *                 // There is no error, we passed the rule!
- *                 return Optional.absent();
+ *                 return lintErrorList;
  *             }
  *         }
  *
- *         return Optional.of(LintError.with(this, file).andErrorMessage("Must say hello world!").create());
+ *         lintErrorList.add(LintError.with(this, file).andErrorMessage("Must say hello world!").create());
+ *         return lintErrorList;
  *     }
  * }
  * </code>
@@ -63,6 +65,43 @@ public abstract class LintRule {
                     boolean isEnabledByDefault) {
         this(name, summary, detailedDescription, severity, category);
         this.enabled = isEnabledByDefault;
+    }
+
+    /**
+     * Return a list of {@link File}s to perform this rule's validation on. Several utility methods have been created
+     * in {@link com.selesse.jxlint.utils.FileUtils} to make this easy and are sampled below.
+     *
+     * <pre>{@code
+     *      FileUtils.allFiles(getSourceDirectory()); // All the files in directory we're validating (recursive)
+     *      FileUtils.allFilesWithExtension(getSourceDirectory, "txt"); // All .txt files in directory we're validating
+     * }</pre>
+     */
+    public abstract List<File> getFilesToValidate();
+
+    /**
+     * Goes through every file and calls {@link #getLintErrors(java.io.File)} on it. If there is an error,
+     * it is added to {@link #lintErrors}.
+     */
+    public void validate() {
+        for (File file : getFilesToValidate()) {
+            List<LintError> fileLintErrors = getLintErrors(file);
+            lintErrors.addAll(fileLintErrors);
+        }
+    }
+
+    /**
+     * Get a {@link java.util.List} of {@link com.selesse.jxlint.model.rules.LintError}s from a file.
+     * The list should be empty if it passed the validation.
+     * This is the function that actually performs the validation for a given file.
+     */
+    public abstract List<LintError> getLintErrors(File file);
+
+    /**
+     * Checks to see if a particular file passes this rule.
+     */
+    public boolean passesValidation(File file) {
+        List<LintError> fileLintErrors = getLintErrors(file);
+        return fileLintErrors.size() == 0;
     }
 
     /**
@@ -193,20 +232,6 @@ public abstract class LintRule {
         return false;
     }
 
-    /**
-     * Goes through every file and calls {@link #getLintError(java.io.File)} on it. If there is an error,
-     * it is added to {@link #lintErrors}. This implementation does not support multiple errors for one rule,
-     * but could be overwritten to.
-     */
-    public void validate() {
-        for (File file : getFilesToValidate()) {
-            Optional<LintError> errorIfLintFailed = getLintError(file);
-            if (errorIfLintFailed.isPresent()) {
-                lintErrors.add(errorIfLintFailed.get());
-            }
-        }
-    }
-
     public List<LintError> getLintErrors() {
         return lintErrors;
     }
@@ -217,33 +242,5 @@ public abstract class LintRule {
      */
     public File getSourceDirectory() {
         return LintRulesImpl.getInstance().getSourceDirectory();
-    }
-
-    /**
-     * Return a list of {@link File}s to perform this rule's validation on. Several utility methods have been created
-     * in {@link com.selesse.jxlint.utils.FileUtils} to make this easy and are sampled below.
-     *
-     * <pre>{@code
-     *      FileUtils.allFiles(getSourceDirectory()); // All the files in directory we're validating (recursive)
-     *      FileUtils.allFilesWithExtension(getSourceDirectory, "txt"); // All .txt files in directory we're validating
-     * }</pre>
-     */
-    public abstract List<File> getFilesToValidate();
-
-    /**
-     * Get a {@link com.selesse.jxlint.model.rules.LintError} from a file. There will either be a lint error,
-     * or there won't be anything. This is the function that actually performs the validation for a given file.
-     *
-     * If there is a lint error, <pre>{@code return Optional.of(lintError)}</pre>. If there is no lint error,
-     * return <pre>{@code return Optional.absent();}</pre>.
-     */
-    public abstract Optional<LintError> getLintError(File file);
-
-    /**
-     * Checks to see if a particular file passes this rule.
-     */
-    public boolean passesValidation(File file) {
-        Optional<LintError> errorIfLintFailed = getLintError(file);
-        return !errorIfLintFailed.isPresent();
     }
 }

@@ -1,6 +1,6 @@
 package com.selesse.jxlint.samplerules.xml.rules;
 
-import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
@@ -27,7 +27,8 @@ public class XmlVersionRule extends LintRule {
     }
 
     @Override
-    public Optional<LintError> getLintError(File file) {
+    public List<LintError> getLintErrors(File file) {
+        List<LintError> lintErrorList = Lists.newArrayList();
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -38,18 +39,18 @@ public class XmlVersionRule extends LintRule {
         } catch (SAXException e) {
             String errorMessage = e.getMessage();
             if (errorMessage.matches("The version is required in the XML declaration.")) {
-                return Optional.of(LintError.with(this, file).andErrorMessage(errorMessage.substring(0,
+                lintErrorList.add(LintError.with(this, file).andErrorMessage(errorMessage.substring(0,
                         errorMessage.length() - 1)).create());
             }
             else {
-                return Optional.of(LintError.with(this, file).andErrorMessage("Error checking rule, " +
+                lintErrorList.add(LintError.with(this, file).andErrorMessage("Error checking rule, " +
                         "" + "could not parse XML").andException(e).create());
             }
         } catch (Exception e) {
-            return Optional.of(LintError.with(this, file).andErrorMessage("Error checking rule, " +
+            lintErrorList.add(LintError.with(this, file).andErrorMessage("Error checking rule, " +
                     "could not parse XML").andException(e).create());
         }
 
-        return Optional.absent();
+        return lintErrorList;
     }
 }

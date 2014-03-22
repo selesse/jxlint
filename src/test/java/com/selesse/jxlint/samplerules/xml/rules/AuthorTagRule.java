@@ -1,11 +1,11 @@
 package com.selesse.jxlint.samplerules.xml.rules;
 
-import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+import com.selesse.jxlint.utils.FileUtils;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
-import com.selesse.jxlint.utils.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -34,7 +34,9 @@ public class AuthorTagRule extends LintRule {
     }
 
     @Override
-    public Optional<LintError> getLintError(File file) {
+    public List<LintError> getLintErrors(File file) {
+        List<LintError> lintErrorList = Lists.newArrayList();
+
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
@@ -61,16 +63,20 @@ public class AuthorTagRule extends LintRule {
                         }
                         failedRuleString += "element does not contain \"creationDate\" attribute";
                     }
-                    return Optional.of(LintError.with(this, file).andErrorMessage(failedRuleString).create());
+                    lintErrorList.add(LintError.with(this, file).andErrorMessage(failedRuleString).create());
+                    return lintErrorList;
                 }
-                return Optional.absent();
+                // If we make it to this path, we've passed the rule: return the empty list
+                return lintErrorList;
             }
         } catch (Exception e) {
             // this will catch parser configuration errors, XML parse errors, as well as I/O exceptions
-            return Optional.of(LintError.with(this, file).andErrorMessage("Error checking rule, " +
-                    "could not parse XML").andException(e).create());
+            lintErrorList.add(LintError.with(this, file).andErrorMessage("Error checking rule, could not parse XML")
+                    .andException(e).create());
+            return lintErrorList;
         }
 
-        return Optional.of(LintError.with(this, file).andErrorMessage("Author element was not root element").create());
+        lintErrorList.add(LintError.with(this, file).andErrorMessage("Author element was not root element").create());
+        return lintErrorList;
     }
 }
