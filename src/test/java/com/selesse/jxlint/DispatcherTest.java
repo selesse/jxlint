@@ -82,8 +82,10 @@ public class DispatcherTest extends AbstractTestCase {
         File htmlDump = new File(Resources.getResource("html-dump.html").toURI());
         List<String> htmlDumpContents = Files.readLines(htmlDump, Charsets.UTF_8);
         String expectedOutput = Joiner.on("\n").join(htmlDumpContents);
+        ProgramSettings programSettings = new JxlintProgramSettings();
+        expectedOutput = expectedOutput.replace("$$$VERSION$$$", programSettings.getProgramVersion());
 
-        runExitTest(new String[] { "-r" }, tempDirectory, expectedOutput, ExitType.SUCCESS);
+        runExitTest(new String[]{"-r"}, tempDirectory, expectedOutput, ExitType.SUCCESS);
     }
 
     @Test
