@@ -97,6 +97,7 @@ public class Dispatcher {
             List<String> checkRulesList = ProgramOptions.getListFromRawOptionStringOrDie(checkRules);
 
             handleLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), warningsAreErrors, programOptions);
+            return;
         }
 
         // By default, we only check enabled rules.
