@@ -35,6 +35,8 @@ task release(dependsOn: ['clean', 'check', 'assemble', 'javadocJar', 'sourceJar'
     out.println "Releasing jxlint-$version"
 }
 
+release.mustRunAfter clean
+
 configure(release) {
     group = 'Publishing'
     description = 'Assemble all JARs needed for publishing (Javadoc, source, library).'
