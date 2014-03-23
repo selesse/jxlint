@@ -123,4 +123,29 @@ public class FileUtilsTest {
         assertEquals(files.get(0).getName(), "test.xml");
     }
 
+    @Test
+    public void testGetAllMatchingFiles() {
+        List<File> files = FileUtils.allFilesMatching(rootTempDir, ".*[0-9]+.*");
+
+        Collections.sort(files);
+
+        assertEquals(2, files.size());
+        File firstFile = files.get(0);
+        File secondFile = files.get(1);
+
+        assertEquals("3.xml", firstFile.getName());
+        assertEquals("x2", secondFile.getName());
+    }
+
+    @Test
+    public void testGetFilesContaining() {
+        List<File> files = FileUtils.allFilesContaining(rootTempDir, "test");
+
+        assertEquals(2, files.size());
+        File firstFile = files.get(0);
+        File secondFile = files.get(1);
+
+        assertEquals("test.xml", firstFile.getName());
+        assertEquals("test.xml", secondFile.getName());
+    }
 }

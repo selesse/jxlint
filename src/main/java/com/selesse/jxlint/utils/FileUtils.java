@@ -8,6 +8,9 @@ import java.net.URI;
 import java.util.List;
 
 public class FileUtils {
+    /**
+     * Recursively get all files in a directory.
+     */
     public static List<File> allFiles(File rootDir) {
         List<File> files = Lists.newArrayList();
 
@@ -46,6 +49,38 @@ public class FileUtils {
         List<File> allFiles = allFiles(rootDir);
         for (File file : allFiles) {
             if (file.getName().equals(filename)) {
+                filteredFiles.add(file);
+            }
+        }
+
+        return filteredFiles;
+    }
+
+    /**
+     * Return all files in a directory, recursively, that match a given regex.
+     */
+    public static List<File> allFilesMatching(File rootDir, String regex) {
+        List<File> filteredFiles = Lists.newArrayList();
+
+        List<File> allFiles = allFiles(rootDir);
+        for (File file : allFiles) {
+            if (file.getName().matches(regex)) {
+                filteredFiles.add(file);
+            }
+        }
+
+        return filteredFiles;
+    }
+
+    /**
+     * Return all files in a directory, recursively, that contain a certain substring in their filename.
+     */
+    public static List<File> allFilesContaining(File rootDir, String substring) {
+        List<File> filteredFiles = Lists.newArrayList();
+
+        List<File> allFiles = allFiles(rootDir);
+        for (File file : allFiles) {
+            if (file.getName().contains(substring)) {
                 filteredFiles.add(file);
             }
         }
