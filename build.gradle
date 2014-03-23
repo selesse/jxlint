@@ -6,7 +6,7 @@ apply plugin: 'maven-publish'
 defaultTasks 'clean', 'check', 'assemble'
 
 group = 'com.selesse'
-version = '1.0.3'
+version = '1.0.4'
 
 ext {
     releaseDir = "release"
