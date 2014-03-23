@@ -3,13 +3,11 @@ package com.selesse.jxlint.report;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
-import com.selesse.jxlint.model.rules.Category;
-import com.selesse.jxlint.model.rules.LintError;
-import com.selesse.jxlint.model.rules.LintRule;
-import com.selesse.jxlint.model.rules.Severity;
+import com.selesse.jxlint.model.rules.*;
 import com.selesse.jxlint.report.color.Color;
 import com.selesse.jxlint.utils.EnumUtils;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -35,9 +33,12 @@ public class DefaultReporter extends Reporter {
 
     @Override
     public void printError(LintError error) {
+        File sourceDirectory = LintRulesImpl.getInstance().getSourceDirectory();
+        String relativePath = sourceDirectory.toURI().relativize(error.getFile().toURI()).getPath();
+
         LintRule violatedRule = error.getViolatedRule();
         out.println(String.format("[%s] \"%s\" in %s",  colorSeverity(violatedRule.getSeverity()),
-                Color.WHITE.wrapAround(violatedRule.getName()), error.getFile().getAbsolutePath()));
+                Color.WHITE.wrapAround(violatedRule.getName()), relativePath));
         if (!Strings.isNullOrEmpty(error.getMessage())) {
             out.println("    " + error.getMessage());
         }
