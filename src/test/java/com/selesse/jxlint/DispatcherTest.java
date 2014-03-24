@@ -44,7 +44,7 @@ public class DispatcherTest extends AbstractTestCase {
                 , " -v,--version             Output version information."
                 , " -l,--list                Lists lint rules with a short, summary"
                 , "                          explanation."
-                , " -r,--rules               Prints a HTML file containing the program's"
+                , " -r,--rules               Prints a Markdown file containing the program's"
                 , "                          rules."
                 , " -s,--show <RULE[s]>      Lists a verbose rule explanation."
                 , " -c,--check <RULE[s]>     Only check for these rules."
@@ -78,10 +78,10 @@ public class DispatcherTest extends AbstractTestCase {
     }
 
     @Test
-    public void testHtmlReportProperlyDumped() throws URISyntaxException, IOException {
-        File htmlDump = new File(Resources.getResource("html-dump.html").toURI());
-        List<String> htmlDumpContents = Files.readLines(htmlDump, Charsets.UTF_8);
-        String expectedOutput = Joiner.on("\n").join(htmlDumpContents);
+    public void testMarkdownReportProperlyGenerated() throws URISyntaxException, IOException {
+        File markdownDump = new File(Resources.getResource("markdown-dump.md").toURI());
+        List<String> markdownDumpContents = Files.readLines(markdownDump, Charsets.UTF_8);
+        String expectedOutput = Joiner.on("\n").join(markdownDumpContents);
         ProgramSettings programSettings = new JxlintProgramSettings();
         expectedOutput = expectedOutput.replace("$$$VERSION$$$", programSettings.getProgramVersion());
 

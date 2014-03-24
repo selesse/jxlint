@@ -30,7 +30,7 @@ public class CommandLineOptions {
         options.addOption("h", "help", false, "Usage information, help message.");
         options.addOption("v", "version", false, "Output version information.");
         options.addOption("l", "list", false, "Lists lint rules with a short, summary explanation.");
-        options.addOption("r", "rules", false, "Prints a HTML file containing the program's rules.");
+        options.addOption("r", "rules", false, "Prints a Markdown file containing the program's rules.");
         options.addOption(OptionBuilder.withLongOpt("show").
                 withDescription("Lists a verbose rule explanation.").
                 hasOptionalArg().

@@ -12,8 +12,6 @@ import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
 import com.selesse.jxlint.settings.ProgramSettings;
-import com.selesse.jxlint.utils.EnumUtils;
-import com.selesse.jxlint.utils.HtmlUtils;
 
 import java.util.List;
 
@@ -75,42 +73,64 @@ public class LintRuleInformation {
         }
     }
 
-    public static void printHtmlRuleReport(ProgramSettings settings) {
+    public static void printMarkdownRuleReport(ProgramSettings settings) {
         StringBuilder outputStringBuilder = new StringBuilder();
         // print header
-        outputStringBuilder.append("<!doctype html>\n<head>\n<title>").append("Rules for ").append(settings
-                .getProgramName()).append(" - ").append(settings.getProgramVersion()).append
-                ("</title>\n</head>\n<body>\n");
+        String headerString = String.format("Rules for %s - %s", settings.getProgramName(), settings.getProgramVersion());
+        outputStringBuilder.append(underline(headerString, "=")).append("\n\n");
 
-        // print table with header row
-        outputStringBuilder.append("<table>\n<tr>\n");
-        outputStringBuilder.append(Joiner.on("\n").join(
-                HtmlUtils.surroundAndHtmlEscapeAll(getReportColumnNames(), "<th> ", " </th>"))).append("\n");
-        outputStringBuilder.append("</tr>\n");
-
-        for (LintRule lintRule : LintRulesImpl.getInstance().getAllRules()) {
-            outputStringBuilder.append("<tr>");
-            outputStringBuilder.append(Joiner.on("\n").join(
-                    HtmlUtils.surroundAndHtmlEscapeAll(getReportColumnValues(lintRule), "<td> ", " </td>")));
-            outputStringBuilder.append("</tr>\n");
+        List<LintRule> allRules = LintRulesImpl.getInstance().getAllRules();
+        for (int i = 0; i < allRules.size(); i++) {
+            LintRule lintRule = allRules.get(i);
+            outputStringBuilder.append(getMarkdownString(lintRule)).append("\n");
+            if (i + 1 < allRules.size()) {
+                outputStringBuilder.append("<hr>");
+            }
+            outputStringBuilder.append("\n\n");
         }
-        outputStringBuilder.append("</table>\n</body>\n</html>\n");
 
         ProgramExitter.exitProgramWithMessage(outputStringBuilder.toString(), ExitType.SUCCESS);
     }
 
-    private static List<String> getReportColumnNames() {
-        return Lists.newArrayList("Name", "Category", "Severity", "Summary", "Explanation", "Enabled by default?");
+    private static String underline(String string, String underlineCharacter) {
+        int numberOfChars = string.length();
+
+        StringBuilder underLineChar = new StringBuilder();
+
+        for (int i = 0; i < numberOfChars; i++) {
+            underLineChar.append(underlineCharacter);
+        }
+
+        return string + "\n" + underLineChar.toString();
     }
 
-    private static List<String> getReportColumnValues(LintRule rule) {
-        return Lists.newArrayList(
-                rule.getName(),
-                EnumUtils.toHappyString(rule.getCategory()),
-                EnumUtils.toHappyString(rule.getSeverity()),
-                rule.getSummary(),
-                rule.getDetailedDescription(),
-                rule.isEnabled() ? "true" : "false"
-        );
+    private static String getMarkdownString(LintRule lintRule) {
+        StringBuilder outputStringBuilder = new StringBuilder();
+
+        // Name of a rule
+        // --------------
+        // *Summary*: summary
+        // *Category*: CATEGORY
+        // *Severity*: Severity
+        // *Enabled by default*: yes
+        //
+        // Detailed description:
+        //
+        //     detailedExplanation
+        //     4 spaces indented
+        outputStringBuilder.append(underline(lintRule.getName(), "-")).append("\n");
+        outputStringBuilder.append("**Summary** : ").append(lintRule.getSummary()).append("\n\n");
+        outputStringBuilder.append("**Category** : ").append(lintRule.getCategory()).append("\n\n");
+        outputStringBuilder.append("**Severity** : ").append(lintRule.getSeverity()).append("\n\n");
+        outputStringBuilder.append("**Enabled by default?** : ").append(lintRule.isEnabled() ? "yes" : "no").append("\n\n");
+        outputStringBuilder.append("\n").append("**Detailed description** :").append("\n\n");
+
+        String explanation = lintRule.getDetailedDescription();
+        Iterable<String> explanationLines = Splitter.onPattern("\r?\n").split(explanation);
+        for (String line : explanationLines) {
+            outputStringBuilder.append("    ").append(line).append("\n");
+        }
+
+        return outputStringBuilder.toString();
     }
 }
