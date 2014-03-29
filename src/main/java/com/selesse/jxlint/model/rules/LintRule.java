@@ -83,9 +83,14 @@ public abstract class LintRule {
      * it is added to {@link #lintErrors}.
      */
     public void validate() {
-        for (File file : getFilesToValidate()) {
-            List<LintError> fileLintErrors = getLintErrors(file);
-            lintErrors.addAll(fileLintErrors);
+        try {
+            for (File file : getFilesToValidate()) {
+                List<LintError> fileLintErrors = getLintErrors(file);
+                lintErrors.addAll(fileLintErrors);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("The \"" + this.getClass().getSimpleName() + "\" rule threw an exception " +
+                    "when trying to validate:\n" + Joiner.on("\n").join(e.getStackTrace()));
         }
     }
 
