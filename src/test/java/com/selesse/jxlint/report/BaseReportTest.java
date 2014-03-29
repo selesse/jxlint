@@ -4,6 +4,7 @@ import com.selesse.jxlint.TestFileCreator;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.OutputType;
+import com.selesse.jxlint.settings.JxlintProgramSettings;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,6 +26,7 @@ public class BaseReportTest extends AbstractReportTest {
         Linter linter = LinterFactory.getInstance();
         assertEquals(1, linter.getLintErrors().size());
 
-        Reporters.createReporter(linter.getLintErrors(), OutputType.HTML, "////////////////");
+        Reporters.createReporter(linter.getLintErrors(), new JxlintProgramSettings(),
+                OutputType.HTML, "////////////////");
     }
 }

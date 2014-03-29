@@ -18,6 +18,6 @@ public class HtmlReportTest extends AbstractReportTest {
 
         // TODO: verify this with a bit more robustness
         List<String> fileContents = Files.readLines(createdFile, Charsets.UTF_8);
-        assertTrue(fileContents.get(0).contains("html>"));
+        assertTrue(fileContents.get(0).toLowerCase().contains("html>"));
     }
 }

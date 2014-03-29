@@ -49,7 +49,8 @@ public class AbstractReportTest extends AbstractTestCase {
         Linter linter = LinterFactory.getInstance();
         assertEquals(1, linter.getLintErrors().size());
 
-        Reporter reporter = Reporters.createReporter(linter.getLintErrors(), type, desiredOutput);
+        Reporter reporter = Reporters.createReporter(linter.getLintErrors(), new JxlintProgramSettings(),
+                type, desiredOutput);
         reporter.writeReport();
 
         assertTrue(desiredFile.exists());

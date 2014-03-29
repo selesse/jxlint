@@ -96,7 +96,8 @@ public class Dispatcher {
             String checkRules = programOptions.getOption(JxlintOption.CHECK);
             List<String> checkRulesList = ProgramOptions.getListFromRawOptionStringOrDie(checkRules);
 
-            handleLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), warningsAreErrors, programOptions);
+            handleLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), warningsAreErrors, programOptions,
+                    programSettings);
             return;
         }
 
@@ -124,11 +125,12 @@ public class Dispatcher {
             lintRuleList.addAll(LintRulesImpl.getInstance().getOnlyRules(enabledRulesList));
         }
 
-        handleLint(lintRuleList, warningsAreErrors, programOptions);
+        handleLint(lintRuleList, warningsAreErrors, programOptions, programSettings);
     }
 
-    private static void handleLint(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options) {
-        LintHandler lintHandler = new LintHandler(lintRules, warningsAreErrors, options);
+    private static void handleLint(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options,
+                                   ProgramSettings settings) {
+        LintHandler lintHandler = new LintHandler(lintRules, warningsAreErrors, options, settings);
         lintHandler.lintAndReportAndExit(LintRulesImpl.willExitAfterReporting());
     }
 

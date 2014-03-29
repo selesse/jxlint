@@ -99,4 +99,8 @@ public class FileUtils {
         return new File(normalizedPath);
     }
 
+    public static String getRelativePath(File parent, File child) {
+        return parent.toURI().relativize(child.toURI()).getPath();
+    }
+
 }

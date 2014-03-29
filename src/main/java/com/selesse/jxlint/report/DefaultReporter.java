@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.selesse.jxlint.model.rules.*;
 import com.selesse.jxlint.report.color.Color;
+import com.selesse.jxlint.settings.ProgramSettings;
 import com.selesse.jxlint.utils.EnumUtils;
 
 import java.io.File;
@@ -16,8 +17,8 @@ import java.util.List;
  */
 public class DefaultReporter extends Reporter {
 
-    public DefaultReporter(PrintStream out, List<LintError> lintErrorList) {
-        super(out, lintErrorList);
+    public DefaultReporter(PrintStream out, ProgramSettings programSettings, List<LintError> lintErrorList) {
+        super(out, programSettings, lintErrorList);
     }
 
     @Override

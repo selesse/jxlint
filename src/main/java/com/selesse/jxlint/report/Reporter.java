@@ -3,6 +3,7 @@ package com.selesse.jxlint.report;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.settings.ProgramSettings;
 
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -19,10 +20,12 @@ public abstract class Reporter {
      * The stream to write to when reporting.
      */
     protected PrintStream out;
+    protected ProgramSettings settings;
     protected List<LintError> lintErrorList;
 
-    public Reporter(PrintStream out, List<LintError> lintErrorList) {
+    public Reporter(PrintStream out, ProgramSettings settings, List<LintError> lintErrorList) {
         this.out = out;
+        this.settings = settings;
         this.lintErrorList = lintErrorList;
     }
 

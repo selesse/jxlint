@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.settings.ProgramSettings;
 import com.selesse.jxlint.utils.EnumUtils;
 import com.selesse.jxlint.utils.HtmlUtils;
 
@@ -12,12 +13,12 @@ import java.io.PrintStream;
 import java.util.List;
 
 /**
- * The HtmlReporter provides a basic HTML page with the error report included as a table.
+ * The TableHtmlReporter provides a basic HTML page with the error report included as a table.
  */
-public class HtmlReporter extends Reporter {
+public class TableHtmlReporter extends Reporter {
 
-    public HtmlReporter(PrintStream out, List<LintError> lintErrorList) {
-        super(out, lintErrorList);
+    public TableHtmlReporter(PrintStream out, ProgramSettings programSettings, List<LintError> lintErrorList) {
+        super(out, programSettings, lintErrorList);
     }
 
     @Override

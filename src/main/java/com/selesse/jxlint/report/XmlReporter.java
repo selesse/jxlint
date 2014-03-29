@@ -6,6 +6,7 @@ import com.google.common.xml.XmlEscapers;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.settings.ProgramSettings;
 import com.selesse.jxlint.utils.EnumUtils;
 
 import java.io.PrintStream;
@@ -22,8 +23,9 @@ import java.util.List;
  *
  */
 public class XmlReporter extends Reporter {
-    public XmlReporter(PrintStream out, List<LintError> lintErrorList) {
-        super(out, lintErrorList);
+
+    public XmlReporter(PrintStream out, ProgramSettings programSettings, List<LintError> lintErrorList) {
+        super(out, programSettings, lintErrorList);
     }
 
     @Override
