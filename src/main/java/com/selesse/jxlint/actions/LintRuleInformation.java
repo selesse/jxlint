@@ -84,7 +84,7 @@ public class LintRuleInformation {
             LintRule lintRule = allRules.get(i);
             outputStringBuilder.append(getMarkdownString(lintRule)).append("\n");
             if (i + 1 < allRules.size()) {
-                outputStringBuilder.append("<hr>");
+                outputStringBuilder.append("---");
             }
             outputStringBuilder.append("\n\n");
         }

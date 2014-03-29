@@ -16,7 +16,7 @@ Unique attribute
 
     Attributes within an XML tag must be unique. That is, <tag a="x" a="y"> is invalid.
 
-<hr>
+---
 
 XML version specified
 ---------------------
@@ -33,7 +33,7 @@ XML version specified
 
     The XML version should be specified. For example, <?xml version="1.0" encoding="UTF-8"?>.
 
-<hr>
+---
 
 XML encoding specified
 ----------------------
@@ -50,7 +50,7 @@ XML encoding specified
 
     The XML encoding should be specified. For example, <?xml version="1.0" encoding="UTF-8"?>.
 
-<hr>
+---
 
 Author tag specified
 --------------------
