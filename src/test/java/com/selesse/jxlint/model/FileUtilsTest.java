@@ -1,5 +1,6 @@
 package com.selesse.jxlint.model;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.selesse.jxlint.utils.FileUtils;
@@ -10,6 +11,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,53 +20,25 @@ import static org.junit.Assert.assertTrue;
 
 public class FileUtilsTest {
     private static File rootTempDir;
-    private File rootDirectory;
 
-    @After
-    public void teardown() throws IOException {
-        if (rootDirectory != null) {
-            org.apache.commons.io.FileUtils.deleteDirectory(rootDirectory);
-        }
+    private static void createFile(String... parts) throws IOException {
+        File file = new File(rootTempDir, Joiner.on(File.separator).join(parts));
+        Files.createParentDirs(file);
+        assertTrue(file.createNewFile());
     }
 
     @BeforeClass
-    public static void setup() {
+    public static void setup() throws IOException {
         rootTempDir = Files.createTempDir();
         rootTempDir.deleteOnExit();
-        try {
-            File tempFile1 = new File(rootTempDir.getAbsolutePath() + File.separator + "x");
-            boolean tempFile1NewFile = tempFile1.createNewFile();
-            File tempFile2 = new File(rootTempDir.getAbsolutePath() + File.separator + "x2");
-            boolean tempFile2NewFile = tempFile2.createNewFile();
-
-            File tempDir2 = new File(rootTempDir.getAbsolutePath() + File.separator + "dir");
-            boolean tempDir2mkdir = tempDir2.mkdir();
-
-            File tempFile3 = new File(tempDir2.getAbsolutePath() + File.separator + "3.xml");
-            boolean tempFile3NewFile = tempFile3.createNewFile();
-
-            File tempDir3 = new File(rootTempDir.getAbsolutePath() + File.separator + "w");
-            boolean tempDir3madeDir = tempDir3.mkdir();
-
-            File tempDir4 = new File(tempDir3.getAbsolutePath() + File.separator + "y");
-            boolean tempDir4madeDir = tempDir4.mkdir();
-
-            File tempDir5 = new File(tempDir4.getAbsolutePath() + File.separator + "z");
-            boolean tempDir5madeDir = tempDir5.mkdir();
-
-            File tempFile4 = new File(tempDir3.getAbsolutePath() + File.separator + "test.xml");
-            boolean tempFile4NewFile = tempFile4.createNewFile();
-
-            File tempFile5 = new File(tempDir4.getAbsolutePath() + File.separator + "test.xml");
-            boolean tempFile5NewFile = tempFile5.createNewFile();
-
-            // Wow, gross! This is done to appease FindBugs.
-            assertTrue("Files were all created property for test", tempFile1NewFile && tempFile2NewFile &&
-                    tempFile3NewFile && tempFile4NewFile && tempFile5NewFile && tempDir2mkdir && tempDir3madeDir &&
-                    tempDir4madeDir && tempDir5madeDir);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createFile("x");
+        createFile("x2");
+        createFile("dir", "3.xml");
+        createFile("w", "test.xml");
+        createFile("w", "y", "test.xml");
+        createFile("txt-this.txt.no");
+        createFile("Test.java");
+        createFile("Test.txt");
     }
 
     @AfterClass
@@ -72,80 +46,49 @@ public class FileUtilsTest {
         org.apache.commons.io.FileUtils.deleteDirectory(rootTempDir);
     }
 
+    private static void assertItemsEqualInAnyOrder(List<File> actual, String... expected) {
+        assertEquals(expected.length, actual.size());
+        List<String> filenames = Lists.newArrayList();
+        for (File f : actual) {
+            filenames.add(f.getName());
+        }
+        Collections.sort(filenames);
+        Arrays.sort(expected);
+        assertEquals(filenames, Arrays.asList(expected));
+    }
+
     @Test
     public void testListAllFiles() {
-        assertEquals(5, FileUtils.allFiles(rootTempDir).size());
+        assertEquals(8, FileUtils.allFiles(rootTempDir).size());
     }
 
     @Test
     public void testListAllXmlFiles() {
-        assertEquals(3, FileUtils.allFilesWithExtension(rootTempDir, "xml").size());
-
-        List<String> fileNames = Lists.newArrayList();
-
-        for (File file : FileUtils.allFilesWithExtension(rootTempDir, "xml")) {
-            fileNames.add(file.getName());
-        }
-
-        Collections.sort(fileNames);
-
-        assertEquals("3.xml", fileNames.get(0));
-        assertEquals("test.xml", fileNames.get(1));
-        assertEquals("test.xml", fileNames.get(2));
+        List<File> xmlFiles = FileUtils.allFilesWithExtension(rootTempDir, "xml");
+        assertItemsEqualInAnyOrder(xmlFiles, "3.xml", "test.xml", "test.xml");
     }
 
     @Test
     public void testListAllTxtFiles() throws IOException {
-        rootDirectory = Files.createTempDir();
-
-        File notText = new File(rootDirectory.getAbsolutePath() + File.separator + "txt-this.txt.no");
-        File notText2 = new File(rootDirectory.getAbsolutePath() + File.separator + "Test.java");
-        File text = new File(rootDirectory.getAbsolutePath() + File.separator + "Test.txt");
-
-        boolean notTextCreated = notText.createNewFile();
-        boolean notText2Created = notText2.createNewFile();
-        boolean textCreated = text.createNewFile();
-
-        assertEquals(true, notTextCreated && notText2Created && textCreated);
-
-        List<File> textFiles = FileUtils.allFilesWithExtension(rootDirectory, "txt");
-
-        assertEquals(1, textFiles.size());
-        assertEquals("Test.txt", textFiles.get(0).getName());
+        List<File> textFiles = FileUtils.allFilesWithExtension(rootTempDir, "txt");
+        assertItemsEqualInAnyOrder(textFiles, "Test.txt");
     }
-
 
     @Test
     public void testGetAllFilenames() {
         List<File> files = FileUtils.allFilesWithFilename(rootTempDir, "test.xml");
-
-        assertTrue(files.size() == 2);
-        assertEquals(files.get(0).getName(), "test.xml");
+        assertItemsEqualInAnyOrder(files, "test.xml", "test.xml");
     }
 
     @Test
     public void testGetAllMatchingFiles() {
         List<File> files = FileUtils.allFilesMatching(rootTempDir, ".*[0-9]+.*");
-
-        Collections.sort(files);
-
-        assertEquals(2, files.size());
-        File firstFile = files.get(0);
-        File secondFile = files.get(1);
-
-        assertEquals("3.xml", firstFile.getName());
-        assertEquals("x2", secondFile.getName());
+        assertItemsEqualInAnyOrder(files, "3.xml", "x2");
     }
 
     @Test
     public void testGetFilesContaining() {
         List<File> files = FileUtils.allFilesContaining(rootTempDir, "test");
-
-        assertEquals(2, files.size());
-        File firstFile = files.get(0);
-        File secondFile = files.get(1);
-
-        assertEquals("test.xml", firstFile.getName());
-        assertEquals("test.xml", secondFile.getName());
+        assertItemsEqualInAnyOrder(files, "test.xml", "test.xml");
     }
 }
