@@ -1,8 +1,6 @@
 package com.selesse.jxlint.report;
 
-import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
 import com.selesse.jxlint.model.rules.*;
 import com.selesse.jxlint.report.color.Color;
 import com.selesse.jxlint.settings.ProgramSettings;
@@ -52,38 +50,8 @@ public class DefaultReporter extends Reporter {
 
     @Override
     public void printFooter() {
-        int numberOfErrors = getNumberOfSeverityErrors(Severity.ERROR);
-        int numberOfWarnings = getNumberOfSeverityErrors(Severity.WARNING);
-        int numberOfFatal = getNumberOfSeverityErrors(Severity.FATAL);
-
         if (lintErrorList.size() > 0) {
-            out.println(String.format("There are %s, %s, and %s (%d total).",
-                    pluralize(numberOfWarnings, "warning"),
-                    pluralize(numberOfErrors, "error"),
-                    pluralize(numberOfFatal, "fatal error"),
-                    lintErrorList.size()
-            ));
+            out.println(getErrorReportString());
         }
-    }
-
-    private String pluralize(int numberOfErrors, String error) {
-        return numberOfErrors + " " + (numberOfErrors == 1 ? error : error + "s");
-    }
-
-    private int getNumberOfSeverityErrors(final Severity severity) {
-        Iterable<LintError> severityList = Iterables.filter(lintErrorList, new Predicate<LintError>() {
-            @Override
-            public boolean apply(LintError input) {
-                return input.getViolatedRule().getSeverity() == severity;
-            }
-        });
-
-        int errors = 0;
-
-        for (LintError ignored : severityList) {
-            errors++;
-        }
-
-        return errors;
     }
 }

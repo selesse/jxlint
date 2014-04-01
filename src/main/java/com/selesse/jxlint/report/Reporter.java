@@ -1,8 +1,11 @@
 package com.selesse.jxlint.report;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.settings.ProgramSettings;
 
 import java.io.PrintStream;
@@ -85,5 +88,43 @@ public abstract class Reporter {
 
             return firstCategory.ordinal() - secondCategory.ordinal();
         }
+    }
+
+    /**
+     * Report the number of errors for every category. For example,
+     * "There are 4 errors, 0 warnings, and 1 fatal error (5 total)."
+     */
+    public String getErrorReportString() {
+        int numberOfErrors = getNumberOfSeverityErrors(Severity.ERROR);
+        int numberOfWarnings = getNumberOfSeverityErrors(Severity.WARNING);
+        int numberOfFatal = getNumberOfSeverityErrors(Severity.FATAL);
+
+        return String.format("There are %s, %s, and %s (%d total).",
+                    pluralize(numberOfWarnings, "warning"),
+                    pluralize(numberOfErrors, "error"),
+                    pluralize(numberOfFatal, "fatal error"),
+                    lintErrorList.size()
+            );
+    }
+
+    private String pluralize(int numberOfErrors, String error) {
+        return numberOfErrors + " " + (numberOfErrors == 1 ? error : error + "s");
+    }
+
+    private int getNumberOfSeverityErrors(final Severity severity) {
+        Iterable<LintError> severityList = Iterables.filter(lintErrorList, new Predicate<LintError>() {
+            @Override
+            public boolean apply(LintError input) {
+                return input.getViolatedRule().getSeverity() == severity;
+            }
+        });
+
+        int errors = 0;
+
+        for (LintError ignored : severityList) {
+            errors++;
+        }
+
+        return errors;
     }
 }
