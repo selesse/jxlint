@@ -33,6 +33,7 @@ public class SequentialHtmlReporter extends Reporter {
         out.println("<body>");
         out.println("<h1> <center> " + nameAndVersion + " - Lint Report </center> </h1>");
         out.println("<h2> <center> " + new Date() + " </center> </h2>");
+        out.println("<div>" + getErrorReportString() + "</div>");
     }
 
     @Override
@@ -105,6 +106,7 @@ public class SequentialHtmlReporter extends Reporter {
     private void printDetailedHtmlError(LintError lintError) {
         out.println("<h3 id=\"" + getHrefSafeName(lintError) + "\"> " + lintError.getViolatedRule().getName() +
                 "</h3>");
+        out.println("<h4>" + lintError.getViolatedRule().getSummary() + "</h4>");
         out.println("<b>Category</b> : " + lintError.getViolatedRule().getCategory() + " <br>");
         out.println("<b>Severity</b> : " + lintError.getViolatedRule().getSeverity() + " <br>");
         if (!lintError.getViolatedRule().isEnabled()) {
