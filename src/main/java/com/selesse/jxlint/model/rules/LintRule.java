@@ -1,10 +1,15 @@
 package com.selesse.jxlint.model.rules;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.io.Files;
+import com.google.common.io.Resources;
 import com.selesse.jxlint.utils.EnumUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -139,6 +144,23 @@ public abstract class LintRule {
      */
     public String getDetailedDescription() {
         return detailedDescription;
+    }
+
+    /**
+     * Returns a String containing the file contents of "/src/main/resources/doc/rules/{ThisClass}.md".
+     * If no such file exists, the empty string is returned.
+     */
+    protected String getMarkdownDescription() {
+        String markdownDescription = "";
+        try {
+            URL documentationUrl = Resources.getResource("doc/rules/" + this.getClass().getSimpleName() + ".md");
+            List<String> fileContents = Resources.readLines(documentationUrl, Charsets.UTF_8);
+            markdownDescription = Joiner.on("\n").join(fileContents);
+        } catch (Exception e) {
+            System.err.println("Error: could not read Markdown description for " + this.getClass().getSimpleName());
+            e.printStackTrace();
+        }
+        return markdownDescription;
     }
 
     public void setDetailedDescription(String detailedDescription) {

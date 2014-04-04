@@ -2,13 +2,13 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.html.HtmlEscapers;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.settings.ProgramSettings;
 import com.selesse.jxlint.utils.EnumUtils;
 import com.selesse.jxlint.utils.FileUtils;
+import org.pegdown.PegDownProcessor;
 
 import java.io.PrintStream;
 import java.util.Date;
@@ -112,8 +112,7 @@ public class SequentialHtmlReporter extends Reporter {
         if (!lintError.getViolatedRule().isEnabled()) {
             out.println("<b> This rule is disabled by default </b> <br>");
         }
-        out.println("<pre>");
-        out.println(HtmlEscapers.htmlEscaper().escape(lintError.getViolatedRule().getDetailedDescription()));
-        out.println("</pre>");
+        PegDownProcessor pegDownProcessor = new PegDownProcessor();
+        out.println(pegDownProcessor.markdownToHtml(lintError.getViolatedRule().getDetailedDescription()));
     }
 }
