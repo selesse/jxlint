@@ -109,15 +109,14 @@ public class LintRuleInformation {
 
         // Name of a rule
         // --------------
-        // *Summary*: summary
-        // *Category*: CATEGORY
-        // *Severity*: Severity
-        // *Enabled by default*: yes
+        // **Summary** : summary
+        // **Category** : CATEGORY
+        // **Severity** : Severity
+        // **Enabled by default?** : yes
         //
-        // Detailed description:
+        // **Detailed description** :
         //
-        //     detailedExplanation
-        //     4 spaces indented
+        // detailedExplanation
         outputStringBuilder.append(underline(lintRule.getName(), "-")).append("\n");
         outputStringBuilder.append("**Summary** : ").append(lintRule.getSummary()).append("\n\n");
         outputStringBuilder.append("**Category** : ").append(lintRule.getCategory()).append("\n\n");
@@ -126,11 +125,7 @@ public class LintRuleInformation {
         outputStringBuilder.append("\n").append("**Detailed description** :").append("\n\n");
 
         String explanation = lintRule.getDetailedDescription();
-        Iterable<String> explanationLines = Splitter.onPattern("\r?\n").split(explanation);
-        for (String line : explanationLines) {
-            outputStringBuilder.append("    ").append(line).append("\n");
-        }
-
+        outputStringBuilder.append(explanation).append("\n");
         return outputStringBuilder.toString();
     }
 }
