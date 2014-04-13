@@ -25,13 +25,10 @@ public class AbstractReportTest extends AbstractTestCase {
         tempDirectory.deleteOnExit();
 
         LintRulesImpl.setInstance(new XmlLintRulesTestImpl());
-        LintRulesImpl.setExitAfterReporting(true);
     }
 
     protected void setupTestLinterAndRunProgramWithArgs(String[] args) {
-        LintRulesImpl.setExitAfterReporting(false);
-
-        Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings());
+        Jxlint jxlint = new Jxlint(new XmlLintRulesTestImpl(), new JxlintProgramSettings(), false);
         jxlint.parseArgumentsAndDispatch(args);
     }
 

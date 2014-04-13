@@ -17,15 +17,9 @@ import java.util.List;
 
 public class AuthorTagRule extends LintRule {
     public AuthorTagRule() {
-        super("Author tag specified", "author.xml files must contain a valid root-element <author> tag.",
-                "For style purposes, every author.xml file must contain an <author> tag as the root element. " +
-                "This tag should also have the 'name' and 'creationDate' attributes. " +
-                "For example:\n" +
-                "<?xml version=\"1.0\" encoding=\"UTF-8\">\n" +
-                "<author name=\"Steve Holt\" creationDate=\"2013-09-28\">\n" +
-                "  .. content ..\n" +
-                "</author>",
+        super("Author tag specified", "author.xml files must contain a valid root-element <author> tag.", "",
                 Severity.WARNING, Category.STYLE, false);
+        setDetailedDescription(getMarkdownDescription());
     }
 
     @Override

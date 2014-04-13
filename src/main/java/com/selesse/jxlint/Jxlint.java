@@ -35,12 +35,23 @@ public class Jxlint {
 
     /**
      * Initializes jxlint with a set of rules ({@link com.selesse.jxlint.model.rules.LintRules}
-     * and program settings {@link com.selesse.jxlint.settings.ProgramSettings})..
+     * and program settings {@link com.selesse.jxlint.settings.ProgramSettings}).
+     * This will make the program call {@link java.lang.System#exit(int)} under circumstances described in
+     * {@link com.selesse.jxlint.model.ExitType}.
      */
     public Jxlint(LintRules lintRules, ProgramSettings programSettings) {
+        this(lintRules, programSettings, true);
+    }
+
+    /**
+     * Same as {@link #Jxlint(com.selesse.jxlint.model.rules.LintRules, com.selesse.jxlint.settings.ProgramSettings)},
+     * but explicitly specify if we'll use {@link System#exit(int)} after reporting.
+     */
+    public Jxlint(LintRules lintRules, ProgramSettings programSettings, boolean exitAfterReporting) {
         this.programSettings = programSettings;
 
         LintRulesImpl.setInstance(lintRules);
+        LintRulesImpl.setExitAfterReporting(exitAfterReporting);
     }
 
     /**
@@ -80,7 +91,7 @@ public class Jxlint {
                     " must be selected.", ExitType.COMMAND_LINE_ERROR);
         }
         catch (ParseException e) {
-            System.out.println(e);
+            System.err.println(e);
             ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(programSettings),
                     ExitType.COMMAND_LINE_ERROR);
         }

@@ -122,27 +122,27 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testShowValidDisabledByDefaultOption() {
-        final List<String> expectedOutput = Lists.newArrayList(
-                  "Author tag specified"
-                , "--------------------"
-                , "Summary: author.xml files must contain a valid root-element <author> tag."
-                , ""
-                , "** Disabled by default **"
-                , ""
-                , "Severity: Warning"
-                , "Category: Style"
-                , ""
-                , "For style purposes, every author.xml file must contain an <author> tag as the root element. " +
-                  "This tag should also have the 'name' and 'creationDate' attributes. " +
-                  "For example:"
-                , "<?xml version=\"1.0\" encoding=\"UTF-8\">"
-                , "<author name=\"Steve Holt\" creationDate=\"2013-09-28\">"
-                , "  .. content .."
-                , "</author>\n\n"
-        );
+        String expectedRuleOutput =
+                "Author tag specified\n" +
+                "--------------------\n" +
+                "Summary: author.xml files must contain a valid root-element <author> tag.\n" +
+                "\n" +
+                "** Disabled by default **\n" +
+                "\n" +
+                "Severity: Warning\n" +
+                "Category: Style\n" +
+                "\n" +
+                "For style purposes, every author.xml file must contain an <author> tag as the\n" +
+                "root element. This tag should also have the 'name' and 'creationDate'\n" +
+                "attributes. For example:\n" +
+                "\n" +
+                "    <?xml version=\"1.0\" encoding=\"UTF-8\">\n" +
+                "    <author name=\"Steve Holt\" creationDate=\"2013-09-28\">\n" +
+                "      .. content ..\n" +
+                "    </author>\n\n";
 
         runExitTest(new String[] { "--show", "Author tag specified" }, tempDirectory,
-                Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
+                expectedRuleOutput, ExitType.SUCCESS);
     }
 
     @Test

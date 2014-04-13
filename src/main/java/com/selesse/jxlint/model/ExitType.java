@@ -1,7 +1,8 @@
 package com.selesse.jxlint.model;
 
 /**
- * Different exit codes that our program will output.
+ * Different exit codes that our program will output. Like most programs, 0 means success and non-0 represents
+ * some kind of error.
  */
 public enum ExitType {
     SUCCESS(0, "Success"),
