@@ -19,7 +19,7 @@ import java.util.List;
  * Class that is knowledgeable about {@link LintRules}. The corresponding static methods print out their knowledge,
  * and exit the program using {@link com.selesse.jxlint.ProgramExitter}.
  */
-public class LintRuleInformation {
+public class LintRuleInformationDisplayer {
     /**
      * List all of the {@link LintRule}s, in summary form:
      *

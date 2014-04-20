@@ -2,7 +2,7 @@ package com.selesse.jxlint;
 
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.actions.LintHandler;
-import com.selesse.jxlint.actions.LintRuleInformation;
+import com.selesse.jxlint.actions.LintRuleInformationDisplayer;
 import com.selesse.jxlint.cli.CommandLineOptions;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.JxlintOption;
@@ -53,13 +53,13 @@ public class Dispatcher {
             doVersion(programSettings);
         }
         else if (programOptions.hasOption(JxlintOption.LIST)) {
-            LintRuleInformation.listRules();
+            LintRuleInformationDisplayer.listRules();
         }
         else if (programOptions.hasOption(JxlintOption.SHOW)) {
-            LintRuleInformation.showRules(programOptions);
+            LintRuleInformationDisplayer.showRules(programOptions);
         }
         else if (programOptions.hasOption(JxlintOption.REPORT_RULES)) {
-            LintRuleInformation.printMarkdownRuleReport(programSettings);
+            LintRuleInformationDisplayer.printMarkdownRuleReport(programSettings);
         }
 
         boolean warningsAreErrors = false;
