@@ -1,4 +1,4 @@
-Rules for jxlint - 1.0.4
+Rules for jxlint - $$$VERSION$$$
 ========================
 
 Unique attribute
