@@ -3,12 +3,10 @@ package com.selesse.jxlint.model.rules;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import com.google.common.io.Resources;
 import com.selesse.jxlint.utils.EnumUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.List;
 
