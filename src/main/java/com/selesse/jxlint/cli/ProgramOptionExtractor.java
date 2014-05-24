@@ -15,37 +15,41 @@ public class ProgramOptionExtractor {
     public static ProgramOptions extractProgramOptions(CommandLine commandLine) {
         ProgramOptions programOptions = new ProgramOptions();
 
-        if (commandLine.hasOption("help")) {
+        if (commandLine.hasOption(JxlintOption.HELP.getOptionString())) {
             programOptions.addOption(JxlintOption.HELP);
         }
-        if (commandLine.hasOption("version")) {
+        if (commandLine.hasOption(JxlintOption.VERSION.getOptionString())) {
             programOptions.addOption(JxlintOption.VERSION);
         }
-        if (commandLine.hasOption("list")) {
+        if (commandLine.hasOption(JxlintOption.LIST.getOptionString())) {
             programOptions.addOption(JxlintOption.LIST);
         }
-        if (commandLine.hasOption("rules")) {
+        if (commandLine.hasOption(JxlintOption.REPORT_RULES.getOptionString())) {
             programOptions.addOption(JxlintOption.REPORT_RULES);
         }
-        if (commandLine.hasOption("show")) {
-            programOptions.addOption(JxlintOption.SHOW, commandLine.getOptionValue("show"));
+        if (commandLine.hasOption(JxlintOption.SHOW.getOptionString())) {
+            programOptions.addOption(JxlintOption.SHOW,
+                    commandLine.getOptionValue(JxlintOption.SHOW.getOptionString()));
         }
-        if (commandLine.hasOption("disable")) {
-            programOptions.addOption(JxlintOption.DISABLE, commandLine.getOptionValue("disable"));
+        if (commandLine.hasOption(JxlintOption.DISABLE.getOptionString())) {
+            programOptions.addOption(JxlintOption.DISABLE,
+                    commandLine.getOptionValue(JxlintOption.DISABLE.getOptionString()));
         }
-        if (commandLine.hasOption("enable")) {
-            programOptions.addOption(JxlintOption.ENABLE, commandLine.getOptionValue("enable"));
+        if (commandLine.hasOption(JxlintOption.ENABLE.getOptionString())) {
+            programOptions.addOption(JxlintOption.ENABLE,
+                    commandLine.getOptionValue(JxlintOption.ENABLE.getOptionString()));
         }
-        if (commandLine.hasOption("check")) {
-            programOptions.addOption(JxlintOption.CHECK, commandLine.getOptionValue("check"));
+        if (commandLine.hasOption(JxlintOption.CHECK.getOptionString())) {
+            programOptions.addOption(JxlintOption.CHECK,
+                    commandLine.getOptionValue(JxlintOption.CHECK.getOptionString()));
         }
-        if (commandLine.hasOption("nowarn")) {
+        if (commandLine.hasOption(JxlintOption.NO_WARNINGS.getOptionString())) {
             programOptions.addOption(JxlintOption.NO_WARNINGS);
         }
-        if (commandLine.hasOption("Wall")) {
+        if (commandLine.hasOption(JxlintOption.ALL_WARNINGS.getOptionString())) {
             programOptions.addOption(JxlintOption.ALL_WARNINGS);
         }
-        if (commandLine.hasOption("Werror")) {
+        if (commandLine.hasOption(JxlintOption.WARNINGS_ARE_ERRORS.getOptionString())) {
             programOptions.addOption(JxlintOption.WARNINGS_ARE_ERRORS);
         }
         if (commandLine.hasOption("quiet")) {
