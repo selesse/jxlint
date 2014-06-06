@@ -8,6 +8,7 @@ import com.selesse.jxlint.settings.ProgramSettings;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -98,8 +99,12 @@ public class Reporters {
                 case QUIET:
                     return new DefaultReporter(out, settings, lintErrors);
             }
-        } catch (ReflectiveOperationException e) {
-            // We failed some part of reflection... It's okay, though, since we initialized the reporter to System.out
+        }
+        // If there any any exceptions, we default to System.out
+          catch (InvocationTargetException ignored) {
+        } catch (NoSuchMethodException ignored) {
+        } catch (InstantiationException ignored) {
+        } catch (IllegalAccessException ignored) {
         }
 
         return reporter;

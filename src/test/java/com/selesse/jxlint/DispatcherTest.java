@@ -36,7 +36,7 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testHelpProperlyExtracted() {
-        String newLineSeparator = System.lineSeparator();
+        String newLineSeparator = System.getProperty("line.separator");
 
         final List<String> expectedOutput = Lists.newArrayList(
                 "usage: jxlint [flags] <directory>"
