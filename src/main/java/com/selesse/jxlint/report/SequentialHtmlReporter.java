@@ -8,6 +8,7 @@ import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.settings.ProgramSettings;
 import com.selesse.jxlint.utils.EnumUtils;
 import com.selesse.jxlint.utils.FileUtils;
+import com.selesse.jxlint.utils.HtmlUtils;
 import org.pegdown.PegDownProcessor;
 
 import java.io.PrintStream;
@@ -51,7 +52,7 @@ public class SequentialHtmlReporter extends Reporter {
             out.print(" on line " + error.getLineNumber());
         }
         out.println("<br/>");
-        out.println(error.getMessage() + "<br>");
+        out.println(HtmlUtils.htmlEncode(error.getMessage()) + "<br>");
         if (error.getException() != null) {
             String exceptionLines = Joiner.on("<br>").join(error.getException().getStackTrace());
             out.println("<pre>" + exceptionLines + "</pre>");

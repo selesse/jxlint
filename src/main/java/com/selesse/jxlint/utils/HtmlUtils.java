@@ -19,7 +19,7 @@ public class HtmlUtils {
         });
     }
 
-    private static String htmlEncode(String string) {
+    public static String htmlEncode(String string) {
         return HtmlEscapers.htmlEscaper().escape(string);
     }
 
