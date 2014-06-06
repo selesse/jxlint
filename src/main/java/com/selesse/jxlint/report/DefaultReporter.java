@@ -39,7 +39,7 @@ public class DefaultReporter extends Reporter {
         String lineNumberString = "";
 
         if (errorLineNumber > 0) {
-            lineNumberString = " on line " + lineNumberString;
+            lineNumberString = " on line " + errorLineNumber;
         }
 
         LintRule violatedRule = error.getViolatedRule();
