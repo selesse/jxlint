@@ -35,9 +35,16 @@ public class DefaultReporter extends Reporter {
         File sourceDirectory = LintRulesImpl.getInstance().getSourceDirectory();
         String relativePath = sourceDirectory.toURI().relativize(error.getFile().toURI()).getPath();
 
+        int errorLineNumber = error.getLineNumber();
+        String lineNumberString = "";
+
+        if (errorLineNumber > 0) {
+            lineNumberString = " on line " + lineNumberString;
+        }
+
         LintRule violatedRule = error.getViolatedRule();
-        out.println(String.format("[%s] \"%s\" in %s",  colorSeverity(violatedRule.getSeverity()),
-                Color.WHITE.wrapAround(violatedRule.getName()), relativePath));
+        out.println(String.format("[%s] \"%s\" in %s%s",  colorSeverity(violatedRule.getSeverity()),
+                Color.WHITE.wrapAround(violatedRule.getName()), relativePath, lineNumberString));
         if (!Strings.isNullOrEmpty(error.getMessage())) {
             out.println("    " + error.getMessage());
         }
