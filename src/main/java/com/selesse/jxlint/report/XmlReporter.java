@@ -3,7 +3,6 @@ package com.selesse.jxlint.report;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.xml.XmlEscapers;
-import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.settings.ProgramSettings;
@@ -35,7 +34,7 @@ public class XmlReporter extends Reporter {
     }
 
     @Override
-    public void printCategoryHeader(Category category) {
+    public void printCategoryHeader(Enum<?> category) {
     }
 
     @Override
@@ -46,7 +45,7 @@ public class XmlReporter extends Reporter {
                 "        name=\"" + xmlEncode(violatedRule.getName()) + "\"",
                 "        severity=\"" + xmlEncode(EnumUtils.toHappyString(violatedRule.getSeverity())) + "\"",
                 "        message=\"" + xmlEncode(error.getMessage()) + "\"",
-                "        category=\"" + xmlEncode(EnumUtils.toHappyString(violatedRule.getCategory())) + "\"",
+                "        category=\"" + xmlEncode(violatedRule.getCategory().toString()) + "\"",
                 "        summary=\"" + xmlEncode(violatedRule.getSummary()) + "\"",
                 "        explanation=\"" + xmlEncode(violatedRule.getDetailedDescription()) + "\"",
                 "        location=\"" + xmlEncode(error.getFile().getAbsolutePath()) + "\"",

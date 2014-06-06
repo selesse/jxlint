@@ -2,7 +2,6 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
@@ -37,11 +36,11 @@ public abstract class Reporter {
      * The category-error group is defined by a category header and one or more errors,
      */
     public void writeReport() {
-        Category lastCategory = null;
+        Enum<?> lastCategory = null;
         printHeader();
         Collections.sort(lintErrorList, new CategoryThenNameComparator());
         for (LintError error : lintErrorList) {
-            Category currentCategory = error.getViolatedRule().getCategory();
+            Enum<?> currentCategory = error.getViolatedRule().getCategory();
             if (lastCategory == null || currentCategory != lastCategory) {
                 printCategoryHeader(error.getViolatedRule().getCategory());
                 lastCategory = currentCategory;
@@ -60,7 +59,7 @@ public abstract class Reporter {
     /**
      * Print a header for a particular category. Refer to {@link #writeReport()} for the print order.
      */
-    protected abstract void printCategoryHeader(Category category);
+    protected abstract void printCategoryHeader(Enum<?> category);
 
     /**
      * Print a particular {@link LintError}. Refer to {@link #writeReport()} for the print order.
@@ -79,8 +78,8 @@ public abstract class Reporter {
             LintRule o1ViolatedRule = o1.getViolatedRule();
             LintRule o2ViolatedRule = o2.getViolatedRule();
 
-            Category firstCategory = o1ViolatedRule.getCategory();
-            Category secondCategory = o2ViolatedRule.getCategory();
+            Enum<?> firstCategory = o1ViolatedRule.getCategory();
+            Enum<?> secondCategory = o2ViolatedRule.getCategory();
 
             if (firstCategory == secondCategory) {
                 return o1ViolatedRule.getName().compareTo(o2ViolatedRule.getName());

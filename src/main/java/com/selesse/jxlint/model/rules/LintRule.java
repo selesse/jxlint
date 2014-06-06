@@ -51,11 +51,11 @@ public abstract class LintRule {
     private String summary;
     private String detailedDescription;
     private Severity severity;
-    private Category category;
+    private Enum<?> category;
     private boolean enabled = true;
     protected List<LintError> lintErrors;
 
-    public LintRule(String name, String summary, String detailedDescription, Severity severity, Category category) {
+    public LintRule(String name, String summary, String detailedDescription, Severity severity, Enum<?> category) {
         this.name = name;
         this.summary = summary;
         this.detailedDescription = detailedDescription;
@@ -64,8 +64,8 @@ public abstract class LintRule {
         this.lintErrors = Lists.newArrayList();
     }
 
-    public LintRule(String name, String summary, String detailedDescription, Severity severity, Category category,
-                    boolean isEnabledByDefault) {
+    public LintRule(String name, String summary, String detailedDescription, Severity severity,
+                    Enum<?> category, boolean isEnabledByDefault) {
         this(name, summary, detailedDescription, severity, category);
         this.enabled = isEnabledByDefault;
     }
@@ -173,11 +173,11 @@ public abstract class LintRule {
         this.severity = severity;
     }
 
-    public Category getCategory() {
+    public Enum<?> getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(Enum<?> category) {
         this.category = category;
     }
 
@@ -211,7 +211,7 @@ public abstract class LintRule {
                 "Summary: " + getSummary(),
                 isEnabled() ? "" : "\n** Disabled by default **\n",
                 "Severity: " + EnumUtils.toHappyString(getSeverity()),
-                "Category: " + EnumUtils.toHappyString(getCategory()),
+                "Category: " + getCategory(),
                 "",
                 getDetailedDescription()
         );

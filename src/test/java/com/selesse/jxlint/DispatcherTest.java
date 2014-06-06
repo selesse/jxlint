@@ -111,7 +111,7 @@ public class DispatcherTest extends AbstractTestCase {
                 , "Summary: Encoding of the XML must be specified."
                 , ""
                 , "Severity: Warning"
-                , "Category: Lint"
+                , "Category: LINT"
                 , ""
                 , "The XML encoding should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.\n\n"
         );
@@ -130,7 +130,7 @@ public class DispatcherTest extends AbstractTestCase {
                 "** Disabled by default **\n" +
                 "\n" +
                 "Severity: Warning\n" +
-                "Category: Style\n" +
+                "Category: STYLE\n" +
                 "\n" +
                 "For style purposes, every author.xml file must contain an <author> tag as the\n" +
                 "root element. This tag should also have the 'name' and 'creationDate'\n" +

@@ -24,9 +24,9 @@ public class DefaultReporter extends Reporter {
     }
 
     @Override
-    protected void printCategoryHeader(Category category) {
+    protected void printCategoryHeader(Enum<?> category) {
         out.println();
-        out.println("    " + Color.GREEN.wrapAround("-- " + EnumUtils.toHappyString(category) + " --"));
+        out.println("    " + Color.GREEN.wrapAround("-- " + category + " --"));
         out.println();
     }
 

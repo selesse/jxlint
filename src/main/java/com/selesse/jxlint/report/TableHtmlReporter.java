@@ -2,7 +2,6 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.settings.ProgramSettings;
@@ -41,7 +40,7 @@ public class TableHtmlReporter extends Reporter {
     }
 
     @Override
-    protected void printCategoryHeader(Category category) {}
+    protected void printCategoryHeader(Enum<?> category) {}
 
     @Override
     public void printError(LintError error) {
@@ -72,7 +71,7 @@ public class TableHtmlReporter extends Reporter {
 
         return Lists.newArrayList(
                 rule.getName(),
-                EnumUtils.toHappyString(rule.getCategory()),
+                rule.getCategory().toString(),
                 EnumUtils.toHappyString(rule.getSeverity()),
                 error.getMessage(),
                 rule.getSummary(),

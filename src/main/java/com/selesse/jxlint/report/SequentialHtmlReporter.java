@@ -2,11 +2,9 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.settings.ProgramSettings;
-import com.selesse.jxlint.utils.EnumUtils;
 import com.selesse.jxlint.utils.FileUtils;
 import com.selesse.jxlint.utils.HtmlUtils;
 import org.pegdown.PegDownProcessor;
@@ -38,8 +36,8 @@ public class SequentialHtmlReporter extends Reporter {
     }
 
     @Override
-    protected void printCategoryHeader(Category category) {
-        out.println("<h2> <u> " + EnumUtils.toHappyString(category) + " </u> </h2>");
+    protected void printCategoryHeader(Enum<?> category) {
+        out.println("<h2> <u> " + category + " </u> </h2>");
     }
 
     @Override
