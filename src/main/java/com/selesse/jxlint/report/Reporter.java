@@ -85,7 +85,7 @@ public abstract class Reporter {
                 return o1ViolatedRule.getName().compareTo(o2ViolatedRule.getName());
             }
 
-            return firstCategory.ordinal() - secondCategory.ordinal();
+            return firstCategory.toString().compareToIgnoreCase(secondCategory.toString());
         }
     }
 
