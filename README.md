@@ -39,7 +39,7 @@ Quick Start
 -----------
 
 1. Clone this repository. Run `./gradlew release publish`.
-2. Specify 'com.selesse:jxlint:1.1.1' as a local Maven dependency.
+2. Specify 'com.selesse:jxlint:1.2.0' as a local Maven dependency.
 3. Make customizations:
 
   Create all your rules. It's recommended to put all the rules in one directory,
