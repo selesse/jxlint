@@ -90,8 +90,11 @@ public class Jxlint {
             ProgramExitter.exitProgramWithMessage("Only one of " + Joiner.on(", ").join(optionNames) +
                     " must be selected.", ExitType.COMMAND_LINE_ERROR);
         }
+        catch (UnrecognizedOptionException e) {
+            ProgramExitter.exitProgramWithMessage("Unrecognized option: " + e.getOption(), ExitType.COMMAND_LINE_ERROR);
+        }
         catch (ParseException e) {
-            System.err.println(e);
+            e.printStackTrace();
             ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(programSettings),
                     ExitType.COMMAND_LINE_ERROR);
         }
