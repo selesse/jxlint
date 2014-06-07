@@ -29,6 +29,7 @@ public class CommandLineOptions {
         // If this order is modified, make sure to modify "CommandLineOptions.getOptionsOrder".
         options.addOption("h", "help", false, "Usage information, help message.");
         options.addOption("v", "version", false, "Output version information.");
+        options.addOption("p", "profile", false, "Measure time every rule takes to complete.");
         options.addOption("l", "list", false, "Lists lint rules with a short, summary explanation.");
         options.addOption("r", "rules", false, "Prints a Markdown file containing the program's rules.");
         options.addOption(OptionBuilder.withLongOpt("show").
@@ -118,7 +119,7 @@ public class CommandLineOptions {
      * {@link com.selesse.jxlint.cli.CommandLineOptions.OptionComparator}.
      */
     private static String getOptionsOrder() {
-        return "hvlrscdewWallWerrorqtx";
+        return "hvplrscdewWallWerrorqtx";
     }
 
     /**

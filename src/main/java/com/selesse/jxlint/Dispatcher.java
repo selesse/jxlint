@@ -10,6 +10,7 @@ import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.Severity;
+import com.selesse.jxlint.settings.Profiler;
 import com.selesse.jxlint.settings.ProgramSettings;
 
 import java.io.File;
@@ -51,6 +52,9 @@ public class Dispatcher {
         }
         else if (programOptions.hasOption(JxlintOption.VERSION)) {
             doVersion(programSettings);
+        }
+        else if (programOptions.hasOption(JxlintOption.PROFILE)) {
+            Profiler.setEnabled(true);
         }
         else if (programOptions.hasOption(JxlintOption.LIST)) {
             LintRuleInformationDisplayer.listRules();

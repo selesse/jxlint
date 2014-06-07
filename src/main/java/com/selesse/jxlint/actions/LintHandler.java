@@ -45,13 +45,13 @@ public class LintHandler {
         linter.performLintValidations();
         List<LintError> lintErrors = linter.getLintErrors();
 
-        reportLintErrors(lintErrors, settings);
+        reportLintErrors(lintErrors, settings, options);
         if (exitAfterReport) {
             exitWithAppropriateStatus(lintErrors);
         }
     }
 
-    private void reportLintErrors(List<LintError> lintErrors, ProgramSettings settings) {
+    private void reportLintErrors(List<LintError> lintErrors, ProgramSettings settings, ProgramOptions options) {
         OutputType outputType = options.getOutputType();
         String outputTypePath = options.getOption(JxlintOption.OUTPUT_TYPE_PATH);
 

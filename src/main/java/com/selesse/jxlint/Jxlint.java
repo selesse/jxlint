@@ -8,6 +8,7 @@ import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
+import com.selesse.jxlint.settings.Profiler;
 import com.selesse.jxlint.settings.ProgramSettings;
 import org.apache.commons.cli.*;
 import org.fusesource.jansi.AnsiConsole;
@@ -61,6 +62,7 @@ public class Jxlint {
      * @param args Your program's command line arguments.
      */
     public void parseArgumentsAndDispatch(String[] args) {
+        Profiler.setStartTime(System.currentTimeMillis());
         if (args.length == 0) {
             args = new String[] { "--help" };
         }

@@ -3,6 +3,7 @@ package com.selesse.jxlint.linter;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.settings.Profiler;
 
 import java.util.List;
 
@@ -27,8 +28,12 @@ public class Linter {
      */
     public void performLintValidations() {
         for (LintRule lintRule : rules) {
+            long startTime = System.currentTimeMillis();
             lintRule.validate();
             lintErrors.addAll(lintRule.getLintErrors());
+            long endTime = System.currentTimeMillis();
+
+            Profiler.addExecutionTime(lintRule, endTime - startTime);
         }
     }
 

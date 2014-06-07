@@ -1,6 +1,7 @@
 package com.selesse.jxlint;
 
 import com.selesse.jxlint.model.ExitType;
+import com.selesse.jxlint.settings.Profiler;
 
 /**
  * Exits the program with provided {@link ExitType}s.
@@ -13,8 +14,7 @@ public class ProgramExitter {
      * error code.
      */
     public static void exitProgram(ExitType exitType) {
-        ProgramExitter.outputMessage = "";
-        System.exit(exitType.getErrorCode());
+        exitProgramWithMessage("", exitType);
     }
 
     /**
@@ -25,6 +25,11 @@ public class ProgramExitter {
         ProgramExitter.outputMessage = outputMessage;
         if (outputMessage.trim().length() > 0) {
             System.out.println(outputMessage);
+        }
+        if (Profiler.isEnabled()) {
+            Profiler.setStopTime(System.currentTimeMillis());
+            System.out.println();
+            System.out.println(Profiler.getGeneratedProfileReport());
         }
         System.exit(exitType.getErrorCode());
     }

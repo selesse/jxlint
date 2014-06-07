@@ -42,6 +42,7 @@ public class DispatcherTest extends AbstractTestCase {
                 "usage: jxlint [flags] <directory>"
                 , " -h,--help                Usage information, help message."
                 , " -v,--version             Output version information."
+                , " -p,--profile             Measure time every rule takes to complete."
                 , " -l,--list                Lists lint rules with a short, summary"
                 , "                          explanation."
                 , " -r,--rules               Prints a Markdown file containing the program's"
