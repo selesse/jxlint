@@ -147,6 +147,7 @@ idea of what you get "for free" if you use jxlint:
     usage: jxlint [flags] <directory>
      -h,--help                Usage information, help message.
      -v,--version             Output version information.
+     -p,--profile             Measure time every rule takes to complete.
      -l,--list                Lists lint rules with a short, summary
                               explanation.
      -r,--rules               Prints a HTML file containing the program's
