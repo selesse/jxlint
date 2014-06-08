@@ -100,5 +100,12 @@ public class Jxlint {
             ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(programSettings),
                     ExitType.COMMAND_LINE_ERROR);
         }
+
+        // This is done both here, and in ProgramExitter#exitProgramWithMessage.
+        // Why? Because we have two possible program flows: we exit with System.exit, or we don't.
+        if (Profiler.isEnabled()) {
+            Profiler.setStopTime(System.currentTimeMillis());
+            Profiler.printProfileReport();
+        }
     }
 }

@@ -22,14 +22,17 @@ public class ProgramExitter {
      * error code.
      */
     public static void exitProgramWithMessage(String outputMessage, ExitType exitType) {
-        ProgramExitter.outputMessage = outputMessage;
-        if (outputMessage.trim().length() > 0) {
-            System.out.println(outputMessage);
-        }
+        // This is done both here, and in Jxlint#parseArgumentsAndDispatch.
+        // Why? Because we have two possible program flows: we exit with System.exit, or we don't.
         if (Profiler.isEnabled()) {
             Profiler.setStopTime(System.currentTimeMillis());
-            System.out.println();
-            System.out.println(Profiler.getGeneratedProfileReport());
+            outputMessage += Profiler.getGeneratedProfileReport();
+        }
+
+        ProgramExitter.outputMessage = outputMessage;
+
+        if (outputMessage.trim().length() > 0) {
+            System.out.println(outputMessage);
         }
         System.exit(exitType.getErrorCode());
     }

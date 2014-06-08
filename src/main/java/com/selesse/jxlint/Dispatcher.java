@@ -46,15 +46,16 @@ public class Dispatcher {
      * </ol>
      */
     public static void dispatch(ProgramOptions programOptions, ProgramSettings programSettings) {
+        if (programOptions.hasOption(JxlintOption.PROFILE)) {
+            Profiler.setEnabled(true);
+        }
+
         // If/else train of mutually exclusive options
         if (programOptions.hasOption(JxlintOption.HELP)) {
             doHelp(programSettings);
         }
         else if (programOptions.hasOption(JxlintOption.VERSION)) {
             doVersion(programSettings);
-        }
-        else if (programOptions.hasOption(JxlintOption.PROFILE)) {
-            Profiler.setEnabled(true);
         }
         else if (programOptions.hasOption(JxlintOption.LIST)) {
             LintRuleInformationDisplayer.listRules();

@@ -65,6 +65,17 @@ public class Profiler {
     }
 
     public static String getGeneratedProfileReport() {
-        return getJxlintRuntimeReportString() + "\n\n" + getRuleReportString();
+        String profileReport = "\n\n" + getJxlintRuntimeReportString();
+
+        String ruleReportString = getRuleReportString();
+        if (ruleReportString.trim().length() > 0) {
+            profileReport += "\n\n" + getRuleReportString();
+        }
+
+        return profileReport;
+    }
+
+    public static void printProfileReport() {
+        System.out.println(getGeneratedProfileReport());
     }
 }
