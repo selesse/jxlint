@@ -73,7 +73,7 @@ public class AbstractTestCase {
         expectedSystemExit.expectSystemExitWithStatus(exitType.getErrorCode());
         expectedSystemExit.checkAssertionAfterwards(assertion);
 
-        checkLint(args, sourceDirectory);
+        checkLint(args, sourceDirectory, true);
     }
 
     protected void runExitTest(String[] args, File sourceDirectory, ExitType exitType) {
@@ -82,6 +82,6 @@ public class AbstractTestCase {
         }
 
         expectedSystemExit.expectSystemExitWithStatus(exitType.getErrorCode());
-        checkLint(args, sourceDirectory);
+        checkLint(args, sourceDirectory, true);
     }
 }
