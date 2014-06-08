@@ -4,6 +4,7 @@ IMPROVEMENTS:
 
   - Add profile option (`-p`, `--profile`)
   - Add special handling for unrecognized options
+  - Multiple errors within the same file are now sorted by their line numbers.
 
 BUG FIXES:
 

@@ -5,6 +5,8 @@ import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.settings.Profiler;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -30,12 +32,21 @@ public class Linter {
         for (LintRule lintRule : rules) {
             long startTime = System.currentTimeMillis();
             lintRule.validate();
+            List<LintError> lintErrorList = lintRule.getLintErrors();
+            Collections.sort(lintErrorList, lineNumberComparator);
             lintErrors.addAll(lintRule.getLintErrors());
             long endTime = System.currentTimeMillis();
 
             Profiler.addExecutionTime(lintRule, endTime - startTime);
         }
     }
+
+    private static final Comparator<LintError> lineNumberComparator = new Comparator<LintError>() {
+        @Override
+        public int compare(LintError o1, LintError o2) {
+            return o1.getLineNumber() - o2.getLineNumber();
+        }
+    };
 
     /**
      * Returns all the {@link com.selesse.jxlint.model.rules.LintError}s that have been found through validations
