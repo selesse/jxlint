@@ -46,9 +46,7 @@ public class Dispatcher {
      * </ol>
      */
     public static void dispatch(ProgramOptions programOptions, ProgramSettings programSettings) {
-        if (programOptions.hasOption(JxlintOption.PROFILE)) {
-            Profiler.setEnabled(true);
-        }
+        Profiler.setEnabled(programOptions.hasOption(JxlintOption.PROFILE));
 
         // If/else train of mutually exclusive options
         if (programOptions.hasOption(JxlintOption.HELP)) {
