@@ -3,6 +3,8 @@ jxlint
 
 [![Build status](https://travis-ci.org/selesse/jxlint.png)](https://travis-ci.org/selesse/jxlint)
 
+- [Changelog](CHANGELOG.md)
+
 jxlint is a Java framework for performing static analysis. Its name is derived
 from [lint](http://en.wikipedia.org/wiki/Lint_%28software%29) tools and is
 partially inspired by [Android's lint tool](http://developer.android.com/tools/help/lint.html).
