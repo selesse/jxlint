@@ -53,6 +53,7 @@ public class Jxlint {
 
         LintRulesImpl.setInstance(lintRules);
         LintRulesImpl.setExitAfterReporting(exitAfterReporting);
+        Profiler.setEnabled(false);
     }
 
     /**
