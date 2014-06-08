@@ -2,6 +2,7 @@ package com.selesse.jxlint;
 
 import com.google.common.base.Charsets;
 import com.selesse.jxlint.model.ExitType;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
 import com.selesse.jxlint.testassertions.EqualsAssertion;
@@ -46,7 +47,7 @@ public class AbstractTestCase {
     }
 
     protected String checkLint(String[] args, File sourceDirectory) {
-        return checkLint(args, sourceDirectory, true);
+        return checkLint(args, sourceDirectory, LintRulesImpl.willExitAfterReporting());
     }
 
     /**
