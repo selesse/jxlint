@@ -33,7 +33,7 @@ public class Linter {
             long startTime = System.currentTimeMillis();
             lintRule.validate();
             List<LintError> lintErrorList = lintRule.getLintErrors();
-            Collections.sort(lintErrorList, lineNumberComparator);
+            Collections.sort(lintErrorList, fileThenLineNumberComparator);
             lintErrors.addAll(lintRule.getLintErrors());
             long endTime = System.currentTimeMillis();
 
@@ -41,10 +41,13 @@ public class Linter {
         }
     }
 
-    private static final Comparator<LintError> lineNumberComparator = new Comparator<LintError>() {
+    private static final Comparator<LintError> fileThenLineNumberComparator = new Comparator<LintError>() {
         @Override
         public int compare(LintError o1, LintError o2) {
-            return o1.getLineNumber() - o2.getLineNumber();
+            if (o1.getFile() == o2.getFile()) {
+                return o1.getLineNumber() - o2.getLineNumber();
+            }
+            return o1.getFile().compareTo(o2.getFile());
         }
     };
 
