@@ -71,4 +71,18 @@ public class AbstractLintRulesTest {
         assertEquals(0, lintRules.getOnlyRules(badRules).size());
         assertEquals(lintRules.getAllEnabledRules().size(), lintRules.getAllEnabledRulesAsWellAs(badRules).size());
     }
+
+    @Test
+    public void testBadCategoriesGetIgnored() {
+        List<String> badCategories = Lists.newArrayList("hoo", "haw");
+
+        assertEquals(0, lintRules.getRulesWithCategoryNames(badCategories).size());
+    }
+
+    @Test
+    public void testGetCategoriesReturnsRightAmountOfRules() {
+        List<String> categories = Lists.newArrayList("LINT");
+
+        assertEquals(2, lintRules.getRulesWithCategoryNames(categories).size());
+    }
 }

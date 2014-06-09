@@ -18,7 +18,7 @@ public class UniqueAttributeRule extends LintRule {
     public UniqueAttributeRule() {
         super("Unique attribute", "Attributes within a tag must be unique.",
                 "Attributes within an XML tag must be unique. That is, <tag a=\"x\" a=\"y\"> is invalid.",
-                Severity.ERROR, Category.LINT);
+                Severity.ERROR, Category.PERFORMANCE);
     }
 
     @Override

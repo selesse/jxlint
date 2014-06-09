@@ -42,6 +42,10 @@ public class ProgramOptionExtractor {
             programOptions.addOption(JxlintOption.ENABLE,
                     commandLine.getOptionValue(JxlintOption.ENABLE.getOptionString()));
         }
+        if (commandLine.hasOption(JxlintOption.CATEGORY.getOptionString())) {
+            programOptions.addOption(JxlintOption.CATEGORY,
+                    commandLine.getOptionValue(JxlintOption.CATEGORY.getOptionString()));
+        }
         if (commandLine.hasOption(JxlintOption.CHECK.getOptionString())) {
             programOptions.addOption(JxlintOption.CHECK,
                     commandLine.getOptionValue(JxlintOption.CHECK.getOptionString()));

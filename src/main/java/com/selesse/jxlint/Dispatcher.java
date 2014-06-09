@@ -1,5 +1,7 @@
 package com.selesse.jxlint;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.actions.LintHandler;
 import com.selesse.jxlint.actions.LintRuleInformationDisplayer;
@@ -7,12 +9,11 @@ import com.selesse.jxlint.cli.CommandLineOptions;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.ProgramOptions;
-import com.selesse.jxlint.model.rules.LintRule;
-import com.selesse.jxlint.model.rules.LintRulesImpl;
-import com.selesse.jxlint.model.rules.Severity;
+import com.selesse.jxlint.model.rules.*;
 import com.selesse.jxlint.settings.Profiler;
 import com.selesse.jxlint.settings.ProgramSettings;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.List;
 
@@ -47,6 +48,8 @@ public class Dispatcher {
      */
     public static void dispatch(ProgramOptions programOptions, ProgramSettings programSettings) {
         Profiler.setEnabled(programOptions.hasOption(JxlintOption.PROFILE));
+
+        LintRules lintRules = LintRulesImpl.getInstance();
 
         // If/else train of mutually exclusive options
         if (programOptions.hasOption(JxlintOption.HELP)) {
@@ -89,45 +92,74 @@ public class Dispatcher {
                 ProgramExitter.exitProgramWithMessage(outputBuffer, ExitType.COMMAND_LINE_ERROR);
             }
 
-            LintRulesImpl.getInstance().setSourceDirectory(new File(sourceDirectoryString));
+            lintRules.setSourceDirectory(new File(sourceDirectoryString));
         }
         else {
-            ProgramExitter.exitProgramWithMessage("Error: could not find directory to validate.", ExitType.COMMAND_LINE_ERROR);
+            ProgramExitter.exitProgramWithMessage("Error: could not find directory to validate.",
+                    ExitType.COMMAND_LINE_ERROR);
         }
 
         if (programOptions.hasOption(JxlintOption.CHECK)) {
             String checkRules = programOptions.getOption(JxlintOption.CHECK);
-            List<String> checkRulesList = ProgramOptions.getListFromRawOptionStringOrDie(checkRules);
+            List<String> checkRulesList = null;
+            try {
+                checkRulesList = ProgramOptions.getRuleListFromOptionString(checkRules);
+            } catch (NonExistentLintRuleException e) {
+                e.printStackTrace();
+            }
 
-            handleLint(LintRulesImpl.getInstance().getOnlyRules(checkRulesList), warningsAreErrors, programOptions,
-                    programSettings);
+            handleLint(lintRules.getOnlyRules(checkRulesList), warningsAreErrors, programOptions, programSettings);
             return;
         }
 
         // By default, we only check enabled rules.
         // We adjust this according to the options below.
-        List<LintRule> lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllEnabledRules());
+        List<LintRule> lintRuleList = Lists.newArrayList(lintRules.getAllEnabledRules());
 
         if (programOptions.hasOption(JxlintOption.ALL_WARNINGS)) {
-            lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllRules());
+            lintRuleList = Lists.newArrayList(lintRules.getAllRules());
         }
         else if (programOptions.hasOption(JxlintOption.NO_WARNINGS)) {
-            lintRuleList = Lists.newArrayList(LintRulesImpl.getInstance().getAllRulesWithSeverity(Severity.ERROR));
-            lintRuleList.addAll(LintRulesImpl.getInstance().getAllRulesWithSeverity(Severity.FATAL));
+            lintRuleList = Lists.newArrayList(lintRules.getAllRulesWithSeverity(Severity.ERROR));
+            lintRuleList.addAll(lintRules.getAllRulesWithSeverity(Severity.FATAL));
+        }
+
+        if (programOptions.hasOption(JxlintOption.CATEGORY)) {
+            String enabledCategories = programOptions.getOption(JxlintOption.CATEGORY);
+            try {
+                final List<String> enabledCategoriesList =
+                        ProgramOptions.getCategoryListFromOptionString(enabledCategories);
+                lintRuleList = Lists.newArrayList(Iterables.filter(lintRuleList, new Predicate<LintRule>() {
+                    @Override
+                    public boolean apply(@Nullable LintRule input) {
+                        return input != null && enabledCategoriesList.contains(input.getCategory().toString());
+
+                    }
+                }));
+            } catch (IllegalArgumentException e) {
+                ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+            }
         }
 
         // Options that are "standalone"
         if (programOptions.hasOption(JxlintOption.DISABLE)) {
             String disabledRules = programOptions.getOption(JxlintOption.DISABLE);
-            List<String> disabledRulesList = ProgramOptions.getListFromRawOptionStringOrDie(disabledRules);
-            lintRuleList.removeAll(LintRulesImpl.getInstance().getOnlyRules(disabledRulesList));
+            try {
+                List<String> disabledRulesList = ProgramOptions.getRuleListFromOptionString(disabledRules);
+                lintRuleList.removeAll(lintRules.getOnlyRules(disabledRulesList));
+            } catch (NonExistentLintRuleException e) {
+                ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+            }
         }
         if (programOptions.hasOption(JxlintOption.ENABLE)) {
             String enabledRules = programOptions.getOption(JxlintOption.ENABLE);
-            List<String> enabledRulesList = ProgramOptions.getListFromRawOptionStringOrDie(enabledRules);
-            lintRuleList.addAll(LintRulesImpl.getInstance().getOnlyRules(enabledRulesList));
+            try {
+                List<String> enabledRulesList = ProgramOptions.getRuleListFromOptionString(enabledRules);
+                lintRuleList.addAll(lintRules.getOnlyRules(enabledRulesList));
+            } catch (NonExistentLintRuleException e) {
+                ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+            }
         }
-
         handleLint(lintRuleList, warningsAreErrors, programOptions, programSettings);
     }
 

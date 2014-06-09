@@ -31,7 +31,7 @@ public class CommandLineOptions {
         options.addOption("v", "version", false, "Output version information.");
         options.addOption("p", "profile", false, "Measure time every rule takes to complete.");
         options.addOption("l", "list", false, "Lists lint rules with a short, summary explanation.");
-        options.addOption("r", "rules", false, "Prints a Markdown file containing the program's rules.");
+        options.addOption("r", "rules", false, "Prints a Markdown dump of the program's rules.");
         options.addOption(OptionBuilder.withLongOpt("show").
                 withDescription("Lists a verbose rule explanation.").
                 hasOptionalArg().
@@ -51,6 +51,11 @@ public class CommandLineOptions {
                 withDescription("Enable the list of rules.").
                 hasArg().
                 withArgName("RULE[s]").create('e')
+        );
+        options.addOption(OptionBuilder.withLongOpt("category").
+                        withDescription("Run all rules of a certain category.").
+                        hasArg().
+                        withArgName("CATEGORY[s]").create('y')
         );
         options.addOption("w", "nowarn", false, "Only check for errors; ignore warnings.");
         options.addOption("Wall", "Wall", false, "Check all warnings, including those off by default.");
@@ -119,7 +124,7 @@ public class CommandLineOptions {
      * {@link com.selesse.jxlint.cli.CommandLineOptions.OptionComparator}.
      */
     private static String getOptionsOrder() {
-        return "hvplrscdewWallWerrorqtx";
+        return "hvplrscdeywWallWerrorqtx";
     }
 
     /**

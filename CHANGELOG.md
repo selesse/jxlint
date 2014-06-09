@@ -4,7 +4,9 @@ IMPROVEMENTS:
 
   - Add profile option (`-p`, `--profile`)
   - Add special handling for unrecognized options
-  - Multiple errors within the same file are now sorted by their line numbers.
+  - Multiple errors within the same file are now sorted by their line numbers
+  - Add ability to validate specific `Category`s (`-y`, `--category`)
+    i.e. with `<program-name> --category "LINT, PERFORMANCE"`
 
 BUG FIXES:
 

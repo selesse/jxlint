@@ -15,6 +15,7 @@ public enum JxlintOption {
     OUTPUT_TYPE_PATH("outputTypePath"),
     REPORT_RULES("rules"),
     PROFILE("profile"),
+    CATEGORY("category"),
     ;
 
     private String optionString;

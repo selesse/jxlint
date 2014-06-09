@@ -6,6 +6,7 @@ import com.selesse.jxlint.cli.CommandLineOptions;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
+import com.selesse.jxlint.model.rules.Categories;
 import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.settings.Profiler;
@@ -54,6 +55,10 @@ public class Jxlint {
         LintRulesImpl.setInstance(lintRules);
         LintRulesImpl.setExitAfterReporting(exitAfterReporting);
         Profiler.setEnabled(false);
+    }
+
+    public void setCustomCategories(Class<? extends Enum<?>> categories) {
+        Categories.setCategories(categories);
     }
 
     /**

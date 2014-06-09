@@ -1,17 +1,17 @@
 package com.selesse.jxlint.settings;
 
-import com.google.common.collect.Maps;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.report.color.Color;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class Profiler {
     private static long startTime;
     private static long stopTime;
     private static boolean isEnabled;
-    private static Map<LintRule, Long> ruleExecutionTimeMap = Maps.newTreeMap(new Comparator<LintRule>() {
+    private static Map<LintRule, Long> ruleExecutionTimeMap = new TreeMap<LintRule, Long>(new Comparator<LintRule>() {
         @Override
         public int compare(LintRule lintRule, LintRule lintRule2) {
             return lintRule.getName().compareToIgnoreCase(lintRule2.getName());

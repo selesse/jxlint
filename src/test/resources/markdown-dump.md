@@ -5,7 +5,7 @@ Unique attribute
 ----------------
 **Summary** : Attributes within a tag must be unique.
 
-**Category** : LINT
+**Category** : PERFORMANCE
 
 **Severity** : ERROR
 

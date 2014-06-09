@@ -16,7 +16,7 @@ import java.util.List;
  *
  * <p>
  * The program is expected to fail if these rules don't exist, specifically in
- * {@link ProgramOptions#getListFromRawOptionStringOrDie(String)}.
+ * {@link ProgramOptions#getRuleListFromOptionString(String)}.
  * </p>
  */
 public abstract class AbstractLintRules implements LintRules {
@@ -128,6 +128,23 @@ public abstract class AbstractLintRules implements LintRules {
         }
 
         return Collections.unmodifiableList(bloatedLintRules);
+    }
+
+    @Override
+    public List<LintRule> getRulesWithCategoryNames(List<String> categoryNames) {
+        List<LintRule> categoryRules = Lists.newArrayList();
+
+        List<LintRule> lintRules = getAllEnabledRules();
+
+        for (LintRule lintRule : lintRules) {
+            for (String categoryName : categoryNames) {
+                if (lintRule.getCategory().toString().equalsIgnoreCase(categoryName)) {
+                    categoryRules.add(lintRule);
+                }
+            }
+        }
+
+        return categoryRules;
     }
 
     @Override
