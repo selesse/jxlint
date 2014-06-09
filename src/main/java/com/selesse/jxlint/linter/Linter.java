@@ -44,7 +44,7 @@ public class Linter {
     private static final Comparator<LintError> fileThenLineNumberComparator = new Comparator<LintError>() {
         @Override
         public int compare(LintError o1, LintError o2) {
-            if (o1.getFile() == o2.getFile()) {
+            if (o1.getFile().compareTo(o2.getFile()) == 0) {
                 return o1.getLineNumber() - o2.getLineNumber();
             }
             return o1.getFile().compareTo(o2.getFile());
