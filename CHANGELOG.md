@@ -8,6 +8,7 @@ IMPROVEMENTS:
     then by their line numbers
   - Add ability to validate specific `Category`s (`-y`, `--category`)
     i.e. with `<program-name> --category "LINT, PERFORMANCE"`
+  - Rules are now run in separate threads for increased performance
 
 BUG FIXES:
 

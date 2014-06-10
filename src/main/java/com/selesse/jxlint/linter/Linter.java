@@ -3,11 +3,9 @@ package com.selesse.jxlint.linter;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
-import com.selesse.jxlint.settings.Profiler;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.*;
 
 /**
  * Simple implementation of a Linter. Goes through all the {@link LintRule}s and calls
@@ -17,6 +15,7 @@ import java.util.List;
 public class Linter {
     private List<LintRule> rules;
     private List<LintError> lintErrors;
+    private static final int THREADS = Runtime.getRuntime().availableProcessors();
 
     public Linter(List<LintRule> rules) {
         this.rules = rules;
@@ -29,27 +28,33 @@ public class Linter {
      * {@link com.selesse.jxlint.model.rules.LintError}.
      */
     public void performLintValidations() {
-        for (LintRule lintRule : rules) {
-            long startTime = System.currentTimeMillis();
-            lintRule.validate();
-            List<LintError> lintErrorList = lintRule.getLintErrors();
-            Collections.sort(lintErrorList, fileThenLineNumberComparator);
-            lintErrors.addAll(lintRule.getLintErrors());
-            long endTime = System.currentTimeMillis();
+        List<ValidationThread> lintRuleThreads = getValidationThreads(rules);
 
-            Profiler.addExecutionTime(lintRule, endTime - startTime);
+        try {
+            final ExecutorService executorService = Executors.newFixedThreadPool(THREADS);
+            List<Future<List<LintError>>> futures = executorService.invokeAll(lintRuleThreads);
+            executorService.shutdown();
+            executorService.awaitTermination(24, TimeUnit.HOURS);
+
+            for (Future<List<LintError>> ruleLintErrors : futures) {
+                lintErrors.addAll(ruleLintErrors.get());
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
     }
 
-    private static final Comparator<LintError> fileThenLineNumberComparator = new Comparator<LintError>() {
-        @Override
-        public int compare(LintError o1, LintError o2) {
-            if (o1.getFile().compareTo(o2.getFile()) == 0) {
-                return o1.getLineNumber() - o2.getLineNumber();
-            }
-            return o1.getFile().compareTo(o2.getFile());
+    private List<ValidationThread> getValidationThreads(List<LintRule> rules) {
+        List<ValidationThread> validationThreads = Lists.newArrayList();
+
+        for (LintRule lintRule : rules) {
+            validationThreads.add(new ValidationThread(lintRule));
         }
-    };
+
+        return validationThreads;
+    }
 
     /**
      * Returns all the {@link com.selesse.jxlint.model.rules.LintError}s that have been found through validations
