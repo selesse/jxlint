@@ -40,9 +40,8 @@ The required libraries/dependencies can be found in
 Quick Start
 -----------
 
-1. Clone this repository. Run `./gradlew release publish`.
-2. Specify `com.selesse:jxlint:1.3.0` as a local Maven dependency.
-3. Make customizations:
+1. Specify `com.selesse:jxlint:1.3.0` as a Maven dependency.
+2. Make customizations:
 
   Create all your rules. It's recommended to put all the rules in one directory,
   as can be seen in the [sample implementations](src/test/java/com/selesse/jxlint/samplerules).
@@ -130,7 +129,7 @@ Quick Start
   }
   ```
 
-4. Build your application.
+3. Build your application.
 
 Building the Code
 -----------------
