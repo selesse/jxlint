@@ -1,4 +1,4 @@
-## Unreleased - jxlint 1.3.0
+## jxlint 1.3.0 (June 11, 2014)
 
 IMPROVEMENTS:
 
