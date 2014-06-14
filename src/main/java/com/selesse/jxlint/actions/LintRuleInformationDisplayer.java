@@ -59,7 +59,7 @@ public class LintRuleInformationDisplayer {
             else {
                 Splitter splitter = Splitter.on(",").trimResults().omitEmptyStrings();
 
-                List<String> rules = Lists.newArrayList(splitter.split(programOptions.getOption(JxlintOption.SHOW)));
+                List<String> rules = splitter.splitToList(programOptions.getOption(JxlintOption.SHOW));
                 for (String rule : rules) {
                     LintRule lintRule = LintRulesImpl.getInstance().getLintRule(rule.trim());
                     outputBuffer.append(lintRule.getDetailedOutput()).append("\n\n");

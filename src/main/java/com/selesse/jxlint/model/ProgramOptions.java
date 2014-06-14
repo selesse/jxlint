@@ -93,7 +93,7 @@ public class ProgramOptions {
             throws NonExistentLintRuleException {
         Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
 
-        List<String> rulesStringList = Lists.newArrayList(splitter.split(optionString));
+        List<String> rulesStringList = splitter.splitToList(optionString);
         for (String disabledRuleString : rulesStringList) {
             LintRulesImpl.getInstance().getLintRule(disabledRuleString);
         }
@@ -106,7 +106,7 @@ public class ProgramOptions {
         List<String> categoryList = Lists.newArrayList();
 
         Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
-        List<String> rawCategoryStringList = Lists.newArrayList(splitter.split(categoryOptionString));
+        List<String> rawCategoryStringList = splitter.splitToList(categoryOptionString);
 
         Enum[] categories = Categories.get().getEnumConstants();
         List<String> categoryNames = Lists.newArrayList();
