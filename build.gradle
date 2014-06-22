@@ -3,7 +3,7 @@ apply plugin: 'findbugs'
 apply plugin: 'java'
 apply plugin: 'nexus'
 
-defaultTasks 'clean', 'check', 'assemble'
+defaultTasks 'clean', 'build'
 
 group = 'com.selesse'
 version = '1.3.0'
@@ -35,7 +35,7 @@ dependencies {
     testCompile 'junit:junit:4.11'
 }
 
-task release(dependsOn: ['clean', 'check', 'assemble', 'javadocJar', 'sourcesJar']) << {
+task release(dependsOn: ['clean', 'build', 'javadocJar', 'sourcesJar']) << {
     out.println "Releasing jxlint-$version"
 }
 
@@ -95,4 +95,3 @@ modifyPom {
         }
     }
 }
-
