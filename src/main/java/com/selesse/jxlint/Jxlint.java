@@ -14,6 +14,7 @@ import com.selesse.jxlint.settings.ProgramSettings;
 import org.apache.commons.cli.*;
 import org.fusesource.jansi.AnsiConsole;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,6 +96,9 @@ public class Jxlint {
             for (Object option : badOptionGroup.getOptions()) {
                 optionNames.add("--" + ((Option) option).getLongOpt());
             }
+
+            Collections.sort(optionNames);
+
             ProgramExitter.exitProgramWithMessage("Only one of " + Joiner.on(", ").join(optionNames) +
                     " must be selected.", ExitType.COMMAND_LINE_ERROR);
         }
