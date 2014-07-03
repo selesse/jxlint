@@ -1,5 +1,6 @@
 *.iml
 .idea/
+classes/
 
 out/
 
@@ -8,5 +9,3 @@ out/
 .gradle
 build/
 release/
-
-src/main/java/com/selesse/jxlint/impl
