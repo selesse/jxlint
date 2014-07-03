@@ -3,7 +3,7 @@ package com.selesse.jxlint;
 import com.selesse.jxlint.model.ExitType;
 import org.junit.Test;
 
-public class MainTest extends AbstractTestCase {
+public class JxlintTest extends AbstractTestCase {
     @Test
     public void testMutuallyExclusiveArgumentsGivesError() {
         final String expectedOutput = "Only one of --html, --quiet, --xml must be selected.";
