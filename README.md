@@ -5,28 +5,64 @@ jxlint
 
 - [Changelog](CHANGELOG.md)
 
-jxlint is a Java framework for performing static analysis. Its name is derived
-from [lint](http://en.wikipedia.org/wiki/Lint_%28software%29) tools and is
-partially inspired by [Android's lint tool](http://developer.android.com/tools/help/lint.html).
-Originally, it stood for "Java XML lint" but was later generalized to be
-useful for any kind of static analysis.
+jxlint is a Java framework for performing static analysis. You create your
+custom validation logic in Java, specify which files to perform this
+validation on, and add some documentation. The following "boring" stuff is
+taken care of for you:
+
+    usage: jxlint [flags] <directory>
+     -h,--help                     Usage information, help message.
+     -v,--version                  Output version information.
+     -p,--profile                  Measure time every rule takes to complete.
+     -l,--list                     Lists lint rules with a short, summary
+                                   explanation.
+     -r,--rules                    Prints a Markdown dump of the program's
+                                   rules.
+     -s,--show <RULE[s]>           Lists a verbose rule explanation.
+     -c,--check <RULE[s]>          Only check for these rules.
+     -d,--disable <RULE[s]>        Disable the list of rules.
+     -e,--enable <RULE[s]>         Enable the list of rules.
+     -y,--category <CATEGORY[s]>   Run all rules of a certain category.
+     -w,--nowarn                   Only check for errors; ignore warnings.
+     -Wall,--Wall                  Check all warnings, including those off by
+                                   default.
+     -Werror,--Werror              Treat all warnings as errors.
+     -q,--quiet                    Don't output any progress or reports.
+     -t,--html <filename>          Create an HTML report.
+     -x,--xml <filename>           Create an XML (!!) report.
+
+    <RULE[s]> should be comma separated, without spaces.
+    Exit Status:
+    0                     Success
+    1                     Failed
+    2                     Command line error
 
 Motivation
 ----------
 
-The goal of this framework is to provide an easy, obvious way to perform file
-validation. Anybody interested in verifying, adding, or removing existing
-"rules" should be able to do so quickly (i.e. everything is collocated in an
-obvious place), and efficiently (i.e. adding new rules is intuitive and
-simple). Additionally, adding corresponding tests to rules should also be as
-intuitive.
+The goal of this framework is to provide an easy, intuitive way to perform
+file validation. A user specifies a set of "rules" (i.e. validations) that
+should be executed against a directory. Rules contain three major pieces of
+information: which files to validate, what the actual validation logic is, and
+documentation explaining its purpose.
 
-Most of the needs should be addressed by the framework; additional,
-specialized tasks should not be difficult to customize.
+Another goal is to have an architecture that encouraged rules to be
+self-contained. Anybody interested in verifying, adding, or removing existing
+rules should be able to do so quickly (i.e. everything is located where you'd
+expect), and efficiently (i.e. adding new rules is intuitive and simple,
+requiring little overhead). Additionally, adding tests to validate rules
+should be straightforward.
 
-If you are working with a framework that relies on XML for various parts of
-the system and you'd like to verify that certain configurations are correct
-before running the system, you might want to use this framework.
+### Potential Users
+
+* If you are working with a framework that relies on XML for various parts of
+  the system and you'd like to verify that certain configurations are correct
+  before running the system, you might want to use this framework.
+
+* If you are trying to create a lint/static analysis tool, you might want
+  to use this framework so you don't have to reinvent the wheel. Various
+  components are already implemented for you. See the
+  [architecture](doc/architecture.md) for more details.
 
 Requirements
 ------------
@@ -141,36 +177,6 @@ Examples
 --------
 
 Sample implementations can be found [here](src/test/java/com/selesse/jxlint/samplerules).
-
-The following is the `--help` command line switch, which should give you an
-idea of what you get "for free" if you use jxlint:
-
-    usage: jxlint [flags] <directory>
-     -h,--help                     Usage information, help message.
-     -v,--version                  Output version information.
-     -p,--profile                  Measure time every rule takes to complete.
-     -l,--list                     Lists lint rules with a short, summary
-                                   explanation.
-     -r,--rules                    Prints a Markdown dump of the program's
-                                   rules.
-     -s,--show <RULE[s]>           Lists a verbose rule explanation.
-     -c,--check <RULE[s]>          Only check for these rules.
-     -d,--disable <RULE[s]>        Disable the list of rules.
-     -e,--enable <RULE[s]>         Enable the list of rules.
-     -y,--category <CATEGORY[s]>   Run all rules of a certain category.
-     -w,--nowarn                   Only check for errors; ignore warnings.
-     -Wall,--Wall                  Check all warnings, including those off by
-                                   default.
-     -Werror,--Werror              Treat all warnings as errors.
-     -q,--quiet                    Don't output any progress or reports.
-     -t,--html <filename>          Create an HTML report.
-     -x,--xml <filename>           Create an XML (!!) report.
-
-    <RULE[s]> should be comma separated, without spaces.
-    Exit Status:
-    0                     Success
-    1                     Failed
-    2                     Command line error
 
 Versioning
 ----------
