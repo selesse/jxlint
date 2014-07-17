@@ -1,3 +1,13 @@
+## jxlint 1.4.0 (unreleased)
+
+IMPROVEMENTS:
+  - Add `andSeverity` to `LintError` build constructor, allowing for the same
+  `LintRule` to provide multiple different errors
+
+BUG FIXES:
+
+  - Always sort bad option groups before displaying errors
+
 ## jxlint 1.3.0 (June 11, 2014)
 
 IMPROVEMENTS:
