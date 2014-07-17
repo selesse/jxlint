@@ -72,7 +72,7 @@ public class TableHtmlReporter extends Reporter {
         return Lists.newArrayList(
                 rule.getName(),
                 rule.getCategory().toString(),
-                EnumUtils.toHappyString(rule.getSeverity()),
+                EnumUtils.toHappyString(error.getSeverity()),
                 error.getMessage(),
                 rule.getSummary(),
                 rule.getDetailedDescription(),

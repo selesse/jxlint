@@ -70,7 +70,7 @@ public class LintHandler {
 
         if (lintErrors.size() > 0) {
             for (LintError error : lintErrors) {
-                if (error.getViolatedRule().getSeverity().ordinal() >= Severity.ERROR.ordinal()) {
+                if (error.getSeverity().ordinal() >= Severity.ERROR.ordinal()) {
                     ProgramExitter.exitProgram(ExitType.FAILED);
                 }
             }

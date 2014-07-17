@@ -8,7 +8,7 @@ import java.io.File;
  * A lint error representation. Uses the Builder pattern for its optional parameters.
  * It knows about which rule was violated and the file that violated it. It may have other
  * information, like the line number in which the violation was found, an error message,
- * an Exception relating to its violation.
+ * an Exception relating to its violation, and a custom severity.
  */
 public class LintError {
     private LintRule violatedRule;
@@ -19,6 +19,7 @@ public class LintError {
      * The file that failed the validation.
      */
     private File faultyFile;
+    private Severity severity;
 
     /**
      * Creates a {@link LintError} with the {@link com.selesse.jxlint.model.rules.LintRule} and
@@ -75,6 +76,17 @@ public class LintError {
         this.errorMessage = errorMessage;
     }
 
+    public void setSeverity(Severity severity) {
+        this.severity = severity;
+    }
+
+    public Severity getSeverity() {
+        if (severity == null) {
+            return violatedRule.getSeverity();
+        }
+        return severity;
+    }
+
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("'").append(violatedRule.getName()).append("' failed");
@@ -119,6 +131,14 @@ public class LintError {
          */
         public LintErrorBuilder andLineNumber(int lineNumber) {
             this.lintError.setLineNumber(lineNumber);
+            return this;
+        }
+
+        /**
+         * Specifies a custom severity for this error.
+         */
+        public LintErrorBuilder andSeverity(Severity severity) {
+            this.lintError.setSeverity(severity);
             return this;
         }
 

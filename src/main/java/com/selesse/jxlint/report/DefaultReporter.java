@@ -43,7 +43,7 @@ public class DefaultReporter extends Reporter {
         }
 
         LintRule violatedRule = error.getViolatedRule();
-        out.println(String.format("[%s] \"%s\" in %s%s",  colorSeverity(violatedRule.getSeverity()),
+        out.println(String.format("[%s] \"%s\" in %s%s",  colorSeverity(error.getSeverity()),
                 Color.WHITE.wrapAround(violatedRule.getName()), relativePath, lineNumberString));
         if (!Strings.isNullOrEmpty(error.getMessage())) {
             out.println("    " + error.getMessage());

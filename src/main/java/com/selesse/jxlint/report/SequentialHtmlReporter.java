@@ -42,7 +42,7 @@ public class SequentialHtmlReporter extends Reporter {
 
     @Override
     protected void printError(LintError error) {
-        out.println("<b>[" + error.getViolatedRule().getSeverity() + "] <a href=\"#" + getHrefSafeName(error) + "\">" +
+        out.println("<b>[" + error.getSeverity() + "] <a href=\"#" + getHrefSafeName(error) + "\">" +
                 error.getViolatedRule().getName() + "</a></b>");
         out.print("violated in <a href=\"" + error.getFile() + "\">" +
                 FileUtils.getRelativePath(LintRulesImpl.getInstance().getSourceDirectory(), error.getFile()) + "</a>");
