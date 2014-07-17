@@ -142,7 +142,7 @@ Examples
 
 Sample implementations can be found [here](src/test/java/com/selesse/jxlint/samplerules).
 
-The following is the "--help" command line switch, which should give you an
+The following is the `--help` command line switch, which should give you an
 idea of what you get "for free" if you use jxlint:
 
     usage: jxlint [flags] <directory>
@@ -171,6 +171,12 @@ idea of what you get "for free" if you use jxlint:
     0                     Success
     1                     Failed
     2                     Command line error
+
+Versioning
+----------
+
+This project follows [Semantic Versioning](http://semver.org/) as much as
+possible.
 
 License
 -------
