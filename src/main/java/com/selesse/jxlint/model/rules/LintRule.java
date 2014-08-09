@@ -91,7 +91,8 @@ public abstract class LintRule {
                 List<LintError> fileLintErrors = getLintErrors(file);
                 lintErrors.addAll(fileLintErrors);
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException("The \"" + this.getClass().getSimpleName() + "\" rule threw an exception " +
                     "when trying to validate:\n" + Joiner.on("\n").join(e.getStackTrace()));
         }
@@ -154,7 +155,8 @@ public abstract class LintRule {
             URL documentationUrl = Resources.getResource("doc/rules/" + this.getClass().getSimpleName() + ".md");
             List<String> fileContents = Resources.readLines(documentationUrl, Charsets.UTF_8);
             markdownDescription = Joiner.on("\n").join(fileContents);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             System.err.println("Error: could not read Markdown description for " + this.getClass().getSimpleName());
             e.printStackTrace();
         }

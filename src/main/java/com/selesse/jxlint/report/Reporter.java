@@ -103,7 +103,7 @@ public abstract class Reporter {
                     pluralize(numberOfErrors, "error"),
                     pluralize(numberOfFatal, "fatal error"),
                     lintErrorList.size()
-            );
+        );
     }
 
     private String pluralize(int numberOfErrors, String error) {

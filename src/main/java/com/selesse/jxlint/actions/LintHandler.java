@@ -27,7 +27,8 @@ public class LintHandler {
     private final ProgramOptions options;
     private final ProgramSettings settings;
 
-    public LintHandler(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options, ProgramSettings settings) {
+    public LintHandler(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options,
+                       ProgramSettings settings) {
         this.lintRules = lintRules;
         this.warningsAreErrors = warningsAreErrors;
         this.options = options;
@@ -58,7 +59,8 @@ public class LintHandler {
         try {
             Reporter reporter = Reporters.createReporter(lintErrors, settings, outputType, outputTypePath);
             reporter.writeReport();
-        } catch (UnableToCreateReportException e) {
+        }
+        catch (UnableToCreateReportException e) {
             ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
         }
     }

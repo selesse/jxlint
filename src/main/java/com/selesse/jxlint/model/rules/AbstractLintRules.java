@@ -1,7 +1,6 @@
 package com.selesse.jxlint.model.rules;
 
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.utils.FileUtils;
 
 import java.io.File;
@@ -16,7 +15,7 @@ import java.util.List;
  *
  * <p>
  * The program is expected to fail if these rules don't exist, specifically in
- * {@link ProgramOptions#getRuleListFromOptionString(String)}.
+ * {@link com.selesse.jxlint.model.ProgramOptions#getRuleListFromOptionString(String)}.
  * </p>
  */
 public abstract class AbstractLintRules implements LintRules {
@@ -122,7 +121,8 @@ public abstract class AbstractLintRules implements LintRules {
             try {
                 LintRule lintRule = getLintRule(enabledLintString);
                 bloatedLintRules.add(lintRule);
-            } catch (NonExistentLintRuleException e) {
+            }
+            catch (NonExistentLintRuleException e) {
                 // do nothing, we assume these are already all validated
             }
         }
@@ -155,7 +155,8 @@ public abstract class AbstractLintRules implements LintRules {
             try {
                 LintRule lintRule = getLintRule(enabledLintString);
                 filteredLintRules.add(lintRule);
-            } catch (NonExistentLintRuleException e) {
+            }
+            catch (NonExistentLintRuleException e) {
                 // do nothing, we assume these are already all validated
             }
         }

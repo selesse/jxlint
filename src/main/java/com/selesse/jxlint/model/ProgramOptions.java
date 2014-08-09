@@ -58,11 +58,14 @@ public class ProgramOptions {
         String outputTypeString = outputType.toLowerCase();
         if (outputTypeString.equals("quiet")) {
             return OutputType.QUIET;
-        } else if (outputTypeString.equals("html")) {
+        }
+        else if (outputTypeString.equals("html")) {
             return OutputType.HTML;
-        } else if (outputTypeString.equals("xml")) {
+        }
+        else if (outputTypeString.equals("xml")) {
             return OutputType.XML;
-        } else {
+        }
+        else {
             return OutputType.DEFAULT;
         }
     }

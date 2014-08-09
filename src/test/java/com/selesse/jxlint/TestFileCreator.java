@@ -24,7 +24,8 @@ public class TestFileCreator {
             }
             fileWriter.flush();
             fileWriter.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
 

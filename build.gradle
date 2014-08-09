@@ -1,4 +1,5 @@
 apply plugin: 'build-announcements'
+apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 apply plugin: 'java'
 apply plugin: 'nexus'
@@ -94,4 +95,8 @@ modifyPom {
             }
         }
     }
+}
+
+checkstyle {
+    configFile = new File(projectDir, "checkstyle.xml")
 }

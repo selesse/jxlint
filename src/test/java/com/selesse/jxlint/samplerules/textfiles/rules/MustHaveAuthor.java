@@ -36,7 +36,8 @@ public class MustHaveAuthor extends LintRule {
                 }
             }
             lintErrorList.add(LintError.with(this, file).create());
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             lintErrorList.add(LintError.with(this, file).andException(e).create());
         }
 

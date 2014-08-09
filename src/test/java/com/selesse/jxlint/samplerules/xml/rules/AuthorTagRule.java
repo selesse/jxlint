@@ -63,7 +63,8 @@ public class AuthorTagRule extends LintRule {
                 // If we make it to this path, we've passed the rule: return the empty list
                 return lintErrorList;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // this will catch parser configuration errors, XML parse errors, as well as I/O exceptions
             lintErrorList.add(LintError.with(this, file).andErrorMessage("Error checking rule, could not parse XML")
                     .andException(e).create());

@@ -70,8 +70,8 @@ public class LintRuleInformationDisplayerTest extends AbstractTestCase {
                 , "The XML encoding should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.\n\n"
         );
 
-        runExitTest(new String[]{"--show", "XML encoding specified"}, tempDirectory, Joiner.on("\n").join(expectedOutput),
-                ExitType.SUCCESS);
+        runExitTest(new String[]{"--show", "XML encoding specified"}, tempDirectory,
+                Joiner.on("\n").join(expectedOutput), ExitType.SUCCESS);
     }
 
     @Test

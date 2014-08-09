@@ -38,9 +38,11 @@ public class AbstractTestCase {
             jxlint.parseArgumentsAndDispatch(newArgs);
 
             return output.toString(Charsets.UTF_8.displayName());
-        } catch (UnsupportedEncodingException e) {
+        }
+        catch (UnsupportedEncodingException e) {
             fail("Threw exception while setting up test:\n" + e.getMessage());
-        } finally {
+        }
+        finally {
             System.setOut(previousOut);
         }
         return "";
@@ -51,7 +53,8 @@ public class AbstractTestCase {
     }
 
     /**
-     * A test that's expected to System.exit() with the {@link com.selesse.jxlint.model.ExitType}, and output {@code expectedOutput}.
+     * A test that's expected to System.exit() with the {@link com.selesse.jxlint.model.ExitType},
+     * and output {@code expectedOutput}.
      * @param args Command line arguments passed to program
      * @param sourceDirectory Source directory where we're running tests
      * @param expectedOutput String of the expected output

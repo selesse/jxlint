@@ -75,8 +75,8 @@ public class LintRuleInformationDisplayer {
 
     public static void printMarkdownRuleReport(ProgramSettings settings) {
         StringBuilder outputStringBuilder = new StringBuilder();
-        // print header
-        String headerString = String.format("Rules for %s - %s", settings.getProgramName(), settings.getProgramVersion());
+        String headerString =
+                String.format("Rules for %s - %s", settings.getProgramName(), settings.getProgramVersion());
         outputStringBuilder.append(underline(headerString, "=")).append("\n\n");
 
         List<LintRule> allRules = LintRulesImpl.getInstance().getAllRules();
@@ -121,7 +121,8 @@ public class LintRuleInformationDisplayer {
         outputStringBuilder.append("**Summary** : ").append(lintRule.getSummary()).append("\n\n");
         outputStringBuilder.append("**Category** : ").append(lintRule.getCategory()).append("\n\n");
         outputStringBuilder.append("**Severity** : ").append(lintRule.getSeverity()).append("\n\n");
-        outputStringBuilder.append("**Enabled by default?** : ").append(lintRule.isEnabled() ? "yes" : "no").append("\n\n");
+        outputStringBuilder.append("**Enabled by default?** : ").
+                append(lintRule.isEnabled() ? "yes" : "no").append("\n\n");
         outputStringBuilder.append("\n").append("**Detailed description** :").append("\n\n");
 
         String explanation = lintRule.getDetailedDescription();

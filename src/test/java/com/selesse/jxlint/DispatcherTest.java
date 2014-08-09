@@ -67,7 +67,8 @@ public class DispatcherTest extends AbstractTestCase {
                 ""
         );
 
-        runExitTest(new String[] { "--help" }, tempDirectory, Joiner.on(newLineSeparator).join(expectedOutput), ExitType.SUCCESS);
+        runExitTest(new String[] { "--help" }, tempDirectory, Joiner.on(newLineSeparator).join(expectedOutput),
+                ExitType.SUCCESS);
     }
 
     @Test
@@ -95,7 +96,8 @@ public class DispatcherTest extends AbstractTestCase {
                     tempFile.getAbsolutePath() + "\" is not a directory.";
 
             runExitTest(null, tempFile, expectedOutput, ExitType.COMMAND_LINE_ERROR);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }

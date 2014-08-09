@@ -39,9 +39,11 @@ public class Linter {
             for (Future<List<LintError>> ruleLintErrors : futures) {
                 lintErrors.addAll(ruleLintErrors.get());
             }
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (ExecutionException e) {
+        }
+        catch (ExecutionException e) {
             e.printStackTrace();
         }
     }

@@ -104,7 +104,8 @@ public class Dispatcher {
             List<String> checkRulesList = null;
             try {
                 checkRulesList = ProgramOptions.getRuleListFromOptionString(checkRules);
-            } catch (NonExistentLintRuleException e) {
+            }
+            catch (NonExistentLintRuleException e) {
                 e.printStackTrace();
             }
 
@@ -136,7 +137,8 @@ public class Dispatcher {
 
                     }
                 }));
-            } catch (IllegalArgumentException e) {
+            }
+            catch (IllegalArgumentException e) {
                 ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }
@@ -147,7 +149,8 @@ public class Dispatcher {
             try {
                 List<String> disabledRulesList = ProgramOptions.getRuleListFromOptionString(disabledRules);
                 lintRuleList.removeAll(lintRules.getOnlyRules(disabledRulesList));
-            } catch (NonExistentLintRuleException e) {
+            }
+            catch (NonExistentLintRuleException e) {
                 ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }
@@ -156,7 +159,8 @@ public class Dispatcher {
             try {
                 List<String> enabledRulesList = ProgramOptions.getRuleListFromOptionString(enabledRules);
                 lintRuleList.addAll(lintRules.getOnlyRules(enabledRulesList));
-            } catch (NonExistentLintRuleException e) {
+            }
+            catch (NonExistentLintRuleException e) {
                 ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }

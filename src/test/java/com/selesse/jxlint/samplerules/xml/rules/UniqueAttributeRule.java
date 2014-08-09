@@ -36,7 +36,8 @@ public class UniqueAttributeRule extends LintRule {
             Document document = documentBuilder.parse(file);
 
             document.getDocumentElement().normalize();
-        } catch (SAXException e) {
+        }
+        catch (SAXException e) {
             String errorMessage = e.getMessage();
             if (errorMessage.matches("Attribute \"([^\"]+)\" was already specified for element \"([^\"]+)\"\\.")) {
                 lintErrorList.add(LintError.with(this, file).andErrorMessage(errorMessage.substring(0,
@@ -46,7 +47,8 @@ public class UniqueAttributeRule extends LintRule {
                 lintErrorList.add(LintError.with(this, file).andErrorMessage("Error checking rule, " +
                         "could not parse XML").andException(e).create());
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             // this will catch parser configuration errors as well as I/O exceptions
             lintErrorList.add(LintError.with(this, file).andErrorMessage("Error checking rule, " +
                     "could not parse XML").andException(e).create());

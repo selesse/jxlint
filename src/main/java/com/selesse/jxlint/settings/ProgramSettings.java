@@ -8,9 +8,9 @@ public interface ProgramSettings {
     /**
      * The program's version. Used with the version command line switch.
      */
-    public String getProgramVersion();
+    String getProgramVersion();
     /**
      * The program's name. Used with the version command line output.
      */
-    public String getProgramName();
+    String getProgramName();
 }

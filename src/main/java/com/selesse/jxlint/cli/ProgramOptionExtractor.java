@@ -3,12 +3,11 @@ package com.selesse.jxlint.cli;
 import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.ProgramOptions;
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
 
 import java.util.List;
 
 /**
- * Class for extracting program options from {@link CommandLine} and {@link Options}.
+ * Class for extracting program options from {@link CommandLine} and {@link org.apache.commons.cli.Options}.
  * A wrapper so that if the CLI parser changes, code modifications will be limited to this class.
  */
 public class ProgramOptionExtractor {

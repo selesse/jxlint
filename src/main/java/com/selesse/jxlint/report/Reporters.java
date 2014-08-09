@@ -71,7 +71,8 @@ public class Reporters {
                         // my own little /dev/null
                     }
                 }, false, Charsets.UTF_8.displayName());
-            } catch (UnsupportedEncodingException e) {
+            }
+            catch (UnsupportedEncodingException e) {
                 // nothing to do here, why wouldn't UTF-8 be available?
             }
         }
@@ -79,9 +80,11 @@ public class Reporters {
             if (outputPath != null) {
                 try {
                     out = new PrintStream(new FileOutputStream(outputPath), true, Charsets.UTF_8.displayName());
-                } catch (FileNotFoundException e) {
+                }
+                catch (FileNotFoundException e) {
                     throw new UnableToCreateReportException(new File(outputPath));
-                } catch (UnsupportedEncodingException e) {
+                }
+                catch (UnsupportedEncodingException e) {
                     // nothing to do here, why wouldn't UTF-8 be available?
                 }
             }
@@ -101,11 +104,10 @@ public class Reporters {
             }
         }
         // If there any any exceptions, we default to System.out
-          catch (InvocationTargetException ignored) {
-        } catch (NoSuchMethodException ignored) {
-        } catch (InstantiationException ignored) {
-        } catch (IllegalAccessException ignored) {
-        }
+        catch (InvocationTargetException ignored) { }
+        catch (NoSuchMethodException ignored) { }
+        catch (InstantiationException ignored) { }
+        catch (IllegalAccessException ignored) { }
 
         return reporter;
     }

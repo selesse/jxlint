@@ -110,9 +110,11 @@ public class CommandLineOptions {
                     generateJxlintOptions(), "\n" + exitStatusFooter.toString().trim());
 
             outputString = output.toString(Charsets.UTF_8.displayName());
-        } catch (UnsupportedEncodingException e) {
+        }
+        catch (UnsupportedEncodingException e) {
             // nothing to do here, why wouldn't UTF-8 be available?
-        } finally {
+        }
+        finally {
             System.setOut(previousOut);
         }
 
