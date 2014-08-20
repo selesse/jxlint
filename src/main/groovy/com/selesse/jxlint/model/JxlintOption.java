@@ -6,6 +6,7 @@ public enum JxlintOption {
     HELP("help"),
     VERSION("version"),
     LIST("list"),
+    WEB("web"),
     WARNINGS_ARE_ERRORS("Werror"),
     CHECK("check"),
     ALL_WARNINGS("Wall"),

@@ -26,6 +26,9 @@ public class ProgramOptionExtractor {
         if (commandLine.hasOption(JxlintOption.LIST.getOptionString())) {
             programOptions.addOption(JxlintOption.LIST);
         }
+        if (commandLine.hasOption(JxlintOption.WEB.getOptionString())) {
+            programOptions.addOption(JxlintOption.WEB);
+        }
         if (commandLine.hasOption(JxlintOption.REPORT_RULES.getOptionString())) {
             programOptions.addOption(JxlintOption.REPORT_RULES);
         }

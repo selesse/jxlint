@@ -3,6 +3,7 @@ package com.selesse.jxlint;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.actions.JettyWebRunner;
 import com.selesse.jxlint.actions.LintHandler;
 import com.selesse.jxlint.actions.LintRuleInformationDisplayer;
 import com.selesse.jxlint.cli.CommandLineOptions;
@@ -60,6 +61,11 @@ public class Dispatcher {
         }
         else if (programOptions.hasOption(JxlintOption.LIST)) {
             LintRuleInformationDisplayer.listRules();
+        }
+        else if (programOptions.hasOption(JxlintOption.WEB)) {
+            JettyWebRunner jettyWebRunner = new JettyWebRunner();
+            jettyWebRunner.start();
+            return;
         }
         else if (programOptions.hasOption(JxlintOption.SHOW)) {
             LintRuleInformationDisplayer.showRules(programOptions);

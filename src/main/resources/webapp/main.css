@@ -1,0 +1,61 @@
+body {
+    font-family: "Helvetica", serif;
+}
+
+div#content {
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px 10px;
+}
+
+h1 {
+    font-size: 3.5em;
+    font-weight: bold;
+    color: darkgreen;
+    text-align: center;
+}
+
+h4 {
+    text-align: center;
+}
+
+p#intro {
+    font-size: 1.5em;
+    text-align: center;
+    padding-bottom: 5px;
+}
+
+form {
+    text-align: center;
+    line-height: 1.5em;
+}
+
+pre {
+    display: inline-block;
+    font-family: Consolas, Inconsolas, "Courier New", Courier, monospace;
+    padding: 0 25px;
+}
+
+input[type=button] {
+    text-align: center;
+    display: block;
+    margin: 10px auto;
+}
+
+input[type=text] {
+    font-size: 1em;
+    padding: 0 10px;
+    width: 700px;
+    height: 50px;
+}
+
+iframe {
+    position: absolute;
+    width: 100%;
+}
+
+html, body, iframe {
+    height: 100%;
+}
+
