@@ -4,10 +4,13 @@ import com.selesse.jxlint.model.rules.LintRule
 import com.selesse.jxlint.model.rules.LintRulesImpl
 
 public class HtmlReportExecutor {
-    public static File jar
-
-    private String[] args
     private static final String reportPath = System.getProperty("user.home") + "/.jxlint.html"
+    private static File jar
+    private String[] args
+
+    static def setJar(File jar) {
+        this.jar = jar;
+    }
 
     public HtmlReportExecutor(String[] args) {
         this.args = args;

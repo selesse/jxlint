@@ -13,7 +13,7 @@ import java.net.URL;
 import java.security.CodeSource;
 
 public class JettyWebRunner {
-    private final int PORT = 8080;
+    private static final int PORT = 8080;
 
     public void start() {
         setupClassPath();
@@ -23,8 +23,9 @@ public class JettyWebRunner {
     private void setupClassPath() {
         try {
             CodeSource codeSource = getClass().getProtectionDomain().getCodeSource();
-            HtmlReportExecutor.jar = new File(codeSource.getLocation().toURI().getPath());
-        } catch (URISyntaxException e) {
+            HtmlReportExecutor.setJar(new File(codeSource.getLocation().toURI().getPath()));
+        }
+        catch (URISyntaxException e) {
             e.printStackTrace();
         }
     }
@@ -50,7 +51,8 @@ public class JettyWebRunner {
             desktop.browse(new URI("http://localhost:" + PORT));
 
             server.join();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
