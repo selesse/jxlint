@@ -80,7 +80,7 @@
                 jxlintArgs.toArray(rulesEnabled);
 
 
-                HtmlReportExecutor htmlReportExecutor = new HtmlReportExecutor(programSettings, rulesEnabled);
+                HtmlReportExecutor htmlReportExecutor = new HtmlReportExecutor(folder, programSettings, rulesEnabled);
                 if (htmlReportExecutor.directoryExists()) {
                     htmlReportExecutor.generateReport();
         %>
