@@ -1,39 +1,58 @@
-package com.selesse.jxlint.web
+package com.selesse.jxlint.web;
 
-import com.selesse.jxlint.model.rules.LintRule
-import com.selesse.jxlint.model.rules.LintRulesImpl
+import com.google.common.io.Files;
+import com.selesse.jxlint.Jxlint;
+import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
+import com.selesse.jxlint.settings.ProgramSettings;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
 
 public class HtmlReportExecutor {
-    private static final String reportPath = System.getProperty("user.home") + "/.jxlint.html"
-    private static File jar
-    private String[] args
+    private static String reportPath;
+    static {
+        try {
+            reportPath = File.createTempFile("jxlint", "html").getAbsolutePath();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private final ProgramSettings programSettings;
+    private final String[] args;
 
-    static def setJar(File jar) {
-        this.jar = jar;
+    public HtmlReportExecutor(ProgramSettings programSettings, String[] args) {
+        this.programSettings = programSettings;
+        this.args = Arrays.copyOf(args, args.length);
     }
 
-    public HtmlReportExecutor(String[] args) {
-        this.args = args;
-    }
-
-    static String reportFileContents() {
-        new File(reportPath).text
+    public static String reportFileContents() {
+        try {
+            return new String(Files.toByteArray(new File(reportPath)), Charset.defaultCharset());
+        }
+        catch (IOException ignored) {
+            // You only live once
+        }
+        return "";
     }
 
     public static List<LintRule> getAvailableRules() {
-        LintRulesImpl.getInstance().allRules
+        return LintRulesImpl.getInstance().getAllRules();
     }
 
     public boolean directoryExists() {
-        def directory = new File(args.last())
-        directory.exists() && directory.isDirectory()
+        File directory = new File(args[args.length - 1]);
+        return directory.exists() && directory.isDirectory();
     }
 
-    public String generateReport() {
-        def command = ['java', '-jar', jar.getAbsolutePath(), '--html', reportPath, *args]
-        command.execute().text.trim()
-
-        return ''
+    public void generateReport() {
+        Jxlint jxlint = new Jxlint(LintRulesImpl.getInstance(), programSettings, false);
+        jxlint.parseArgumentsAndDispatch(args);
     }
+
 }
 

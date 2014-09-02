@@ -1,6 +1,8 @@
 <%@ page import="com.google.common.base.Joiner" %>
 <%@ page import="com.google.common.collect.Lists" %>
+<%@ page import="com.selesse.jxlint.model.ProgramOptions" %>
 <%@ page import="com.selesse.jxlint.model.rules.LintRule" %>
+<%@ page import="com.selesse.jxlint.settings.ProgramSettings" %>
 <%@ page import="com.selesse.jxlint.web.HtmlReportExecutor" %>
 <%@ page import="java.util.List" %>
 <!doctype html>
@@ -36,6 +38,8 @@
         <%
             String folder = request.getParameter("folder");
             String[] rulesEnabled = request.getParameterValues("ruleEnabled");
+
+            ProgramSettings programSettings = (ProgramSettings) application.getAttribute("programSettings");
         %>
 
         <%!
@@ -75,7 +79,8 @@
                 rulesEnabled = new String[jxlintArgs.size()];
                 jxlintArgs.toArray(rulesEnabled);
 
-                HtmlReportExecutor htmlReportExecutor = new HtmlReportExecutor(rulesEnabled);
+
+                HtmlReportExecutor htmlReportExecutor = new HtmlReportExecutor(programSettings, rulesEnabled);
                 if (htmlReportExecutor.directoryExists()) {
                     htmlReportExecutor.generateReport();
         %>
