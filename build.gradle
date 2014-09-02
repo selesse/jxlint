@@ -1,7 +1,7 @@
 apply plugin: 'build-announcements'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
-apply plugin: 'groovy'
+apply plugin: 'java'
 apply plugin: 'nexus'
 
 defaultTasks 'clean', 'build'
@@ -29,8 +29,6 @@ ext {
 }
 
 dependencies {
-    compile localGroovy()
-
     compile "org.eclipse.jetty:jetty-server:${jettyVersion}"
     compile "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
     compile 'com.google.code.findbugs:annotations:2.0.3'
