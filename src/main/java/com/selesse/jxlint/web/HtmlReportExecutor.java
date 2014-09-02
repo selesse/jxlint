@@ -38,9 +38,8 @@ public class HtmlReportExecutor {
             return new String(Files.toByteArray(new File(reportPath)), Charset.defaultCharset());
         }
         catch (IOException ignored) {
-            // You only live once
+            return ignored.getMessage();
         }
-        return "";
     }
 
     public static List<LintRule> getAvailableRules() {
