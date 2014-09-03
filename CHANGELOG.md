@@ -3,6 +3,14 @@
 IMPROVEMENTS:
   - Add `andSeverity` to `LintError` build constructor, allowing for the same
   `LintRule` to provide multiple different errors
+  - Add experimental option "--web":
+    1. When `--web` is selected, Jetty will start up on 8080 and open the
+       user's web browser to a webpage
+    2. The user is presented with a web page, displaying *all* rules, with a
+       check box next to every rule. The user can choose which rules to run,
+       and which directory to run on.
+    3. When the user selects rules and a directory, then presses "enter", a
+       report iframe is generated.
 
 BUG FIXES:
 
