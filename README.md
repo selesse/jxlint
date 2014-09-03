@@ -76,7 +76,7 @@ The required libraries/dependencies can be found in
 Quick Start
 -----------
 
-1. Specify `com.selesse:jxlint:1.3.0` as a Maven dependency.
+1. Specify `com.selesse:jxlint:1.4.0` as a Maven dependency.
 2. Make customizations:
 
   Create all your rules. It's recommended to put all the rules in one directory,
