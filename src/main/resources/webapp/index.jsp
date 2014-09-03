@@ -1,14 +1,21 @@
 <%@ page import="com.google.common.base.Joiner" %>
 <%@ page import="com.google.common.collect.Lists" %>
-<%@ page import="com.selesse.jxlint.model.ProgramOptions" %>
 <%@ page import="com.selesse.jxlint.model.rules.LintRule" %>
 <%@ page import="com.selesse.jxlint.settings.ProgramSettings" %>
 <%@ page import="com.selesse.jxlint.web.HtmlReportExecutor" %>
 <%@ page import="java.util.List" %>
+<%
+    String folder = request.getParameter("folder");
+    String[] rulesEnabled = request.getParameterValues("ruleEnabled");
+
+    ProgramSettings programSettings = (ProgramSettings) application.getAttribute("programSettings");
+
+    String nameAndVersion = programSettings.getProgramName() + " " + programSettings.getProgramVersion();
+%>
 <!doctype html>
 <html>
 <head>
-    <title> web validator </title>
+    <title> <%= nameAndVersion %> - web validator </title>
     <link rel="stylesheet" type="text/css" href="main.css"/>
     <script>
         function setAllCheckboxes(select) {
@@ -33,14 +40,7 @@
 <div id="container">
     <div id="content">
 
-        <h1> web validator </h1>
-
-        <%
-            String folder = request.getParameter("folder");
-            String[] rulesEnabled = request.getParameterValues("ruleEnabled");
-
-            ProgramSettings programSettings = (ProgramSettings) application.getAttribute("programSettings");
-        %>
+        <h1> <%= nameAndVersion %> - web validator </h1>
 
         <%!
             private boolean ruleIsChecked(String[] rulesEnabled, LintRule lintRule) {
