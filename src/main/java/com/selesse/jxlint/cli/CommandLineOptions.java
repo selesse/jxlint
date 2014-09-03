@@ -32,6 +32,11 @@ public class CommandLineOptions {
         options.addOption("p", "profile", false, "Measure time every rule takes to complete.");
         options.addOption("l", "list", false, "Lists lint rules with a short, summary explanation.");
         options.addOption("b", "web", false, "Run in the background, as a website.");
+        options.addOption(OptionBuilder.withLongOpt("web").
+                withDescription("Run in the background, as a website. (default port: 8080)").
+                hasOptionalArg().
+                withArgName("port").create('b')
+        );
         options.addOption("r", "rules", false, "Prints a Markdown dump of the program's rules.");
         options.addOption(OptionBuilder.withLongOpt("show").
                 withDescription("Lists a verbose rule explanation.").

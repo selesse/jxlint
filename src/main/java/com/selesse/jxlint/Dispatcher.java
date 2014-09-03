@@ -63,7 +63,9 @@ public class Dispatcher {
             LintRuleInformationDisplayer.listRules();
         }
         else if (programOptions.hasOption(JxlintOption.WEB)) {
-            JettyWebRunner jettyWebRunner = new JettyWebRunner(programSettings);
+            String port = programOptions.getOption(JxlintOption.WEB);
+
+            JettyWebRunner jettyWebRunner = new JettyWebRunner(programSettings, port);
             jettyWebRunner.start();
             return;
         }
