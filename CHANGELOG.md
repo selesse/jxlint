@@ -1,4 +1,4 @@
-## jxlint 1.4.0 (unreleased)
+## jxlint 1.4.0 (September 2, 2014)
 
 IMPROVEMENTS:
   - Add `andSeverity` to `LintError` build constructor, allowing for the same
