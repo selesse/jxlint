@@ -8,7 +8,7 @@ import java.io.File;
 public class JxlintProgramSettings implements ProgramSettings {
     @Override
     public String getProgramVersion() {
-        return "1.3.0";
+        return "x.x.x";
     }
 
     @Override
