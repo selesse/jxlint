@@ -1,3 +1,8 @@
+## jxlint 1.5.0 (unreleased)
+
+IMPROVEMENTS:
+  - Allow users to choose the web port for `--web`
+
 ## jxlint 1.4.0 (September 2, 2014)
 
 IMPROVEMENTS:
