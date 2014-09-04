@@ -127,4 +127,12 @@ public class ProgramOptions {
 
         return categoryList;
     }
+
+    @Override
+    public String toString() {
+        return "ProgramOptions{" +
+                "options=" + options +
+                ", sourceDirectory='" + sourceDirectory + '\'' +
+                '}';
+    }
 }

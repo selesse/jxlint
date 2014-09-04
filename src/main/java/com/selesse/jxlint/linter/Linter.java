@@ -3,6 +3,8 @@ package com.selesse.jxlint.linter;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -13,13 +15,15 @@ import java.util.concurrent.*;
  * accumulates them. Call {@link #getLintErrors()} to retrieve them.
  */
 public class Linter {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Linter.class);
+    private static final int THREADS = Runtime.getRuntime().availableProcessors();
+
     private List<LintRule> rules;
     private List<LintError> lintErrors;
-    private static final int THREADS = Runtime.getRuntime().availableProcessors();
 
     public Linter(List<LintRule> rules) {
         this.rules = rules;
-        lintErrors = Lists.newArrayList();
+        this.lintErrors = Lists.newArrayList();
     }
 
     /**
@@ -31,6 +35,7 @@ public class Linter {
         List<ValidationThread> lintRuleThreads = getValidationThreads(rules);
 
         try {
+            LOGGER.debug("Initializing pool of {} threads", THREADS);
             final ExecutorService executorService = Executors.newFixedThreadPool(THREADS);
             List<Future<List<LintError>>> futures = executorService.invokeAll(lintRuleThreads);
             executorService.shutdown();
@@ -41,10 +46,10 @@ public class Linter {
             }
         }
         catch (InterruptedException e) {
-            e.printStackTrace();
+            LOGGER.error("Thread interrupted while validating", e);
         }
         catch (ExecutionException e) {
-            e.printStackTrace();
+            LOGGER.error("Execution exception thrown while validating", e);
         }
     }
 

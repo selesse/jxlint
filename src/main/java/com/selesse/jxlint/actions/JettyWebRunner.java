@@ -25,24 +25,30 @@ public class JettyWebRunner {
     }
 
     public void start() {
-        startJetty();
+        int port = getPortValue();
+        startJetty(port);
     }
 
-    private void startJetty() {
-        // Set JSP to use Standard JavaC always
-        System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
-
+    private int getPortValue() {
         int portIntValue;
 
         try {
             portIntValue = Integer.parseInt(port);
         }
         catch (NumberFormatException e) {
-            System.err.println("Error parsing port '" + port + "', reverting to default");
-            portIntValue = Integer.parseInt(ProgramOptionExtractor.DEFAULT_PORT);
+            String defaultPort = ProgramOptionExtractor.DEFAULT_PORT;
+            LOGGER.error("Error parsing port '{}', reverting to default of {}", port, defaultPort);
+            portIntValue = Integer.parseInt(defaultPort);
         }
 
-        Server server = new Server(portIntValue);
+        return portIntValue;
+    }
+
+    private void startJetty(int port) {
+        // Set JSP to use Standard JavaC always
+        System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
+
+        Server server = new Server(port);
 
         URL warUrl = Resources.getResource(webApplicationDirectory);
         String warUrlString = warUrl.toExternalForm();

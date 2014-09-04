@@ -88,6 +88,7 @@ public class Jxlint {
         try {
             CommandLine commandLine = commandLineParser.parse(options, args);
             ProgramOptions programOptions = ProgramOptionExtractor.extractProgramOptions(commandLine);
+            LOGGER.debug("Extracted {} from command line options", programOptions);
             Dispatcher.dispatch(programOptions, programSettings);
         }
         catch (MissingArgumentException e) {
@@ -111,7 +112,7 @@ public class Jxlint {
             ProgramExitter.exitProgramWithMessage("Unrecognized option: " + e.getOption(), ExitType.COMMAND_LINE_ERROR);
         }
         catch (ParseException e) {
-            e.printStackTrace();
+            LOGGER.error("Error parsing command line tokens", e);
             ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(programSettings),
                     ExitType.COMMAND_LINE_ERROR);
         }

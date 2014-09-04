@@ -165,8 +165,7 @@ public abstract class LintRule {
             markdownDescription = Joiner.on("\n").join(fileContents);
         }
         catch (Exception e) {
-            System.err.println("Error: could not read Markdown description for " + this.getClass().getSimpleName());
-            e.printStackTrace();
+            LOGGER.error("Error: could not read Markdown description for {}", this.getClass().getSimpleName(), e);
         }
         return markdownDescription;
     }

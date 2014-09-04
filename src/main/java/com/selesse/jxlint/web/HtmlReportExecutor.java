@@ -6,6 +6,8 @@ import com.selesse.jxlint.Jxlint;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.settings.ProgramSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,13 +15,14 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 public class HtmlReportExecutor {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HtmlReportExecutor.class);
     private static String reportPath;
     static {
         try {
             reportPath = File.createTempFile("jxlint", "html").getAbsolutePath();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error creating temporary file", e);
         }
     }
 
@@ -59,6 +62,7 @@ public class HtmlReportExecutor {
 
         argList.toArray(newArgs);
 
+        LOGGER.info("Running Jxlint with args: {}", argList);
         Jxlint jxlint = new Jxlint(LintRulesImpl.getInstance(), programSettings, false);
         jxlint.parseArgumentsAndDispatch(newArgs);
     }

@@ -2,13 +2,13 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.*;
+import com.google.common.html.HtmlEscapers;
 import com.selesse.jxlint.model.LintRuleComparator;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.settings.ProgramSettings;
 import com.selesse.jxlint.utils.FileUtils;
-import com.selesse.jxlint.utils.HtmlUtils;
 import org.pegdown.PegDownProcessor;
 
 import java.io.PrintStream;
@@ -82,7 +82,7 @@ public class SequentialHtmlReporter extends Reporter {
             out.print(" on line " + error.getLineNumber());
         }
         out.println("<br/>");
-        out.println(HtmlUtils.htmlEncode(error.getMessage()) + "<br>");
+        out.println(HtmlEscapers.htmlEscaper().escape(error.getMessage()) + "<br>");
         if (error.getException() != null) {
             String exceptionLines = Joiner.on("<br>").join(error.getException().getStackTrace());
             out.println("<pre>" + exceptionLines + "</pre>");
