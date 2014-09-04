@@ -13,6 +13,8 @@ import com.selesse.jxlint.settings.Profiler;
 import com.selesse.jxlint.settings.ProgramSettings;
 import org.apache.commons.cli.*;
 import org.fusesource.jansi.AnsiConsole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +36,8 @@ import java.util.List;
  * </pre>
  */
 public class Jxlint {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Jxlint.class);
+
     private final ProgramSettings programSettings;
 
     /**
@@ -59,6 +63,7 @@ public class Jxlint {
     }
 
     public void setCustomCategories(Class<? extends Enum<?>> categories) {
+        LOGGER.debug("Setting custom categories to {}", categories.getCanonicalName());
         Categories.setCategories(categories);
     }
 

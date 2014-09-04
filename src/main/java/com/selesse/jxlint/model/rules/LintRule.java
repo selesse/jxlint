@@ -5,6 +5,8 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.selesse.jxlint.utils.EnumUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
@@ -47,6 +49,8 @@ import java.util.List;
  * </pre>
  */
 public abstract class LintRule {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LintRule.class);
+
     private String name;
     private String summary;
     private String detailedDescription;
@@ -86,10 +90,14 @@ public abstract class LintRule {
      * it is added to {@link #lintErrors}.
      */
     public void validate() {
+        LOGGER.debug("[{}] will run against {} files", getName(), getFilesToValidate().size());
         try {
             for (File file : getFilesToValidate()) {
+                LOGGER.debug("[{}]: Starting [{}]", file.getAbsolutePath(), getName());
                 List<LintError> fileLintErrors = getLintErrors(file);
                 lintErrors.addAll(fileLintErrors);
+                LOGGER.debug("[{}]: Done [{}], found {} errors", file.getAbsolutePath(), getName(),
+                        fileLintErrors.size());
             }
         }
         catch (Exception e) {

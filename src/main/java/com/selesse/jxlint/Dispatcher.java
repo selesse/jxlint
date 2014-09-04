@@ -13,6 +13,8 @@ import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.*;
 import com.selesse.jxlint.settings.Profiler;
 import com.selesse.jxlint.settings.ProgramSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -25,6 +27,8 @@ import java.util.List;
  * {@link #dispatch(com.selesse.jxlint.model.ProgramOptions, com.selesse.jxlint.settings.ProgramSettings)}.
  */
 public class Dispatcher {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Dispatcher.class);
+
     /**
      * The order for the dispatcher is as such:
      *
@@ -114,7 +118,7 @@ public class Dispatcher {
                 checkRulesList = ProgramOptions.getRuleListFromOptionString(checkRules);
             }
             catch (NonExistentLintRuleException e) {
-                e.printStackTrace();
+                LOGGER.warn("Could not find rule [{}] in: {}", e.getRuleName(), checkRules);
             }
 
             handleLint(lintRules.getOnlyRules(checkRulesList), warningsAreErrors, programOptions, programSettings);

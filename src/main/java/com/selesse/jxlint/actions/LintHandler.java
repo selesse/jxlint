@@ -14,6 +14,8 @@ import com.selesse.jxlint.report.Reporter;
 import com.selesse.jxlint.report.Reporters;
 import com.selesse.jxlint.report.UnableToCreateReportException;
 import com.selesse.jxlint.settings.ProgramSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -22,6 +24,8 @@ import java.util.List;
  * {@link #lintAndReportAndExit(boolean)}.
  */
 public class LintHandler {
+    private static final Logger LOGGER = LoggerFactory.getLogger(LintHandler.class);
+
     private final List<LintRule> lintRules;
     private final boolean warningsAreErrors;
     private final ProgramOptions options;
@@ -42,11 +46,13 @@ public class LintHandler {
      * {@link com.selesse.jxlint.model.ProgramOptions} passed in the constructor.
      */
     public void lintAndReportAndExit(boolean exitAfterReport) {
+        LOGGER.debug("Performing validations against these lint rules: {}", lintRules);
         Linter linter = LinterFactory.createNewLinter(lintRules);
         linter.performLintValidations();
         List<LintError> lintErrors = linter.getLintErrors();
 
         reportLintErrors(lintErrors, settings, options);
+        LOGGER.debug("Exiting? {}", exitAfterReport);
         if (exitAfterReport) {
             exitWithAppropriateStatus(lintErrors);
         }

@@ -3,6 +3,8 @@ package com.selesse.jxlint.linter;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.settings.Profiler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +12,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public class ValidationThread implements Callable<List<LintError>> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ValidationThread.class);
+
     private LintRule lintRule;
 
     public ValidationThread(LintRule lintRule) {
@@ -25,7 +29,10 @@ public class ValidationThread implements Callable<List<LintError>> {
         Collections.sort(lintErrorList, fileThenLineNumberComparator);
 
         long endTime = System.currentTimeMillis();
-        Profiler.addExecutionTime(lintRule, endTime - startTime);
+
+        long executionTime = endTime - startTime;
+        LOGGER.info("[{}] took {} milliseconds to execute", lintRule.getName(), executionTime);
+        Profiler.addExecutionTime(lintRule, executionTime);
 
         return lintRule.getLintErrors();
     }
