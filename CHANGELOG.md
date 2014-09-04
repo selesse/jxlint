@@ -1,7 +1,11 @@
 ## jxlint 1.5.0 (unreleased)
 
 IMPROVEMENTS:
+
   - Allow users to choose the web port for `--web`
+  - Include name and version in page
+  - Add SLF4J and logging
+  - Add error summary to HTML report
 
 ## jxlint 1.4.0 (September 2, 2014)
 
