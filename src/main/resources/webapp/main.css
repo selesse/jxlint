@@ -54,6 +54,7 @@ input[type=text] {
 iframe {
     position: absolute;
     width: 100%;
+    left: 0;
 }
 
 html, body, iframe {
