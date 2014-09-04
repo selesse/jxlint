@@ -16,6 +16,8 @@ taken care of for you:
      -p,--profile                  Measure time every rule takes to complete.
      -l,--list                     Lists lint rules with a short, summary
                                    explanation.
+     -b,--web <port>               Run in the background, as a website.
+                                   (default port: 8080)
      -r,--rules                    Prints a Markdown dump of the program's
                                    rules.
      -s,--show <RULE[s]>           Lists a verbose rule explanation.
