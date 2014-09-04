@@ -6,6 +6,7 @@ IMPROVEMENTS:
   - Include name and version in page
   - Add SLF4J and logging
   - Add error summary to HTML report
+  - Improve spacing after text box in page
 
 ## jxlint 1.4.0 (September 2, 2014)
 
