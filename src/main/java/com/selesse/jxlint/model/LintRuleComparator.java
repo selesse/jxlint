@@ -1,5 +1,6 @@
 package com.selesse.jxlint.model;
 
+import com.google.common.primitives.Ints;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 
@@ -16,6 +17,6 @@ public class LintRuleComparator {
     }
 
     public static int compareLineNumbers(LintError o1, LintError o2) {
-        return Integer.compare(o1.getLineNumber(), o2.getLineNumber());
+        return Ints.compare(o1.getLineNumber(), o2.getLineNumber());
     }
 }
