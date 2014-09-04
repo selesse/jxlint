@@ -2,13 +2,12 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import com.selesse.jxlint.model.LintRuleComparator;
 import com.selesse.jxlint.model.rules.LintError;
-import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.settings.ProgramSettings;
 
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -38,7 +37,12 @@ public abstract class Reporter {
     public void writeReport() {
         Enum<?> lastCategory = null;
         printHeader();
-        Collections.sort(lintErrorList, new CategoryThenNameComparator());
+        Collections.sort(lintErrorList, new Comparator<LintError>() {
+            @Override
+            public int compare(LintError o1, LintError o2) {
+                return LintRuleComparator.compareCategoryThenName(o1.getViolatedRule(), o2.getViolatedRule());
+            }
+        });
         for (LintError error : lintErrorList) {
             Enum<?> currentCategory = error.getViolatedRule().getCategory();
             if (lastCategory == null || currentCategory != lastCategory) {
@@ -71,23 +75,6 @@ public abstract class Reporter {
      * print order.
      */
     protected abstract void printFooter();
-
-    private static class CategoryThenNameComparator implements Comparator<LintError>, Serializable {
-        @Override
-        public int compare(LintError o1, LintError o2) {
-            LintRule o1ViolatedRule = o1.getViolatedRule();
-            LintRule o2ViolatedRule = o2.getViolatedRule();
-
-            Enum<?> firstCategory = o1ViolatedRule.getCategory();
-            Enum<?> secondCategory = o2ViolatedRule.getCategory();
-
-            if (firstCategory == secondCategory) {
-                return o1ViolatedRule.getName().compareTo(o2ViolatedRule.getName());
-            }
-
-            return firstCategory.toString().compareToIgnoreCase(secondCategory.toString());
-        }
-    }
 
     /**
      * Report the number of errors for every category. For example,

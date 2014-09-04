@@ -1,8 +1,10 @@
 package com.selesse.jxlint.report;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
+import com.google.common.collect.*;
+import com.selesse.jxlint.model.LintRuleComparator;
 import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.settings.ProgramSettings;
 import com.selesse.jxlint.utils.FileUtils;
@@ -10,8 +12,7 @@ import com.selesse.jxlint.utils.HtmlUtils;
 import org.pegdown.PegDownProcessor;
 
 import java.io.PrintStream;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,8 +20,21 @@ public class SequentialHtmlReporter extends Reporter {
     private final String nameAndVersion = settings.getProgramName() + " " + settings.getProgramVersion();
     private final Pattern alphanumeric = Pattern.compile("[a-zA-Z0-9_]");
 
+    private Multimap<LintRule, LintError> ruleToErrorMap;
+
     public SequentialHtmlReporter(PrintStream out, ProgramSettings programSettings, List<LintError> lintErrorList) {
         super(out, programSettings, lintErrorList);
+        ruleToErrorMap = TreeMultimap.create(new Comparator<LintRule>() {
+            @Override
+            public int compare(LintRule o1, LintRule o2) {
+                return LintRuleComparator.compareCategoryThenName(o1, o2);
+            }
+        }, new Comparator<LintError>() {
+            @Override
+            public int compare(LintError o1, LintError o2) {
+                return LintRuleComparator.compareLineNumbers(o1, o2);
+            }
+        });
     }
 
     @Override
@@ -32,7 +46,25 @@ public class SequentialHtmlReporter extends Reporter {
         out.println("<body>");
         out.println("<h1> <center> " + nameAndVersion + " - Lint Report </center> </h1>");
         out.println("<h2> <center> " + new Date() + " </center> </h2>");
+        printErrorSummary();
+    }
+
+    private void printErrorSummary() {
         out.println("<div>" + getErrorReportString() + "</div>");
+
+        for (LintError lintError : lintErrorList) {
+            ruleToErrorMap.put(lintError.getViolatedRule(), lintError);
+        }
+
+        if (!lintErrorList.isEmpty()) {
+            out.println("<ul>");
+            for (LintRule lintRule : ruleToErrorMap.keySet()) {
+                Collection<LintError> errorCollection = ruleToErrorMap.get(lintRule);
+
+                out.println("<li> " + errorCollection.size() + " violations for " + lintRule.getName() + "</li>");
+            }
+            out.println("</ul>");
+        }
     }
 
     @Override
@@ -90,8 +122,7 @@ public class SequentialHtmlReporter extends Reporter {
     private void printUniqueErrors() {
         List<String> uniqueErrorTypes = Lists.newArrayList();
 
-        for (int i = 0; i < lintErrorList.size(); i++) {
-            LintError lintError = lintErrorList.get(i);
+        for (LintError lintError : lintErrorList) {
             String className = lintError.getViolatedRule().getClass().getSimpleName();
 
             if (!uniqueErrorTypes.contains(className)) {
