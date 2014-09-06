@@ -39,7 +39,6 @@
 <body>
 <div id="container">
     <div id="content">
-
         <h1> <%= nameAndVersion %> - web validator </h1>
 
         <%!
@@ -83,12 +82,8 @@
         <% } else { %>
         Directory '<%= jxlintArgs.get(jxlintArgs.size() - 1) %>' does not exist
         <% }
-    %>
+        } %>
     </div>
 </div>
-<% } else { %>
-</div>
-</div>
-<% } %>
 </body>
 </html>
