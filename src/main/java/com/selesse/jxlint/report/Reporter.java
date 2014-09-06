@@ -52,6 +52,9 @@ public abstract class Reporter {
             printError(error);
         }
         printFooter();
+        if (out != System.out) {
+            out.close();
+        }
     }
 
     /**
