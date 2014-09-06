@@ -19,7 +19,7 @@ public class HtmlReportExecutor {
     private static String reportPath;
     static {
         try {
-            reportPath = File.createTempFile("jxlint", "html").getAbsolutePath();
+            reportPath = File.createTempFile("jxlint", ".html").getAbsolutePath();
         }
         catch (IOException e) {
             LOGGER.error("Error creating temporary file", e);

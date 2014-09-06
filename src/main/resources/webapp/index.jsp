@@ -56,14 +56,9 @@
         <input type="button" value="Deselect all" onclick="deselectAll()"/>
 
         <form action="index.jsp">
-            <%
-
-                for (LintRule lintRule : HtmlReportExecutor.getAvailableRules()) {
-            %>
-            <input type="checkbox" name="ruleEnabled" value="<%=lintRule.getName()%>" <%=ruleIsChecked(rulesEnabled, lintRule) ? "checked" : "" %> > <%=lintRule.getName()%> <br>
-            <%
-                }
-            %>
+            <% for (LintRule lintRule : HtmlReportExecutor.getAvailableRules()) { %>
+                <input type="checkbox" name="ruleEnabled" value="<%=lintRule.getName()%>" <%=ruleIsChecked(rulesEnabled, lintRule) ? "checked" : "" %> > <%=lintRule.getName()%> <br>
+            <% } %>
             <br>
             <input type="text" name="folder" <%= folder == null ? "" : "value=\"" + folder + "\"" %> placeholder="Folder to run validations against" />
         </form>
@@ -79,12 +74,11 @@
                 rulesEnabled = new String[jxlintArgs.size()];
                 jxlintArgs.toArray(rulesEnabled);
 
-
                 HtmlReportExecutor htmlReportExecutor = new HtmlReportExecutor(folder, programSettings, rulesEnabled);
                 if (htmlReportExecutor.directoryExists()) {
                     htmlReportExecutor.generateReport();
         %>
-        <h4><a href="report.jsp"> HTML Report </a></h4>
+        <h4><a href="report.jsp"> HTML Report - Standalone Page </a></h4>
         <iframe src="report.jsp"></iframe>
         <% } else { %>
         Directory '<%= jxlintArgs.get(jxlintArgs.size() - 1) %>' does not exist
