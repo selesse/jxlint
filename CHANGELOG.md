@@ -7,7 +7,7 @@ IMPROVEMENTS:
   - Add SLF4J and logging
   - Add error summary to HTML report
   - Improve spacing after text box in page
-  
+
 BUG FIXES:
 
   - Fix centering in iFrame
