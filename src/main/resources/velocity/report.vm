@@ -3,6 +3,7 @@
 <head>
 <title> $nameAndVersion - Report </title>
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" type="text/css"/>
 <style>
     body {
         margin-top: 20px;
@@ -26,12 +27,10 @@
         margin-top: 15px;
     }
 </style>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
-</script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js">
-</script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tab.min.js">
-</script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tab.min.js"></script>
 <script>
 $(document).ready(function() {
     var hash = window.location.hash;
@@ -45,6 +44,8 @@ $(document).ready(function() {
     });
 
     $("div#summary table").tablesorter();
+    $('pre > code').parent().addClass("prettyprint");
+    prettyPrint();
 });
 </script>
 </head>
@@ -57,6 +58,7 @@ $(document).ready(function() {
 
     <ul class="nav nav-tabs" role="tablist" id="category-nav">
       <li class="active"><a href="#all" data-target="$navDataTargets" role="tab" data-toggle="tab">All</a></li>
+      <li><a href="#summary" role="tab" data-toggle="tab">Summary</a></li>
         #foreach($violatedCategory in $categoryList)
             #set($categoryName = $violatedCategory.toString())
             #set($categoryHrefName = $templateHelper.getHrefSafeName($categoryName))
@@ -121,10 +123,31 @@ $(document).ready(function() {
             </div>
         #end
 
+        <hr/>
+
+        <h2> Rule Descriptions </h2>
+
         #foreach($lintRule in $lintRuleSet)
             #set($nameHrefSafe = $templateHelper.getHrefSafeName($lintRule.name))
-            <h3 id="$nameHrefSafe"> $lintRule.name </h3>
-            $lintRule.detailedDescription
+            <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div>
+                        <span id="$nameHrefSafe" class="panel-title"> $lintRule.name </span>
+                        <span class="panel-title pull-right"> $lintRule.category.toString() </span>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <tr> <th> Rule Name </th> <td> $lintRule.name </td> </tr>
+                        <tr> <th> Summary </th> <td> $lintRule.summary </td> </tr>
+                        <tr> <th> Severity </th> <td> $lintRule.severity </td> </tr>
+                        <tr> <th> Category </th> <td> $lintRule.category.toString() </td> </tr>
+                        #set($enabled = "#if($lintRule.isEnabled())Yes#{else}No#end")
+                        <tr> <th> Enabled by default? </th> <td> $enabled </tr>
+                    </table>
+                    $templateHelper.markdownToHtml($lintRule.detailedDescription)
+                </div>
+            </div>
         #end
     </div>
 </div>

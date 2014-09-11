@@ -17,6 +17,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.pegdown.PegDownProcessor;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -157,6 +158,10 @@ public class HtmlTemplatedReporter extends Reporter {
         return sanitizedStackTrace.toString();
     }
 
+    public static String markdownToHtml(String description) {
+        PegDownProcessor pegDownProcessor = new PegDownProcessor();
+        return pegDownProcessor.markdownToHtml(description);
+    }
 
     @Override
     protected void printHeader() {}
