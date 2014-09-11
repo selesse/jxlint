@@ -2,8 +2,7 @@
 <html lang="en-US">
 <head>
 <title> $nameAndVersion - Report </title>
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" type="text/css" />
-<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css" type="text/css"/>
+    $allCss
 <style>
     body {
         margin-top: 20px;
@@ -27,10 +26,7 @@
         margin-top: 15px;
     }
 </style>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tab.min.js"></script>
+    $allJs
 <script>
 $(document).ready(function() {
     var hash = window.location.hash;

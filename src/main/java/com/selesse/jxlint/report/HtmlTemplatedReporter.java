@@ -1,10 +1,12 @@
 package com.selesse.jxlint.report;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.html.HtmlEscapers;
+import com.google.common.io.Resources;
 import com.selesse.jxlint.model.LintRuleComparator;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
@@ -20,8 +22,10 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.pegdown.PegDownProcessor;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,6 +87,8 @@ public class HtmlTemplatedReporter extends Reporter {
         VelocityContext context = new VelocityContext();
         context.put("templateHelper", HtmlTemplatedReporter.class);
         context.put("Joiner", Joiner.class);
+        context.put("allCss", getAllCss());
+        context.put("allJs", getAllJs());
         context.put("nameAndVersion", settings.getProgramName() + " " + settings.getProgramVersion());
         context.put("date", new Date());
         context.put("lintErrorList", lintErrorList);
@@ -113,6 +119,40 @@ public class HtmlTemplatedReporter extends Reporter {
 
         return dataTarget.toString();
     }
+
+    private String getAllCss() {
+        List<String> cssFiles = Lists.newArrayList("bootstrap.min.css", "prettify.min.css");
+        return concatenateVendorResources(cssFiles);
+    }
+
+    private String getAllJs() {
+        List<String> jsFiles = Lists.newArrayList("prettify.min.js", "jquery.min.js", "jquery.tablesorter.min.js",
+                "tab.min.js");
+        return concatenateVendorResources(jsFiles);
+    }
+
+    private String concatenateVendorResources(List<String> resources) {
+        StringBuilder concatenatedResource = new StringBuilder();
+
+        for (String resource : resources) {
+            URL resourceUrl = Resources.getResource("vendor/" + resource);
+            String tag = resource.endsWith("css") ? "style" : "script";
+
+            try {
+                concatenatedResource.append("<").append(tag).append(">");
+                String resourceToString = Resources.toString(resourceUrl, Charsets.UTF_8);
+                concatenatedResource.append(resourceToString);
+                concatenatedResource.append("</").append(tag).append(">");
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            concatenatedResource.append("\n");
+        }
+
+        return concatenatedResource.toString();
+    }
+
 
     public static String getHrefSafeName(String string) {
         String hrefSafeName = "" + string.hashCode();
