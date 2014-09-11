@@ -36,7 +36,7 @@ public class Reporters {
     private static Map<OutputType, Class<? extends Reporter>> outputTypeReporterMap = Maps.newHashMap();
     static {
         outputTypeReporterMap.put(OutputType.DEFAULT, DefaultReporter.class);
-        outputTypeReporterMap.put(OutputType.HTML, SequentialHtmlReporter.class);
+        outputTypeReporterMap.put(OutputType.HTML, HtmlTemplatedReporter.class);
         outputTypeReporterMap.put(OutputType.XML, XmlReporter.class);
         outputTypeReporterMap.put(OutputType.QUIET, DefaultReporter.class);
     }

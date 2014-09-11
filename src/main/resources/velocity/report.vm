@@ -1,0 +1,132 @@
+<!doctype HTML>
+<html lang="en-US">
+<head>
+<title> $nameAndVersion - Report </title>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css" type="text/css" />
+<style>
+    body {
+        margin-top: 20px;
+    }
+
+    ul#category-nav {
+        margin: 30px 0;
+    }
+
+    .well {
+        background: darkgreen;
+        color: white;
+        text-align: center;
+    }
+
+    div.panel-heading h4 {
+        line-height: 1.5;
+    }
+
+    div.panel-body pre {
+        margin-top: 15px;
+    }
+</style>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js">
+</script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js">
+</script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/js/tab.min.js">
+</script>
+<script>
+$(document).ready(function() {
+    var hash = window.location.hash;
+    hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+
+    $(".nav-tabs a").click(function (e) {
+       $(this).tab('show');
+        var scrollmem = $('body').scrollTop();
+        window.location.hash = this.hash;
+        $("html,body").scrollTop(scrollmem);
+    });
+
+    $("div#summary table").tablesorter();
+});
+</script>
+</head>
+<body>
+<div class="container">
+    <div class="well">
+        <h2> $nameAndVersion - Lint Report </h2>
+        <h3> $date </h3>
+    </div>
+
+    <ul class="nav nav-tabs" role="tablist" id="category-nav">
+      <li class="active"><a href="#all" data-target="$navDataTargets" role="tab" data-toggle="tab">All</a></li>
+        #foreach($violatedCategory in $categoryList)
+            #set($categoryName = $violatedCategory.toString())
+            #set($categoryHrefName = $templateHelper.getHrefSafeName($categoryName))
+            <li><a href="#$categoryHrefName" role="tab" data-toggle="tab">$categoryName</a></li>
+        #end
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane active" id="summary">
+            <div class="table" >
+                <table class="table table-condensed table-striped table-bordered tablesorter">
+                    <thead>
+                    <tr>
+                        <th> Violation Name</th>
+                        <th> Category</th>
+                        <th> Number of Violations</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    #foreach($summaryMapEntry in $summaryMap.entrySet())
+                        <tr>
+                            <td> $summaryMapEntry.key.name </td>
+                            <td> $summaryMapEntry.key.category.toString() </td>
+                            <td> $summaryMapEntry.value </td>
+                        </tr>
+                    #end
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-danger"> $errorSummaryString </div>
+        </div>
+
+        #foreach($violatedCategory in $categoryList)
+            #set($categoryName = $violatedCategory.toString())
+            #set($categoryHrefName = $templateHelper.getHrefSafeName($categoryName))
+            <div class="tab-pane active" id="$categoryHrefName">
+            <h2> $violatedCategory.toString() </h2>
+            #foreach($lintError in $lintErrorList)
+                #if ($lintError.violatedRule.category.toString().equals($violatedCategory.toString()))
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4>
+                                <span class="label label-$templateHelper.getLabel($lintError.severity)">$lintError.severity</span>
+                                #set($nameHrefSafe = $templateHelper.getHrefSafeName($lintError.violatedRule.name))
+                                <a href="#$nameHrefSafe">$lintError.violatedRule.name</a> violated in <a href="$lintError.file">$templateHelper.relativize($lintError.file)</a>
+                                #if ($lintError.lineNumber > 0)
+                                    on line $lintError.lineNumber
+                                #end
+                            </h4>
+                        </div>
+                        <div class="panel-body">
+                            $templateHelper.htmlEscape($lintError.message)
+                            #if ($lintError.exception)
+                                <hr>
+                                <h5> Stacktrace </h5>
+                                <pre>$templateHelper.sanitizeStackTrace($lintError.exception)</pre>
+                            #end
+                        </div>
+                    </div>
+                #end
+            #end
+            </div>
+        #end
+
+        #foreach($lintRule in $lintRuleSet)
+            #set($nameHrefSafe = $templateHelper.getHrefSafeName($lintRule.name))
+            <h3 id="$nameHrefSafe"> $lintRule.name </h3>
+            $lintRule.detailedDescription
+        #end
+    </div>
+</div>
+</body>
+</html>
