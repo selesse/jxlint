@@ -20,7 +20,7 @@ public class LintRuleComparator {
         return Ints.compare(o1.getLineNumber(), o2.getLineNumber());
     }
 
-    public static int compareLintErrorByCategoryNameThenLineNumber(LintError o1, LintError o2) {
+    public static int compareByCategoryNameThenFileThenLineNumber(LintError o1, LintError o2) {
         LintRule firstRule = o1.getViolatedRule();
         LintRule secondRule = o2.getViolatedRule();
 
@@ -29,7 +29,7 @@ public class LintRuleComparator {
         if (categoryThenName == 0) {
             int fileCompare = o1.getFile().compareTo(o2.getFile());
             if (fileCompare == 0) {
-                return Ints.compare(o1.getLineNumber(), o2.getLineNumber());
+                return compareLineNumbers(o1, o2);
             }
             return fileCompare;
         }

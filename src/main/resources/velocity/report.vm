@@ -33,7 +33,7 @@ $(document).ready(function() {
     hash && $('ul.nav a[href="' + hash + '"]').tab('show');
 
     $(".nav-tabs a").click(function (e) {
-       $(this).tab('show');
+        $(this).tab('show');
         var scrollmem = $('body').scrollTop();
         window.location.hash = this.hash;
         $("html,body").scrollTop(scrollmem);
@@ -57,7 +57,7 @@ $(document).ready(function() {
       <li><a href="#summary" role="tab" data-toggle="tab">Summary</a></li>
         #foreach($violatedCategory in $categoryList)
             #set($categoryName = $violatedCategory.toString())
-            #set($categoryHrefName = $templateHelper.getHrefSafeName($categoryName))
+            #set($categoryHrefName = $TemplateHelper.getHrefSafeName($categoryName))
             <li><a href="#$categoryHrefName" role="tab" data-toggle="tab">$categoryName</a></li>
         #end
     </ul>
@@ -89,7 +89,7 @@ $(document).ready(function() {
 
         #foreach($violatedCategory in $categoryList)
             #set($categoryName = $violatedCategory.toString())
-            #set($categoryHrefName = $templateHelper.getHrefSafeName($categoryName))
+            #set($categoryHrefName = $TemplateHelper.getHrefSafeName($categoryName))
             <div class="tab-pane active" id="$categoryHrefName">
             <h2> $violatedCategory.toString() </h2>
             #foreach($lintError in $lintErrorList)
@@ -97,20 +97,20 @@ $(document).ready(function() {
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h4>
-                                <span class="label label-$templateHelper.getLabel($lintError.severity)">$lintError.severity</span>
-                                #set($nameHrefSafe = $templateHelper.getHrefSafeName($lintError.violatedRule.name))
-                                <a href="#$nameHrefSafe">$lintError.violatedRule.name</a> violated in <a href="$lintError.file">$templateHelper.relativize($lintError.file)</a>
+                                <span class="label label-$TemplateHelper.getLabel($lintError.severity)">$lintError.severity</span>
+                                #set($nameHrefSafe = $TemplateHelper.getHrefSafeName($lintError.violatedRule.name))
+                                <a href="#$nameHrefSafe">$lintError.violatedRule.name</a> violated in <a href="$lintError.file">$TemplateHelper.relativize($lintError.file)</a>
                                 #if ($lintError.lineNumber > 0)
                                     on line $lintError.lineNumber
                                 #end
                             </h4>
                         </div>
                         <div class="panel-body">
-                            $templateHelper.htmlEscape($lintError.message)
+                            $TemplateHelper.htmlEscape($lintError.message)
                             #if ($lintError.exception)
                                 <hr>
                                 <h5> Stacktrace </h5>
-                                <pre>$templateHelper.sanitizeStackTrace($lintError.exception)</pre>
+                                <pre>$TemplateHelper.sanitizeStackTrace($lintError.exception)</pre>
                             #end
                         </div>
                     </div>
@@ -124,7 +124,7 @@ $(document).ready(function() {
         <h2> Rule Descriptions </h2>
 
         #foreach($lintRule in $lintRuleSet)
-            #set($nameHrefSafe = $templateHelper.getHrefSafeName($lintRule.name))
+            #set($nameHrefSafe = $TemplateHelper.getHrefSafeName($lintRule.name))
             <div class="panel panel-success">
                 <div class="panel-heading">
                     <div>
@@ -141,7 +141,7 @@ $(document).ready(function() {
                         #set($enabled = "#if($lintRule.isEnabled())Yes#{else}No#end")
                         <tr> <th> Enabled by default? </th> <td> $enabled </tr>
                     </table>
-                    $templateHelper.markdownToHtml($lintRule.detailedDescription)
+                    $TemplateHelper.markdownToHtml($lintRule.detailedDescription)
                 </div>
             </div>
         #end
