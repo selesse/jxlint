@@ -39,7 +39,7 @@ public class HtmlTemplatedReporter extends Reporter {
                 return o1.toString().compareToIgnoreCase(o2.toString());
             }
         });
-        summaryMap = Maps.newTreeMap(new Comparator<LintRule>() {
+        summaryMap = Maps.<LintRule, LintRule, Integer>newTreeMap(new Comparator<LintRule>() {
             @Override
             public int compare(LintRule o1, LintRule o2) {
                 return o1.getName().compareToIgnoreCase(o2.getName());
