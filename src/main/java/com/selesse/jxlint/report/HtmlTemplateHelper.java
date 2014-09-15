@@ -18,10 +18,10 @@ public class HtmlTemplateHelper {
     public static String getHrefSafeName(String string) {
         String hrefSafeName = "" + string.hashCode();
 
-        Matcher matcher = alphanumeric.matcher(string);
+        Matcher alphanumericMatcher = alphanumeric.matcher(string);
         StringBuilder stringBuilder = new StringBuilder();
-        while (matcher.find()) {
-            stringBuilder.append(matcher.group());
+        while (alphanumericMatcher.find()) {
+            stringBuilder.append(alphanumericMatcher.group());
         }
 
         if (stringBuilder.length() > 0) {
@@ -54,7 +54,7 @@ public class HtmlTemplateHelper {
         StringBuilder sanitizedStackTrace = new StringBuilder(exception.getMessage()).append("\n");
         List<StackTraceElement> stackTrace = Lists.newArrayList(exception.getStackTrace());
         for (StackTraceElement stackTraceElement : stackTrace) {
-            sanitizedStackTrace.append(HtmlEscapers.htmlEscaper().escape(stackTraceElement.toString())).append("\n");
+            sanitizedStackTrace.append(HtmlTemplateHelper.htmlEscape(stackTraceElement.toString())).append("\n");
         }
         return sanitizedStackTrace.toString();
     }
