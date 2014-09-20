@@ -3,6 +3,7 @@ apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 apply plugin: 'java'
 apply plugin: 'nexus'
+apply plugin: 'cobertura'
 
 defaultTasks 'clean', 'build'
 
@@ -13,10 +14,12 @@ sourceCompatibility = 1.6
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
 
     dependencies {
         classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
+        classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
     }
 }
 
