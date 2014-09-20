@@ -40,9 +40,11 @@ dependencies {
 
     runtime "org.eclipse.jetty:jetty-jsp:${jettyVersion}"
 
-    testCompile 'commons-io:commons-io:2.4'
     testCompile 'com.github.stefanbirkner:system-rules:1.3.1'
-    testCompile 'junit:junit:4.11'
+    testCompile 'commons-io:commons-io:2.4'
+    testCompile 'org.easytesting:fest-assert-core:2.0M10'
+
+    testRuntime 'ch.qos.logback:logback-classic:1.1.2'
 }
 
 task release(dependsOn: ['clean', 'build', 'javadocJar', 'sourcesJar']) << {

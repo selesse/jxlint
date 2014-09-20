@@ -14,7 +14,7 @@ import org.junit.Before;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.fest.assertions.api.Assertions.assertThat;
 
 public class AbstractReportTest extends AbstractTestCase {
     protected File tempDirectory;
@@ -36,21 +36,21 @@ public class AbstractReportTest extends AbstractTestCase {
         // First, create a bad encoding file and assert that there are errors
         TestFileCreator.createBadEncodingFile(tempDirectory);
 
-        String desiredOutput = tempDirectory.getAbsolutePath() + File.separator + "test." + type.extension();
-        File desiredFile = new File(desiredOutput);
+        String desiredOutputPath = tempDirectory.getAbsolutePath() + File.separator + "test." + type.extension();
+        File desiredFile = new File(desiredOutputPath);
 
-        assertFalse(desiredFile.exists());
+        assertThat(desiredFile.exists()).isFalse();
 
-        setupTestLinterAndRunProgramWithArgs(new String[]{"--" + type.extension(), desiredOutput,
+        setupTestLinterAndRunProgramWithArgs(new String[]{"--" + type.extension(), desiredOutputPath,
                 tempDirectory.getAbsolutePath()});
         Linter linter = LinterFactory.getInstance();
-        assertEquals(1, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors().size()).isEqualTo(1);
 
         Reporter reporter = Reporters.createReporter(linter.getLintErrors(), new JxlintProgramSettings(),
-                type, desiredOutput);
+                type, desiredOutputPath);
         reporter.writeReport();
 
-        assertTrue(desiredFile.exists());
+        assertThat(desiredFile.exists()).isTrue();
         desiredFile.deleteOnExit();
 
         return desiredFile;

@@ -1,7 +1,6 @@
 package com.selesse.jxlint.report;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -93,7 +92,6 @@ public class HtmlTemplatedReporter extends Reporter {
         VelocityContext context = new VelocityContext();
 
         context.put("TemplateHelper", HtmlTemplateHelper.class);
-        context.put("Joiner", Joiner.class);
 
         context.put("allCss", getAllCss());
         context.put("allJs", getAllJs());
