@@ -73,11 +73,19 @@ jar {
     }
 }
 
+findbugs {
+    toolVersion = '2.0.3'
+}
+
 tasks.withType(FindBugs) {
     reports {
         xml.enabled = false
         html.enabled = true
     }
+}
+
+checkstyle {
+    configFile = new File(projectDir, "checkstyle.xml")
 }
 
 modifyPom {
@@ -111,6 +119,3 @@ modifyPom {
     }
 }
 
-checkstyle {
-    configFile = new File(projectDir, "checkstyle.xml")
-}
