@@ -32,22 +32,23 @@ public class AbstractReportTest extends AbstractTestCase {
         jxlint.parseArgumentsAndDispatch(args);
     }
 
-    public File ensureReportGetsCreatedWithType(OutputType type) throws UnableToCreateReportException {
-        // First, create a bad encoding file and assert that there are errors
+    public File ensureReportGetsCreatedFor2Errors(OutputType outputType) throws UnableToCreateReportException {
+        // Create some files that will trigger rule violations
+        TestFileCreator.createBadAuthorFile(tempDirectory);
         TestFileCreator.createBadEncodingFile(tempDirectory);
 
-        String desiredOutputPath = tempDirectory.getAbsolutePath() + File.separator + "test." + type.extension();
+        String desiredOutputPath = tempDirectory.getAbsolutePath() + File.separator + "test." + outputType.extension();
         File desiredFile = new File(desiredOutputPath);
 
         assertThat(desiredFile.exists()).isFalse();
 
-        setupTestLinterAndRunProgramWithArgs(new String[]{"--" + type.extension(), desiredOutputPath,
+        setupTestLinterAndRunProgramWithArgs(new String[]{"--Wall", "--" + outputType.extension(), desiredOutputPath,
                 tempDirectory.getAbsolutePath()});
         Linter linter = LinterFactory.getInstance();
-        assertThat(linter.getLintErrors().size()).isEqualTo(1);
+        assertThat(linter.getLintErrors().size()).isEqualTo(2);
 
         Reporter reporter = Reporters.createReporter(linter.getLintErrors(), new JxlintProgramSettings(),
-                type, desiredOutputPath);
+                outputType, desiredOutputPath);
         reporter.writeReport();
 
         assertThat(desiredFile.exists()).isTrue();

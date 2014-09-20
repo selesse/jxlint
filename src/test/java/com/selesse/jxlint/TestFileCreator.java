@@ -46,7 +46,7 @@ public class TestFileCreator {
                 "<?xml version=\"1.0\"?>",
                 "<empty/>"
         );
-        return createFile(baseDirectory + File.separator + "bad-encoding.xml", fileContents);
+        return createFile(baseDirectory + File.separator + getBadEncodingFileName(), fileContents);
     }
 
     public static File createBadAttributeFile(File baseDirectory) {
@@ -70,6 +70,14 @@ public class TestFileCreator {
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
                 "<author name=\"\"/>"
         );
-        return createFile(baseDirectory + File.separator + "author.xml", fileContents);
+        return createFile(baseDirectory + File.separator + getBadAuthorFileName(), fileContents);
+    }
+
+    public static String getBadEncodingFileName() {
+        return "bad-encoding.xml";
+    }
+
+    public static String getBadAuthorFileName() {
+        return "author.xml";
     }
 }
