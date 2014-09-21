@@ -1,3 +1,15 @@
+## jxlint 1.5.1 (September 21, 2014)
+
+IMPROVEMENTS:
+  - Major improvements to the generated HTML report
+    1. Categories can be selected via tabs
+    2. Columns in the summary report can be clicked to sort
+    3. Any rule description Markdown is prettified via prettify.js
+    4. There are now more than 0 lines of CSS ;)
+
+BUG FIXES:
+  - Fix summary report (the violation numbers did not add up)
+
 ## jxlint 1.5.0 (September 6, 2014)
 
 IMPROVEMENTS:
