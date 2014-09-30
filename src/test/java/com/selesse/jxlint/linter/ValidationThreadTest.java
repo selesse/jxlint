@@ -22,6 +22,7 @@ public class ValidationThreadTest {
         mockLintRule = Mockito.mock(LintRule.class);
 
         doNothing().when(mockLintRule).validate();
+        when(mockLintRule.getName()).thenReturn("mock lint rule");
     }
 
     @Test
@@ -29,18 +30,19 @@ public class ValidationThreadTest {
         ValidationThread validationThread = new ValidationThread(mockLintRule);
 
         LintError lintError1 = LintError.with(mockLintRule, new File("./b")).andLineNumber(3).create();
-        LintError lintError2 = LintError.with(mockLintRule, new File("./a")).create();
-        LintError lintError3 = LintError.with(mockLintRule, new File("./b")).create();
-        LintError lintError4 = LintError.with(mockLintRule, new File("./b")).andLineNumber(5).create();
-        LintError lintError5 = LintError.with(mockLintRule, new File("./b")).andLineNumber(1).create();
+        LintError lintError2 = LintError.with(mockLintRule, new File("./a")).andLineNumber(1).create();
+        LintError lintError3 = LintError.with(mockLintRule, new File("./a")).create();
+        LintError lintError4 = LintError.with(mockLintRule, new File("./b")).create();
+        LintError lintError5 = LintError.with(mockLintRule, new File("./b")).andLineNumber(5).create();
+        LintError lintError6 = LintError.with(mockLintRule, new File("./b")).andLineNumber(1).create();
 
-        List<LintError> unsortedLintErrorList = Lists.newArrayList(lintError1, lintError2, lintError3,
-                lintError4, lintError5);
+        List<LintError> unsortedLintErrorList = Lists.newArrayList(lintError1, lintError2, lintError3, lintError4,
+                lintError5, lintError6);
         when(mockLintRule.getLintErrors()).thenReturn(unsortedLintErrorList);
 
         List<LintError> lintErrors = validationThread.call();
 
         assertThat(lintErrors).hasSameSizeAs(unsortedLintErrorList).containsAll(unsortedLintErrorList);
-        assertThat(lintErrors).containsExactly(lintError2, lintError3, lintError5, lintError1, lintError4);
+        assertThat(lintErrors).containsExactly(lintError3, lintError2, lintError4, lintError6, lintError1, lintError5);
     }
 }
