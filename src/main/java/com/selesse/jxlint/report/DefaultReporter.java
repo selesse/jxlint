@@ -1,7 +1,11 @@
 package com.selesse.jxlint.report;
 
 import com.google.common.base.Strings;
-import com.selesse.jxlint.model.rules.*;
+import com.google.common.base.Throwables;
+import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
+import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.report.color.Color;
 import com.selesse.jxlint.settings.ProgramSettings;
 import com.selesse.jxlint.utils.EnumUtils;
@@ -46,7 +50,12 @@ public class DefaultReporter extends Reporter {
         out.println(String.format("[%s] \"%s\" in %s%s",  colorSeverity(error.getSeverity()),
                 Color.WHITE.wrapAround(violatedRule.getName()), relativePath, lineNumberString));
         if (!Strings.isNullOrEmpty(error.getMessage())) {
-            out.println("    " + error.getMessage());
+            out.println(Strings.repeat(" ", 4) + error.getMessage());
+        }
+        if (error.getException() != null) {
+            out.println();
+            out.println(Strings.repeat(" ", 4) + Color.RED.wrapAround("Exception thrown:"));
+            out.println(Strings.repeat(" ", 8) + Throwables.getRootCause(error.getException()));
         }
         out.println();
     }
