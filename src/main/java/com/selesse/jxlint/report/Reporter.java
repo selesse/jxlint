@@ -2,7 +2,7 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.selesse.jxlint.model.LintRuleComparator;
+import com.selesse.jxlint.model.LintRuleOrderings;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.settings.ProgramSettings;
@@ -40,7 +40,7 @@ public abstract class Reporter {
         Collections.sort(lintErrorList, new Comparator<LintError>() {
             @Override
             public int compare(LintError o1, LintError o2) {
-                return LintRuleComparator.compareCategoryThenName(o1.getViolatedRule(), o2.getViolatedRule());
+                return LintRuleOrderings.compareCategoryThenName(o1.getViolatedRule(), o2.getViolatedRule());
             }
         });
         for (LintError error : lintErrorList) {

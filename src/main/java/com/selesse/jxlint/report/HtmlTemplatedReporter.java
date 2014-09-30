@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
-import com.selesse.jxlint.model.LintRuleComparator;
+import com.selesse.jxlint.model.LintErrorOrderings;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.settings.ProgramSettings;
@@ -63,7 +63,7 @@ public class HtmlTemplatedReporter extends Reporter {
         Collections.sort(lintErrorList, new Comparator<LintError>() {
             @Override
             public int compare(LintError o1, LintError o2) {
-                return LintRuleComparator.compareByCategoryNameThenFileThenLineNumber(o1, o2);
+                return LintErrorOrderings.compareByCategoryNameThenFileThenLineNumber(o1, o2);
             }
         });
         violatedCategoryList = Lists.newArrayList(violatedCategories);
