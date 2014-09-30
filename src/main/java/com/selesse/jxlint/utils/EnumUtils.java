@@ -3,6 +3,8 @@ package com.selesse.jxlint.utils;
 import com.google.common.base.CaseFormat;
 
 public class EnumUtils {
+    private EnumUtils() {}
+
     /**
      * Returns a happy version of toString. The default toString of an {@link Enum} yells at you, i.e. "RED", "BLUE",
      * "DARK_GREEN". toHappyString is much happier: it soothingly returns "Red", "Blue", "DarkGreen".
