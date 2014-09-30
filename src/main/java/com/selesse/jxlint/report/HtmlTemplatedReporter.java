@@ -60,12 +60,7 @@ public class HtmlTemplatedReporter extends Reporter {
             }
         }
 
-        Collections.sort(lintErrorList, new Comparator<LintError>() {
-            @Override
-            public int compare(LintError o1, LintError o2) {
-                return LintErrorOrderings.compareByCategoryNameThenFileThenLineNumber(o1, o2);
-            }
-        });
+        Collections.sort(lintErrorList, LintErrorOrderings.getCategoryNameFileLineNumberOrdering());
         violatedCategoryList = Lists.newArrayList(violatedCategories);
     }
 

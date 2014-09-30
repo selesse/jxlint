@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -40,12 +39,7 @@ public class LintRuleOrderingsTest {
 
     @Test
     public void testCompareCategoryThenName() throws Exception {
-        Collections.sort(lintRules, new Comparator<LintRule>() {
-            @Override
-            public int compare(LintRule lintRule, LintRule lintRule2) {
-                return LintRuleOrderings.compareCategoryThenName(lintRule, lintRule2);
-            }
-        });
+        Collections.sort(lintRules, LintRuleOrderings.getCategoryThenNameOrdering());
 
         assertThat(lintRules).containsExactly(xmlEncodingRule, xmlVersionRule, uniqueAttributeRule, authorTagRule);
     }

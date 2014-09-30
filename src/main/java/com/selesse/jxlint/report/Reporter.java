@@ -2,14 +2,13 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.selesse.jxlint.model.LintRuleOrderings;
+import com.selesse.jxlint.model.LintErrorOrderings;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.settings.ProgramSettings;
 
 import java.io.PrintStream;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -37,12 +36,7 @@ public abstract class Reporter {
     public void writeReport() {
         Enum<?> lastCategory = null;
         printHeader();
-        Collections.sort(lintErrorList, new Comparator<LintError>() {
-            @Override
-            public int compare(LintError o1, LintError o2) {
-                return LintRuleOrderings.compareCategoryThenName(o1.getViolatedRule(), o2.getViolatedRule());
-            }
-        });
+        Collections.sort(lintErrorList, LintErrorOrderings.getCategoryThenNameOrdering());
         for (LintError error : lintErrorList) {
             Enum<?> currentCategory = error.getViolatedRule().getCategory();
             if (lastCategory == null || currentCategory != lastCategory) {

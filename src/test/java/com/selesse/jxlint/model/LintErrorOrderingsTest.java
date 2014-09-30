@@ -12,7 +12,6 @@ import org.mockito.stubbing.Answer;
 
 import java.io.File;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static org.fest.assertions.api.Assertions.assertThat;
@@ -31,12 +30,7 @@ public class LintErrorOrderingsTest {
 
         List<LintError> lintErrorList = Lists.newArrayList(lintError1, lintError2, lintError3, lintError4);
 
-        Collections.sort(lintErrorList, new Comparator<LintError>() {
-            @Override
-            public int compare(LintError left, LintError right) {
-                return LintErrorOrderings.compareLineNumbers(left, right);
-            }
-        });
+        Collections.sort(lintErrorList, LintErrorOrderings.getLineNumberOrdering());
 
         assertThat(lintErrorList).containsExactly(lintError2, lintError1, lintError4, lintError3);
     }
@@ -65,12 +59,7 @@ public class LintErrorOrderingsTest {
                 lintError1, lintError2, lintError3, lintError4, lintError5, lintError6
         );
 
-        Collections.sort(lintErrorList, new Comparator<LintError>() {
-            @Override
-            public int compare(LintError left, LintError right) {
-                return LintErrorOrderings.compareByCategoryNameThenFileThenLineNumber(left, right);
-            }
-        });
+        Collections.sort(lintErrorList, LintErrorOrderings.getCategoryNameFileLineNumberOrdering());
 
         assertThat(lintErrorList).
                 containsExactly(lintError2, lintError1, lintError6, lintError4, lintError3, lintError5);

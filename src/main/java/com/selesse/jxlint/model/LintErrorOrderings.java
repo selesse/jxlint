@@ -1,28 +1,47 @@
 package com.selesse.jxlint.model;
 
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 import com.selesse.jxlint.model.rules.LintError;
-import com.selesse.jxlint.model.rules.LintRule;
 
 public class LintErrorOrderings {
-    public static int compareLineNumbers(LintError o1, LintError o2) {
-        return Ints.compare(o1.getLineNumber(), o2.getLineNumber());
+    private static Ordering<LintError> lineNumberOrdering = new Ordering<LintError>() {
+        @Override
+        public int compare(LintError left, LintError right) {
+            return Ints.compare(left.getLineNumber(), right.getLineNumber());
+        }
+    };
+
+    private static Ordering<LintError> categoryNameOrdering = new Ordering<LintError>() {
+        @Override
+        public int compare(LintError left, LintError right) {
+            return LintRuleOrderings.getCategoryThenNameOrdering().
+                    compare(left.getViolatedRule(), right.getViolatedRule());
+        }
+    };
+
+    private static Ordering<LintError> categoryNameFileLineNumberOrdering = new Ordering<LintError>() {
+        @Override
+        public int compare(LintError left, LintError right) {
+            return ComparisonChain.start()
+                    .compare(left.getViolatedRule(), right.getViolatedRule(),
+                            LintRuleOrderings.getCategoryThenNameOrdering())
+                    .compare(left.getFile(), right.getFile())
+                    .compare(left.getLineNumber(), right.getLineNumber())
+                    .result();
+        }
+    };
+
+    public static Ordering<LintError> getLineNumberOrdering() {
+        return lineNumberOrdering;
     }
 
-    public static int compareByCategoryNameThenFileThenLineNumber(LintError o1, LintError o2) {
-        LintRule firstRule = o1.getViolatedRule();
-        LintRule secondRule = o2.getViolatedRule();
+    public static Ordering<LintError> getCategoryThenNameOrdering() {
+        return categoryNameOrdering;
+    }
 
-        int categoryThenName = LintRuleOrderings.compareCategoryThenName(firstRule, secondRule);
-
-        if (categoryThenName == 0) {
-            int fileCompare = o1.getFile().compareTo(o2.getFile());
-            if (fileCompare == 0) {
-                return compareLineNumbers(o1, o2);
-            }
-            return fileCompare;
-        }
-
-        return categoryThenName;
+    public static Ordering<LintError> getCategoryNameFileLineNumberOrdering() {
+        return categoryNameFileLineNumberOrdering;
     }
 }
