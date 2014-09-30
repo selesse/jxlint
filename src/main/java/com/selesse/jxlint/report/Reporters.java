@@ -1,14 +1,16 @@
 package com.selesse.jxlint.report;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
 import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.settings.ProgramSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +35,8 @@ import java.util.Map;
  *
  */
 public class Reporters {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Reporters.class);
+
     private static Map<OutputType, Class<? extends Reporter>> outputTypeReporterMap = Maps.newHashMap();
     static {
         outputTypeReporterMap.put(OutputType.DEFAULT, DefaultReporter.class);
@@ -104,11 +108,15 @@ public class Reporters {
             }
         }
         // If there any any exceptions, we default to System.out
-        catch (InvocationTargetException ignored) { }
-        catch (NoSuchMethodException ignored) { }
-        catch (InstantiationException ignored) { }
-        catch (IllegalAccessException ignored) { }
+        catch (Exception e) {
+            LOGGER.error("Error dynamically creating reporter", e);
+        }
 
         return reporter;
+    }
+
+    @VisibleForTesting
+    static Class<? extends Reporter> getReporter(OutputType outputType) {
+        return outputTypeReporterMap.get(outputType);
     }
 }
