@@ -86,10 +86,6 @@ tasks.withType(FindBugs) {
     }
 }
 
-checkstyle {
-    configFile = new File(projectDir, "checkstyle.xml")
-}
-
 modifyPom {
     project {
         name 'jxlint'
