@@ -1,13 +1,17 @@
 package com.selesse.jxlint.linter;
 
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.*;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Simple implementation of a Linter. Goes through all the {@link LintRule}s and calls
@@ -16,7 +20,7 @@ import java.util.concurrent.*;
  */
 public class Linter {
     private static final Logger LOGGER = LoggerFactory.getLogger(Linter.class);
-    private static final int THREADS = Runtime.getRuntime().availableProcessors();
+    private static final int NUMBER_OF_THREADS = Runtime.getRuntime().availableProcessors();
 
     private List<LintRule> rules;
     private List<LintError> lintErrors;
@@ -32,35 +36,44 @@ public class Linter {
      * {@link com.selesse.jxlint.model.rules.LintError}.
      */
     public void performLintValidations() {
-        List<ValidationThread> lintRuleThreads = getValidationThreads(rules);
-
         try {
-            LOGGER.debug("Initializing pool of {} threads", THREADS);
-            final ExecutorService executorService = Executors.newFixedThreadPool(THREADS);
-            List<Future<List<LintError>>> futures = executorService.invokeAll(lintRuleThreads);
+            LOGGER.debug("Initializing pool of {} threads", NUMBER_OF_THREADS);
+            final ListeningExecutorService executorService =
+                    MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
+
+            for (final LintRule lintRule : rules) {
+                ValidationThread validationThread = new ValidationThread(lintRule);
+
+                ListenableFuture<List<LintError>> lintErrorFuture = executorService.submit(validationThread);
+                Futures.addCallback(lintErrorFuture, getFutureCallback(lintRule));
+            }
+
             executorService.shutdown();
             executorService.awaitTermination(24, TimeUnit.HOURS);
-
-            for (Future<List<LintError>> ruleLintErrors : futures) {
-                lintErrors.addAll(ruleLintErrors.get());
-            }
         }
         catch (InterruptedException e) {
             LOGGER.error("Thread interrupted while validating", e);
         }
-        catch (ExecutionException e) {
-            LOGGER.error("Execution exception thrown while validating", e);
-        }
     }
 
-    private List<ValidationThread> getValidationThreads(List<LintRule> rules) {
-        List<ValidationThread> validationThreads = Lists.newArrayList();
+    private FutureCallback<List<LintError>> getFutureCallback(final LintRule lintRule) {
+        return new FutureCallback<List<LintError>>() {
+            @Override
+            public void onSuccess(@Nullable List<LintError> resultErrors) {
+                if (resultErrors != null) {
+                    LOGGER.info("[{}] found {} errors", lintRule.getName(), resultErrors.size());
+                    lintErrors.addAll(resultErrors);
+                }
+                else {
+                    LOGGER.error("[{}] returned null error list", lintRule.getName());
+                }
+            }
 
-        for (LintRule lintRule : rules) {
-            validationThreads.add(new ValidationThread(lintRule));
-        }
-
-        return validationThreads;
+            @Override
+            public void onFailure(Throwable t) {
+                LOGGER.error("Error running validation thread: {}", t.getMessage(), Throwables.getRootCause(t));
+            }
+        };
     }
 
     /**
