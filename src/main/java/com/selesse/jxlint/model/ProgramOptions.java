@@ -1,6 +1,7 @@
 package com.selesse.jxlint.model;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -130,9 +131,9 @@ public class ProgramOptions {
 
     @Override
     public String toString() {
-        return "ProgramOptions{" +
-                "options=" + options +
-                ", sourceDirectory='" + sourceDirectory + '\'' +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("options", options)
+                .add("directory", getSourceDirectory())
+                .toString();
     }
 }

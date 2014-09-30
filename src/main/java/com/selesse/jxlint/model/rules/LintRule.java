@@ -2,6 +2,7 @@ package com.selesse.jxlint.model.rules;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.selesse.jxlint.utils.EnumUtils;
@@ -250,6 +251,15 @@ public abstract class LintRule {
             return ((LintRule) obj).getName().equalsIgnoreCase(getName());
         }
         return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("name", getName())
+                .add("category", getCategory())
+                .add("severity", getSeverity())
+                .toString();
     }
 
     /**
