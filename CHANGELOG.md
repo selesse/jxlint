@@ -1,3 +1,8 @@
+## jxlint x.x.x (unreleased)
+
+IMPROVEMENTS:
+  - Default reporter now provides exception summary
+
 ## jxlint 1.5.1 (September 21, 2014)
 
 IMPROVEMENTS:
