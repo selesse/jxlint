@@ -92,18 +92,18 @@ public abstract class LintRule {
      */
     public void validate() {
         LOGGER.debug("[{}] will run against {} files", getName(), getFilesToValidate().size());
-        try {
-            for (File file : getFilesToValidate()) {
+        for (File file : getFilesToValidate()) {
+            try {
                 LOGGER.debug("[{}]: Starting [{}]", file.getAbsolutePath(), getName());
                 List<LintError> fileLintErrors = getLintErrors(file);
                 lintErrors.addAll(fileLintErrors);
                 LOGGER.debug("[{}]: Done [{}], found {} errors", file.getAbsolutePath(), getName(),
                         fileLintErrors.size());
             }
-        }
-        catch (Exception e) {
-            throw new RuntimeException("The \"" + this.getClass().getSimpleName() + "\" rule threw an exception " +
-                    "when trying to validate:\n" + Joiner.on("\n").join(e.getStackTrace()));
+            catch (Exception e) {
+                throw new RuntimeException("\"" + this.getClass().getSimpleName() + "\" threw an " +
+                        "exception when trying to validate " + file.getAbsolutePath(), e);
+            }
         }
     }
 
