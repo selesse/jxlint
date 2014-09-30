@@ -8,7 +8,7 @@ apply plugin: 'cobertura'
 defaultTasks 'clean', 'build'
 
 group = 'com.selesse'
-version = '1.5.1'
+version = '1.5.2'
 sourceCompatibility = 1.6
 
 buildscript {
@@ -76,6 +76,7 @@ jar {
 
 findbugs {
     toolVersion = '2.0.3'
+    excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
 }
 
 tasks.withType(FindBugs) {

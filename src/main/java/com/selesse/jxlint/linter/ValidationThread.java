@@ -8,6 +8,7 @@ import com.selesse.jxlint.settings.Profiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -17,7 +18,7 @@ public class ValidationThread implements Callable<List<LintError>> {
 
     private static final Ordering<LintError> fileThenLineNumberOrdering = new Ordering<LintError>() {
         @Override
-        public int compare(LintError left, LintError right) {
+        public int compare(@Nullable LintError left, @Nullable LintError right) {
             return ComparisonChain.start()
                     .compare(left.getFile(), right.getFile())
                     .compare(left.getLineNumber(), right.getLineNumber())

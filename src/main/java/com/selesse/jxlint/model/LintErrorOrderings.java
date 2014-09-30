@@ -5,17 +5,19 @@ import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
 import com.selesse.jxlint.model.rules.LintError;
 
+import javax.annotation.Nullable;
+
 public class LintErrorOrderings {
     private static Ordering<LintError> lineNumberOrdering = new Ordering<LintError>() {
         @Override
-        public int compare(LintError left, LintError right) {
+        public int compare(@Nullable LintError left, @Nullable LintError right) {
             return Ints.compare(left.getLineNumber(), right.getLineNumber());
         }
     };
 
     private static Ordering<LintError> categoryNameOrdering = new Ordering<LintError>() {
         @Override
-        public int compare(LintError left, LintError right) {
+        public int compare(@Nullable LintError left, @Nullable LintError right) {
             return LintRuleOrderings.getCategoryThenNameOrdering().
                     compare(left.getViolatedRule(), right.getViolatedRule());
         }
@@ -23,7 +25,7 @@ public class LintErrorOrderings {
 
     private static Ordering<LintError> categoryNameFileLineNumberOrdering = new Ordering<LintError>() {
         @Override
-        public int compare(LintError left, LintError right) {
+        public int compare(@Nullable LintError left, @Nullable LintError right) {
             return ComparisonChain.start()
                     .compare(left.getViolatedRule(), right.getViolatedRule(),
                             LintRuleOrderings.getCategoryThenNameOrdering())
