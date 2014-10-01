@@ -1,0 +1,9 @@
+apply plugin: 'application'
+
+mainClassName = 'com.selesse.jxlintimpl.Main'
+
+dependencies {
+    compile project(":jxlint")
+
+    compile 'ch.qos.logback:logback-classic:1.1.2'
+}

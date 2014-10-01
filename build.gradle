@@ -26,14 +26,19 @@ subprojects {
         mavenCentral()
     }
 
-    checkstyle {
-        configFile = file("$rootDir/config/checkstyle/checkstyle.xml")
+    dependencies {
+        compile 'com.google.code.findbugs:annotations:2.0.3'
+        compile 'com.google.guava:guava:18.0'
+        compile 'org.fusesource.jansi:jansi:1.11'
+        compile 'org.slf4j:slf4j-api:1.7.7'
+
+        testCompile 'org.easytesting:fest-assert-core:2.0M10'
+        testCompile 'org.mockito:mockito-all:1.8.4'
+
+        testRuntime 'ch.qos.logback:logback-classic:1.1.2'
     }
 
-    tasks.withType(FindBugs) {
-        reports {
-            xml.enabled = false
-            html.enabled = true
-        }
+    checkstyle {
+        configFile = file("$rootDir/config/checkstyle/checkstyle.xml")
     }
 }
