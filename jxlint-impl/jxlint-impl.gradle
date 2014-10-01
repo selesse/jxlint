@@ -8,3 +8,23 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.1.2'
     compile 'com.google.code.javaparser:javaparser:1.0.11'
 }
+
+ext.rulesFile = new File(projectDir, "RULES.md")
+
+task rules(dependsOn: jar) {
+    inputs.file jar
+    outputs.file rulesFile
+
+    doLast {
+        javaexec {
+            def outStream = new FileOutputStream(rulesFile)
+            standardOutput = outStream
+
+            main = mainClassName
+            classpath = sourceSets.main.runtimeClasspath
+            args = ["--rules"]
+        }
+    }
+}
+
+assemble.dependsOn rules
