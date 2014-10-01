@@ -1,16 +1,3 @@
-apply plugin: 'build-announcements'
-apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
-apply plugin: 'java'
-apply plugin: 'nexus'
-apply plugin: 'cobertura'
-
-defaultTasks 'clean', 'build'
-
-group = 'com.selesse'
-version = '1.5.2'
-sourceCompatibility = 1.6
-
 buildscript {
     repositories {
         jcenter()
@@ -23,97 +10,30 @@ buildscript {
     }
 }
 
-repositories {
-    mavenCentral()
-}
+subprojects {
+    apply plugin: 'build-announcements'
+    apply plugin: 'checkstyle'
+    apply plugin: 'java'
+    apply plugin: 'cobertura'
 
-ext {
-    jettyVersion = '8.1.15.v20140411'
-}
+    defaultTasks 'clean', 'build'
 
-dependencies {
-    compile "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
-    compile 'com.google.code.findbugs:annotations:2.0.3'
-    compile 'com.google.guava:guava:18.0'
-    compile 'commons-cli:commons-cli:1.2'
-    compile 'org.apache.velocity:velocity:1.7'
-    compile 'org.fusesource.jansi:jansi:1.11'
-    compile 'org.pegdown:pegdown:1.4.2'
-    compile 'org.slf4j:slf4j-api:1.7.7'
+    group = 'com.selesse'
+    version = '1.5.2'
+    sourceCompatibility = 1.6
 
-    runtime "org.eclipse.jetty:jetty-jsp:${jettyVersion}"
-
-    testCompile 'com.github.stefanbirkner:system-rules:1.3.1'
-    testCompile 'commons-io:commons-io:2.4'
-    testCompile 'org.easytesting:fest-assert-core:2.0M10'
-    testCompile 'org.mockito:mockito-all:1.8.4'
-
-    testRuntime 'ch.qos.logback:logback-classic:1.1.2'
-}
-
-task release(dependsOn: ['clean', 'build', 'javadocJar', 'sourcesJar']) << {
-    out.println "Releasing jxlint-$version"
-}
-
-release.mustRunAfter clean
-
-configure(release) {
-    group = 'Publishing'
-    description = 'Assemble all JARs needed for publishing (Javadoc, source, library).'
-}
-
-gradle.taskGraph.whenReady { taskGraph ->
-    if (!taskGraph.hasTask(release)) {
-        version += "-SNAPSHOT"
+    repositories {
+        mavenCentral()
     }
-}
 
-jar {
-    manifest {
-        attributes 'Manifest-Version': version
+    checkstyle {
+        configFile = file("$rootDir/config/checkstyle/checkstyle.xml")
     }
-}
 
-findbugs {
-    toolVersion = '2.0.3'
-    excludeFilter = file("$rootProject.projectDir/config/findbugs/excludeFilter.xml")
-}
-
-tasks.withType(FindBugs) {
-    reports {
-        xml.enabled = false
-        html.enabled = true
-    }
-}
-
-modifyPom {
-    project {
-        name 'jxlint'
-        description 'Framework for doing static analysis in Java'
-        url 'https://github.com/selesse/jxlint'
-        inceptionYear '2013'
-
-        scm {
-            url 'https://github.com/selesse/jxlint'
-            connection 'scm:https://selesse@github.com/selesse/jxlint.git'
-            developerConnection 'scm:git://github.com/selesse/jxlint.git'
-        }
-
-        licenses {
-            license {
-                name 'MIT license'
-                url 'http://opensource.org/licenses/mit-license.php'
-                distribution 'repo'
-            }
-        }
-
-        developers {
-            developer {
-                id 'selesse'
-                name 'Alex Selesse'
-                email 'alex@selesse.com'
-            }
+    tasks.withType(FindBugs) {
+        reports {
+            xml.enabled = false
+            html.enabled = true
         }
     }
 }
-
