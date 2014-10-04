@@ -1,10 +1,10 @@
 package com.selesse.jxlint.report;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.base.Predicate;
+import com.google.common.collect.*;
 import com.google.common.io.Resources;
+import com.google.common.reflect.ClassPath;
 import com.selesse.jxlint.model.LintErrorOrderings;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
@@ -25,10 +25,12 @@ import java.util.*;
 
 public class HtmlTemplatedReporter extends Reporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(HtmlTemplatedReporter.class);
+    private static final String WEB_JAR_RESOURCE_PATH = "META-INF/resources/webjars";
 
     private List<Enum<?>> violatedCategoryList;
     private Set<LintRule> lintRuleSet;
     private Map<LintRule, Integer> summaryMap;
+    private Collection<ClassPath.ResourceInfo> classPathWebJarResources;
 
     public HtmlTemplatedReporter(PrintStream out, ProgramSettings settings, List<LintError> lintErrorList) {
         super(out, settings, lintErrorList);
@@ -118,13 +120,13 @@ public class HtmlTemplatedReporter extends Reporter {
     }
 
     private String getAllCss() {
-        List<String> cssFiles = Lists.newArrayList("bootstrap.min.css", "prettify.min.css");
+        List<String> cssFiles = Lists.newArrayList("bootstrap.min.css", "prettify.css");
         return concatenateVendorResources(cssFiles);
     }
 
     private String getAllJs() {
         List<String> jsFiles = Lists.newArrayList(
-                "prettify.min.js", "jquery.min.js", "jquery.tablesorter.min.js", "tab.min.js"
+                "prettify.js", "jquery.min.js", "jquery.tablesorter.min.js", "bootstrap.min.js"
         );
         return concatenateVendorResources(jsFiles);
     }
@@ -133,7 +135,7 @@ public class HtmlTemplatedReporter extends Reporter {
         StringBuilder concatenatedResource = new StringBuilder();
 
         for (String resource : resources) {
-            URL resourceUrl = Resources.getResource("vendor/" + resource);
+            URL resourceUrl = getResourcePath(resource);
 
             String tag = getTagFromResource(resource);
 
@@ -163,6 +165,41 @@ public class HtmlTemplatedReporter extends Reporter {
         }
         return tag;
     }
+
+    private URL getResourcePath(String resourceName) {
+        for (ClassPath.ResourceInfo resourceInfo : getClassPathWebJarResources()) {
+            if (resourceInfo.getResourceName().endsWith("/" + resourceName)) {
+                return resourceInfo.url();
+            }
+        }
+
+        return null;
+    }
+
+    private Collection<ClassPath.ResourceInfo> getClassPathWebJarResources() {
+        if (classPathWebJarResources == null) {
+            try {
+                ClassLoader classLoader = this.getClass().getClassLoader();
+                if (classLoader == null) {
+                    throw new IOException("ClassLoader was null for " + this.getClass().getName());
+                }
+
+                ImmutableSet<ClassPath.ResourceInfo> resources = ClassPath.from(classLoader).getResources();
+                classPathWebJarResources = Collections2.filter(resources, new Predicate<ClassPath.ResourceInfo>() {
+                    @Override
+                    public boolean apply(ClassPath.ResourceInfo input) {
+                        return input != null && input.getResourceName().startsWith(WEB_JAR_RESOURCE_PATH);
+                    }
+                });
+            }
+            catch (IOException e) {
+                classPathWebJarResources = ImmutableSet.of();
+            }
+        }
+
+        return classPathWebJarResources;
+    }
+
 
     @Override
     protected void printHeader() {}

@@ -14,6 +14,13 @@ import java.nio.charset.Charset;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
+/**
+ * High-level overview of the HTML that should be present in an HTML report.
+ * Checks for the presence of things like the {@link ProgramSettings} name and version.
+ * Also makes sure that for 2 rules that are violated, their rule information is displayed in the report.
+ *
+ * @see com.selesse.jxlint.report.HtmlTemplatedReporterTest
+ */
 public class HtmlReportTest extends AbstractReportTest {
     @Test
     public void makeSureHtmlReportGetsCreated() throws IOException {
