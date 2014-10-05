@@ -1,5 +1,6 @@
 package com.selesse.jxlint.linter;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.selesse.jxlint.model.rules.LintError;
@@ -12,6 +13,7 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 public class ValidationThread implements Callable<List<LintError>> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ValidationThread.class);
@@ -34,17 +36,16 @@ public class ValidationThread implements Callable<List<LintError>> {
 
     @Override
     public List<LintError> call() throws Exception {
-        long startTime = System.currentTimeMillis();
+        Stopwatch stopwatch = Stopwatch.createStarted();
         lintRule.validate();
 
         List<LintError> lintErrorList = lintRule.getLintErrors();
         Collections.sort(lintErrorList, fileThenLineNumberOrdering);
 
-        long endTime = System.currentTimeMillis();
-
-        long executionTime = endTime - startTime;
-        LOGGER.info("[{}] took {} milliseconds to execute", lintRule.getName(), executionTime);
-        Profiler.addExecutionTime(lintRule, executionTime);
+        stopwatch.stop();
+        LOGGER.info("[{}] took {} milliseconds to execute",
+                lintRule.getName(), stopwatch.elapsed(TimeUnit.MILLISECONDS));
+        Profiler.addExecutionTime(lintRule, stopwatch.elapsed(TimeUnit.MILLISECONDS));
 
         return lintRule.getLintErrors();
     }

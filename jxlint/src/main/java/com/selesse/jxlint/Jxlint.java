@@ -74,7 +74,8 @@ public class Jxlint {
      * @param args Your program's command line arguments.
      */
     public void parseArgumentsAndDispatch(String[] args) {
-        Profiler.setStartTime(System.currentTimeMillis());
+        Profiler.beginProgramProfiling();
+
         if (args.length == 0) {
             args = new String[] { "--help" };
         }
@@ -120,7 +121,7 @@ public class Jxlint {
         // This is done both here, and in ProgramExitter#exitProgramWithMessage.
         // Why? Because we have two possible program flows: we exit with System.exit, or we don't.
         if (Profiler.isEnabled()) {
-            Profiler.setStopTime(System.currentTimeMillis());
+            Profiler.endProgramProfiling();
             Profiler.printProfileReport();
         }
     }

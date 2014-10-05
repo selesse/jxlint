@@ -25,7 +25,7 @@ public class ProgramExitter {
         // This is done both here, and in Jxlint#parseArgumentsAndDispatch.
         // Why? Because we have two possible program flows: we exit with System.exit, or we don't.
         if (Profiler.isEnabled()) {
-            Profiler.setStopTime(System.currentTimeMillis());
+            Profiler.endProgramProfiling();
             outputMessage += Profiler.getGeneratedProfileReport();
         }
 
