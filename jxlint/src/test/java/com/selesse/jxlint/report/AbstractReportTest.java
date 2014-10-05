@@ -37,8 +37,9 @@ public class AbstractReportTest extends AbstractTestCase {
         TestFileCreator.createBadAuthorFile(tempDirectory);
         TestFileCreator.createBadEncodingFile(tempDirectory);
 
-        String desiredOutputPath = tempDirectory.getAbsolutePath() + File.separator + "test." + outputType.extension();
-        File desiredFile = new File(desiredOutputPath);
+        String desiredName = "test." + outputType.extension();
+        File desiredFile = new File(tempDirectory, desiredName);
+        String desiredOutputPath = desiredFile.getAbsolutePath();
 
         assertThat(desiredFile.exists()).isFalse();
 

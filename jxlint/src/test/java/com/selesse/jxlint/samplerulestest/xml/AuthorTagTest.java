@@ -14,14 +14,14 @@ public class AuthorTagTest extends AbstractPassFailFileXmlFileTest {
 
     @Test
     public void testAuthorTagTestSecondFail() {
-        File file = new File(sourceDirectory + File.separator + failFileName + "2");
+        File file = new File(sourceDirectory, "2");
 
         assertFalse(lintRule.passesValidation(file));
     }
 
     @Test
     public void testAuthorTagTestThirdFail() {
-        File file = new File(sourceDirectory + File.separator + failFileName + "3");
+        File file = new File(sourceDirectory, "3");
 
         assertFalse(lintRule.passesValidation(file));
     }
