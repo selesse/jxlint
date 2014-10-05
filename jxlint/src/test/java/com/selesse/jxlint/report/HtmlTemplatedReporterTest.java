@@ -16,22 +16,24 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class HtmlTemplatedReporterTest {
 
     private ByteArrayOutputStream output;
+    private Reporter htmlReporter;
 
     @Before
     public void setup() throws UnsupportedEncodingException {
         output = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(output, true, Charsets.UTF_8.displayName());
-        Reporter htmlReporter = new HtmlTemplatedReporter(
+        htmlReporter = new HtmlTemplatedReporter(
                 out, new JxlintProgramSettings(), Lists.<LintError>newArrayList()
         );
-
-        htmlReporter.writeReport();
     }
 
     @Test
     public void testWriteReport() throws Exception {
-        String reportOutput = output.toString();
+        htmlReporter.writeReport();
 
+        String reportOutput = output.toString(Charsets.UTF_8.displayName());
+
+        // A bit rudimentary, but surprisingly effective
         assertThat(reportOutput).isNotNull();
         assertThat(reportOutput).contains("Bootstrap");
         assertThat(reportOutput).contains("prettify");
