@@ -1,6 +1,7 @@
 package com.selesse.jxlint;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.selesse.jxlint.linter.Linter;
@@ -35,7 +36,7 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testHelpProperlyExtracted() {
-        String newLineSeparator = System.getProperty("line.separator");
+        String newLineSeparator = System.getProperty(StandardSystemProperty.LINE_SEPARATOR.key());
 
         List<String> expectedOutput = Lists.newArrayList(
                 "usage: jxlint [flags] <directory>",
