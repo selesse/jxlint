@@ -35,6 +35,16 @@ public class LintErrorOrderings {
         }
     };
 
+    private static final Ordering<LintError> fileThenLineNumberOrdering = new Ordering<LintError>() {
+        @Override
+        public int compare(@Nullable LintError left, @Nullable LintError right) {
+            return ComparisonChain.start()
+                    .compare(left.getFile(), right.getFile())
+                    .compare(left.getLineNumber(), right.getLineNumber())
+                    .result();
+        }
+    };
+
     public static Ordering<LintError> getLineNumberOrdering() {
         return lineNumberOrdering;
     }
@@ -45,5 +55,9 @@ public class LintErrorOrderings {
 
     public static Ordering<LintError> getCategoryNameFileLineNumberOrdering() {
         return categoryNameFileLineNumberOrdering;
+    }
+
+    public static Ordering<LintError> getFileThenLineNumberOrdering() {
+        return fileThenLineNumberOrdering;
     }
 }
