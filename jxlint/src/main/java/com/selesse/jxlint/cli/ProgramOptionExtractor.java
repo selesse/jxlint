@@ -11,7 +11,7 @@ import java.util.List;
  * A wrapper so that if the CLI parser changes, code modifications will be limited to this class.
  */
 public class ProgramOptionExtractor {
-    public static final String DEFAULT_PORT = "8080";
+    public static final String DEFAULT_PORT = "8380";
 
     public static ProgramOptions extractProgramOptions(CommandLine commandLine) {
         ProgramOptions programOptions = new ProgramOptions();
