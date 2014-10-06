@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.ExitType;
@@ -46,7 +47,7 @@ public class DispatcherTest extends AbstractTestCase {
                 " -l,--list                     Lists lint rules with a short, summary",
                 "                               explanation.",
                 " -b,--web <port>               Run in the background, as a website.",
-                "                               (default port: 8080)",
+                "                               (default port: " + ProgramOptionExtractor.DEFAULT_PORT + ")",
                 " -r,--rules                    Prints a Markdown dump of the program's",
                 "                               rules.",
                 " -s,--show <RULE[s]>           Lists a verbose rule explanation.",
