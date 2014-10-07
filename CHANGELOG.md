@@ -1,5 +1,10 @@
 ## jxlint x.x.x (unreleased)
 
+BACKWARD INCOMPATIBILITIES:
+  - Default port changed from 8080 to 8083
+  - For a given rule, every file for the validation is now `try/catch`ed. The
+    previous behavior was that one exception would cause Jxlint to "give up".
+
 IMPROVEMENTS:
   - Default reporter now provides exception summary
 
