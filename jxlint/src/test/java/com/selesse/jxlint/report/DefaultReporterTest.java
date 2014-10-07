@@ -2,7 +2,10 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.model.rules.*;
+import com.selesse.jxlint.model.rules.Category;
+import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
+import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import com.selesse.jxlint.samplerules.xml.rules.XmlEncodingRule;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
@@ -15,7 +18,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultReporterTest {
     private ByteArrayOutputStream output;
