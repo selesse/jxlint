@@ -1,5 +1,6 @@
 package com.selesse.jxlint;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -24,10 +25,17 @@ import java.util.List;
  * The Dispatcher guides the application's logic flow. It looks at the options provided in
  * {@link com.selesse.jxlint.model.ProgramOptions} and decides what objects, functions, etc. to call based on the
  * options. Its logical route is documented in
- * {@link #dispatch(com.selesse.jxlint.model.ProgramOptions, com.selesse.jxlint.settings.ProgramSettings)}.
+ * {@link Dispatcher#dispatch()}.
  */
 public class Dispatcher {
     private static final Logger LOGGER = LoggerFactory.getLogger(Dispatcher.class);
+    private final ProgramOptions programOptions;
+    private final ProgramSettings programSettings;
+
+    public Dispatcher(ProgramOptions programOptions, ProgramSettings programSettings) {
+        this.programOptions = programOptions;
+        this.programSettings = programSettings;
+    }
 
     /**
      * The order for the dispatcher is as such:
@@ -51,7 +59,7 @@ public class Dispatcher {
      *
      * </ol>
      */
-    public static void dispatch(ProgramOptions programOptions, ProgramSettings programSettings) {
+    public void dispatch() {
         Profiler.setEnabled(programOptions.hasOption(JxlintOption.PROFILE));
 
         LintRules lintRules = LintRulesImpl.getInstance();
@@ -69,7 +77,7 @@ public class Dispatcher {
         else if (programOptions.hasOption(JxlintOption.WEB)) {
             String port = programOptions.getOption(JxlintOption.WEB);
 
-            JettyWebRunner jettyWebRunner = new JettyWebRunner(programSettings, port);
+            JettyWebRunner jettyWebRunner = getJettyWebRunner(port);
             jettyWebRunner.start();
             return;
         }
@@ -179,22 +187,27 @@ public class Dispatcher {
         handleLint(lintRuleList, warningsAreErrors, programOptions, programSettings);
     }
 
-    private static void handleLint(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options,
+    @VisibleForTesting
+    JettyWebRunner getJettyWebRunner(String port) {
+        return new JettyWebRunner(programSettings, port);
+    }
+
+    private void handleLint(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options,
                                    ProgramSettings settings) {
         LintHandler lintHandler = new LintHandler(lintRules, warningsAreErrors, options, settings);
         lintHandler.lintAndReportAndExit(LintRulesImpl.willExitAfterReporting());
     }
 
-    private static void doHelp(ProgramSettings programSettings) {
+    private void doHelp(ProgramSettings programSettings) {
         ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(programSettings), ExitType.SUCCESS);
     }
 
-    private static void doVersion(ProgramSettings programSettings) {
+    private void doVersion(ProgramSettings programSettings) {
         ProgramExitter.exitProgramWithMessage(programSettings.getProgramName() + ": version " +
                 programSettings.getProgramVersion(), ExitType.SUCCESS);
     }
 
-    private static boolean isInvalidSourceDirectory(String sourceDirectoryString) {
+    private boolean isInvalidSourceDirectory(String sourceDirectoryString) {
         File sourceDirectory = new File(sourceDirectoryString);
 
         return !sourceDirectory.exists() || !sourceDirectory.isDirectory() || !sourceDirectory.canRead();

@@ -4,10 +4,13 @@ import com.google.common.base.Joiner;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.selesse.jxlint.actions.JettyWebRunner;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.ExitType;
+import com.selesse.jxlint.model.JxlintOption;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
@@ -16,12 +19,16 @@ import com.selesse.jxlint.settings.JxlintProgramSettings;
 import com.selesse.jxlint.settings.ProgramSettings;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class DispatcherTest extends AbstractTestCase {
     private File tempDirectory;
@@ -246,5 +253,22 @@ public class DispatcherTest extends AbstractTestCase {
         for (LintError lintError : linter.getLintErrors()) {
             assertEquals(Category.PERFORMANCE, lintError.getViolatedRule().getCategory());
         }
+    }
+
+    @Test
+    public void testWebStartsJettyWebRunner() {
+        ProgramOptions programOptionsMock = Mockito.mock(ProgramOptions.class);
+        ProgramSettings programSettings = new JxlintProgramSettings();
+        JettyWebRunner jettyWebRunnerMock = Mockito.mock(JettyWebRunner.class);
+
+        Dispatcher dispatcherSpy = spy(new Dispatcher(programOptionsMock, programSettings));
+
+        when(programOptionsMock.hasOption(any(JxlintOption.class))).thenReturn(false);
+        when(programOptionsMock.hasOption(JxlintOption.WEB)).thenReturn(true);
+        when(dispatcherSpy.getJettyWebRunner(anyString())).thenReturn(jettyWebRunnerMock);
+
+        dispatcherSpy.dispatch();
+
+        verify(jettyWebRunnerMock).start();
     }
 }
