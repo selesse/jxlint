@@ -14,7 +14,7 @@ import org.junit.Before;
 
 import java.io.File;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractReportTest extends AbstractTestCase {
     protected File tempDirectory;
@@ -41,18 +41,18 @@ public class AbstractReportTest extends AbstractTestCase {
         File desiredFile = new File(tempDirectory, desiredName);
         String desiredOutputPath = desiredFile.getAbsolutePath();
 
-        assertThat(desiredFile.exists()).isFalse();
+        assertThat(desiredFile).doesNotExist();
 
         setupTestLinterAndRunProgramWithArgs(new String[]{"--Wall", "--" + outputType.extension(), desiredOutputPath,
                 tempDirectory.getAbsolutePath()});
         Linter linter = LinterFactory.getInstance();
-        assertThat(linter.getLintErrors().size()).isEqualTo(2);
+        assertThat(linter.getLintErrors()).hasSize(2);
 
         Reporter reporter = Reporters.createReporter(linter.getLintErrors(), new JxlintProgramSettings(),
                 outputType, desiredOutputPath);
         reporter.writeReport();
 
-        assertThat(desiredFile.exists()).isTrue();
+        assertThat(desiredFile).exists();
         desiredFile.deleteOnExit();
 
         return desiredFile;

@@ -10,8 +10,8 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.util.List;
 
-import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 public class FunctionsStartingWithTestAreTestsTest extends JxlintImplTest {
