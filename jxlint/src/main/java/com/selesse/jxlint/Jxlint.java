@@ -90,7 +90,8 @@ public class Jxlint {
             CommandLine commandLine = commandLineParser.parse(options, args);
             ProgramOptions programOptions = ProgramOptionExtractor.extractProgramOptions(commandLine);
             LOGGER.debug("Extracted {} from command line options", programOptions);
-            Dispatcher.dispatch(programOptions, programSettings);
+            Dispatcher dispatcher = new Dispatcher(programOptions, programSettings);
+            dispatcher.dispatch();
         }
         catch (MissingArgumentException e) {
             ProgramExitter.exitProgramWithMessage("Missing argument for option '--" + e.getOption().getLongOpt() + "'" +

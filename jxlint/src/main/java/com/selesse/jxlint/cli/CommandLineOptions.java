@@ -1,15 +1,14 @@
 package com.selesse.jxlint.cli;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Ordering;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.settings.ProgramSettings;
 import org.apache.commons.cli.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
-import java.util.Comparator;
 
 @SuppressWarnings("AccessStaticViaInstance")
 /**
@@ -97,7 +96,7 @@ public class CommandLineOptions {
      */
     public static String getHelpMessage(ProgramSettings programSettings) {
         HelpFormatter helpFormatter = new HelpFormatter();
-        helpFormatter.setOptionComparator(new OptionComparator());
+        helpFormatter.setOptionComparator(optionsOrdering);
 
         StringBuilder exitStatusFooter = new StringBuilder("<RULE[s]> should be comma separated, without spaces.\n");
         exitStatusFooter.append("Exit Status:\n");
@@ -130,19 +129,19 @@ public class CommandLineOptions {
 
     /**
      * Our desired options order. This gives us control on how our help gets printed, via
-     * {@link com.selesse.jxlint.cli.CommandLineOptions.OptionComparator}.
+     * {@link #optionsOrdering}.
      */
     private static String getOptionsOrder() {
         return "hvplbrscdeywWallWerrorqtx";
     }
 
     /**
-     * Comparator that will return options in the order they appear in {@link #getOptionsOrder()} first.
+     * Ordering that will return options in the order they appear in {@link #getOptionsOrder()} first.
      */
-    private static class OptionComparator implements Comparator<Option>, Serializable {
+    private static final Ordering<Option> optionsOrdering = new Ordering<Option>() {
         @Override
         public int compare(Option o1, Option o2) {
             return getOptionsOrder().indexOf(o1.getOpt()) - getOptionsOrder().indexOf(o2.getOpt());
         }
-    }
+    };
 }
