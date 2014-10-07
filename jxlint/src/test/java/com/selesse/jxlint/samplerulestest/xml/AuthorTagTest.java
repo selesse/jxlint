@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertFalse;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthorTagTest extends AbstractPassFailFileXmlFileTest {
     public AuthorTagTest() {
@@ -16,13 +16,13 @@ public class AuthorTagTest extends AbstractPassFailFileXmlFileTest {
     public void testAuthorTagTestSecondFail() {
         File file = new File(sourceDirectory, "2");
 
-        assertFalse(lintRule.passesValidation(file));
+        assertThat(lintRule.passesValidation(file)).isFalse();
     }
 
     @Test
     public void testAuthorTagTestThirdFail() {
         File file = new File(sourceDirectory, "3");
 
-        assertFalse(lintRule.passesValidation(file));
+        assertThat(lintRule.passesValidation(file)).isFalse();
     }
 }

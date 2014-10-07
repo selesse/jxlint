@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class BaseReportTest extends AbstractReportTest {
     @Test(expected = UnableToCreateReportException.class)
@@ -24,7 +24,7 @@ public class BaseReportTest extends AbstractReportTest {
             indexFile.deleteOnExit();
         }
         Linter linter = LinterFactory.getInstance();
-        assertEquals(1, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors()).hasSize(1);
 
         Reporters.createReporter(linter.getLintErrors(), new JxlintProgramSettings(),
                 OutputType.HTML, "////////////////");

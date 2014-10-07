@@ -6,83 +6,83 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractLintRulesTest {
     private LintRules lintRules = new XmlLintRulesTestImpl();
 
     @Test
     public void testLintRulesGetsAllRuleSizeProperly() {
-        assertEquals(4, lintRules.getAllRules().size());
+        assertThat(lintRules.getAllRules()).hasSize(4);
     }
 
     @Test
     public void testLintRulesGetsAllEnabledRulesSizeProperly() {
-        assertEquals(3, lintRules.getAllEnabledRules().size());
+        assertThat(lintRules.getAllEnabledRules()).hasSize(3);
     }
 
     @Test
     public void testLintRulesGetsAllDisabledRulesSizeProperly() {
         List<String> disabledRules = Lists.newArrayList("XML version specified");
-        assertEquals(3, lintRules.getAllRulesExcept(disabledRules).size());
+        assertThat(lintRules.getAllRulesExcept(disabledRules)).hasSize(3);
     }
 
     @Test
     public void testLintRulesGetsAllEnabledMinusDisabledRulesSizeProperly() {
         List<String> disabledRules = Lists.newArrayList("Unique attribute");
-        assertEquals(2, lintRules.getAllEnabledRulesExcept(disabledRules).size());
+        assertThat(lintRules.getAllEnabledRulesExcept(disabledRules)).hasSize(2);
     }
 
     @Test
     public void testLintRulesGetsAllEnabledPlusEnabledRulesSizeProperly() {
         List<String> enabledRules = Lists.newArrayList("XML version specified");
-        assertEquals(4, lintRules.getAllEnabledRulesAsWellAs(enabledRules).size());
+        assertThat(lintRules.getAllEnabledRulesAsWellAs(enabledRules)).hasSize(4);
     }
 
     @Test
     public void testGetAllRulesBySeverity() {
         List<LintRule> emptyErrorRules = lintRules.getAllRulesWithSeverity(Severity.ERROR);
-        assertEquals(1, emptyErrorRules.size());
+        assertThat(emptyErrorRules).hasSize(1);
 
         List<LintRule> fatalRules = lintRules.getAllRulesWithSeverity(Severity.FATAL);
-        assertEquals(1, fatalRules.size());
+        assertThat(fatalRules).hasSize(1);
 
         List<LintRule> warningRules = lintRules.getAllRulesWithSeverity(Severity.WARNING);
-        assertEquals(2, warningRules.size());
+        assertThat(warningRules).hasSize(2);
     }
 
     @Test
     public void testLintRulesGetsCheckRuleProperly() {
         List<String> checkRules = Lists.newArrayList("XML version specified");
-        assertEquals(1, lintRules.getOnlyRules(checkRules).size());
-        assertEquals("XML version specified", lintRules.getOnlyRules(checkRules).get(0).getName());
+        assertThat(lintRules.getOnlyRules(checkRules)).hasSize(1);
+        assertThat(lintRules.getOnlyRules(checkRules).get(0).getName()).isEqualTo("XML version specified");
     }
 
     @Test
     public void testLintRulesGetsMultipleCheckRulesProperly() {
         List<String> checkRules = Lists.newArrayList("XML version specified", "Unique attribute");
-        assertEquals(2, lintRules.getOnlyRules(checkRules).size());
+        assertThat(lintRules.getOnlyRules(checkRules)).hasSize(2);
     }
 
     @Test
     public void testInvalidLintRulesGetsIgnored() {
         List<String> badRules = Lists.newArrayList("foo", "foobar", "bar");
 
-        assertEquals(0, lintRules.getOnlyRules(badRules).size());
-        assertEquals(lintRules.getAllEnabledRules().size(), lintRules.getAllEnabledRulesAsWellAs(badRules).size());
+        assertThat(lintRules.getOnlyRules(badRules)).isEmpty();
+        assertThat(lintRules.getAllEnabledRulesAsWellAs(badRules)).hasSameSizeAs(lintRules.getAllEnabledRules());
     }
 
     @Test
     public void testBadCategoriesGetIgnored() {
         List<String> badCategories = Lists.newArrayList("hoo", "haw");
 
-        assertEquals(0, lintRules.getRulesWithCategoryNames(badCategories).size());
+        assertThat(lintRules.getRulesWithCategoryNames(badCategories)).isEmpty();
     }
 
     @Test
     public void testGetCategoriesReturnsRightAmountOfRules() {
         List<String> categories = Lists.newArrayList("LINT");
 
-        assertEquals(2, lintRules.getRulesWithCategoryNames(categories).size());
+        assertThat(lintRules.getRulesWithCategoryNames(categories)).hasSize(2);
     }
 }

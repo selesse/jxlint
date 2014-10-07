@@ -14,8 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class FileUtilsTest {
     private static File rootTempDir;
@@ -23,7 +22,7 @@ public class FileUtilsTest {
     private static void createFile(String... parts) throws IOException {
         File file = new File(rootTempDir, Joiner.on(File.separator).join(parts));
         Files.createParentDirs(file);
-        assertTrue(file.createNewFile());
+        assertThat(file.createNewFile()).isTrue();
     }
 
     @BeforeClass
@@ -46,19 +45,19 @@ public class FileUtilsTest {
     }
 
     private static void assertItemsEqualInAnyOrder(List<File> actual, String... expected) {
-        assertEquals(expected.length, actual.size());
+        assertThat(actual.size()).isEqualTo(expected.length);
         List<String> filenames = Lists.newArrayList();
         for (File f : actual) {
             filenames.add(f.getName());
         }
         Collections.sort(filenames);
         Arrays.sort(expected);
-        assertEquals(filenames, Arrays.asList(expected));
+        assertThat(Arrays.asList(expected)).isEqualTo(filenames);
     }
 
     @Test
     public void testListAllFiles() {
-        assertEquals(8, FileUtils.allFiles(rootTempDir).size());
+        assertThat(FileUtils.allFiles(rootTempDir)).hasSize(8);
     }
 
     @Test

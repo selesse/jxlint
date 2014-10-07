@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProgramOptionsTest extends AbstractTestCase {
     @BeforeClass
@@ -37,7 +37,7 @@ public class ProgramOptionsTest extends AbstractTestCase {
                 Joiner.on(", ").join(Lists.newArrayList(authorTagRule.getName(), uniqueAttributeRule.getName()))
         );
 
-        assertEquals(2, ruleList.size());
+        assertThat(ruleList).hasSize(2);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -51,6 +51,6 @@ public class ProgramOptionsTest extends AbstractTestCase {
                 Joiner.on(", ").join(Category.CORRECTNESS, Category.LINT, Category.PERFORMANCE, Category.STYLE)
         );
 
-        assertEquals(4, categoryList.size());
+        assertThat(categoryList).hasSize(4);
     }
 }

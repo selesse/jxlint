@@ -7,8 +7,7 @@ import org.junit.Test;
 
 import java.io.File;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * An abstract implementation of a file-based tester. Suppose you have a lint class "XTest".
@@ -34,15 +33,17 @@ public abstract class AbstractPassFailFileTest {
     public void testPassesPositiveTestCase() {
         File passFile = new File(sourceDirectory, passFileName);
 
-        assertTrue(this.getClass().getName() + " failed the positive test case.\n"
-                + "It was intended to pass, but it failed.", lintRule.passesValidation(passFile));
+        assertThat(lintRule.passesValidation(passFile)).
+                overridingErrorMessage(this.getClass().getName() + " failed the positive test case.\n"
+                        + "It was intended to pass, but it failed.").isTrue();
     }
 
     @Test
     public void testPassesNegativeTestCase() {
         File failFile = new File(sourceDirectory, failFileName);
 
-        assertFalse(this.getClass().getName() + " failed the negative test case.\n"
-                + "It was intended to fail, but it passed.", lintRule.passesValidation(failFile));
+        assertThat(lintRule.passesValidation(failFile)).
+                overridingErrorMessage(this.getClass().getName() + " failed the negative test case.\n"
+                        + "It was intended to fail, but it passed.").isFalse();
     }
 }

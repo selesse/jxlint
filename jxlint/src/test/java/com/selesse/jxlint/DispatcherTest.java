@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class DispatcherTest extends AbstractTestCase {
     private File tempDirectory;
@@ -170,7 +170,7 @@ public class DispatcherTest extends AbstractTestCase {
 
         setupTestLinterAndRunProgramWithArgs(new String[]{"--Wall", tempDirectory.getAbsolutePath()});
         Linter linter = LinterFactory.getInstance();
-        assertEquals(8, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors()).hasSize(8);
     }
 
     @Test
@@ -180,14 +180,15 @@ public class DispatcherTest extends AbstractTestCase {
 
         setupTestLinterAndRunProgramWithArgs(new String[] { tempDirectory.getAbsolutePath() });
         Linter linter = LinterFactory.getInstance();
-        assertEquals(0, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors()).isEmpty();
 
         // Now, let's re-run the same program with the bad author file rule enabled... We should flag it!
         setupTestLinterAndRunProgramWithArgs(new String[] { "--enable", "Author tag specified",
                 tempDirectory.getAbsolutePath() });
         linter = LinterFactory.getInstance();
-        assertEquals(1, linter.getLintErrors().size());
-        assertEquals(badAuthorFile.getAbsolutePath(), linter.getLintErrors().get(0).getFile().getAbsolutePath());
+        assertThat(linter.getLintErrors()).hasSize(1);
+        assertThat(linter.getLintErrors().get(0).getFile().getAbsolutePath()).
+                isEqualTo(badAuthorFile.getAbsolutePath());
     }
 
     @Test
@@ -197,13 +198,13 @@ public class DispatcherTest extends AbstractTestCase {
 
         setupTestLinterAndRunProgramWithArgs(new String[] { tempDirectory.getAbsolutePath() });
         Linter linter = LinterFactory.getInstance();
-        assertEquals(1, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors()).hasSize(1);
 
         // Now, let's re-run the same program with the bad encoding file rule disabled... It should shut up!
         setupTestLinterAndRunProgramWithArgs(new String[] { "--disable", "XML encoding specified",
                 tempDirectory.getAbsolutePath() });
         linter = LinterFactory.getInstance();
-        assertEquals(0, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors()).isEmpty();
     }
 
     @Test
@@ -213,12 +214,12 @@ public class DispatcherTest extends AbstractTestCase {
 
         setupTestLinterAndRunProgramWithArgs(new String[] { tempDirectory.getAbsolutePath() });
         Linter linter = LinterFactory.getInstance();
-        assertEquals(1, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors()).hasSize(1);
 
         // Now, let's re-run the same program without pesky warnings... It should shut up!
         setupTestLinterAndRunProgramWithArgs(new String[] { "--nowarn", tempDirectory.getAbsolutePath() });
         linter = LinterFactory.getInstance();
-        assertEquals(0, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors()).isEmpty();
     }
 
     @Test
@@ -232,19 +233,19 @@ public class DispatcherTest extends AbstractTestCase {
                 tempDirectory.getAbsolutePath()});
 
         Linter linter = LinterFactory.getInstance();
-        assertEquals(5, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors()).hasSize(5);
 
         for (LintError lintError : linter.getLintErrors()) {
-            assertEquals(Category.LINT, lintError.getViolatedRule().getCategory());
+            assertThat(lintError.getViolatedRule().getCategory()).isEqualTo(Category.LINT);
         }
 
         setupTestLinterAndRunProgramWithArgs(new String[]{"--category", Category.PERFORMANCE.toString(),
                 tempDirectory.getAbsolutePath()});
         linter = LinterFactory.getInstance();
-        assertEquals(2, linter.getLintErrors().size());
+        assertThat(linter.getLintErrors()).hasSize(2);
 
         for (LintError lintError : linter.getLintErrors()) {
-            assertEquals(Category.PERFORMANCE, lintError.getViolatedRule().getCategory());
+            assertThat(lintError.getViolatedRule().getCategory()).isEqualTo(Category.PERFORMANCE);
         }
     }
 }

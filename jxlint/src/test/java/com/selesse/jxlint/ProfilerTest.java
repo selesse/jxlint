@@ -12,7 +12,7 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ProfilerTest extends AbstractTestCase {
     private File tempDirectory;
@@ -37,7 +37,7 @@ public class ProfilerTest extends AbstractTestCase {
         String profileJxlintOutput = checkLint(new String[]{"-p"}, tempDirectory, false);
         Matcher matcher = programCompletedPattern.matcher(profileJxlintOutput);
 
-        assertTrue(matcher.find());
+        assertThat(matcher.find()).isTrue();
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ProfilerTest extends AbstractTestCase {
         String profileJxlintOutput = checkLint(new String[]{"-p"}, tempDirectory, false);
 
         // Make sure there are some rules, otherwise this test is invalid
-        assertTrue(LintRulesImpl.getInstance().getAllEnabledRules().size() > 0);
+        assertThat(LintRulesImpl.getInstance().getAllEnabledRules().size()).isGreaterThan(0);
 
         // Make sure all the rules appear in the output
         for (LintRule lintRule : LintRulesImpl.getInstance().getAllEnabledRules()) {
@@ -54,7 +54,7 @@ public class ProfilerTest extends AbstractTestCase {
             Pattern rulePattern = Pattern.compile(ruleName, Pattern.DOTALL);
             Matcher matcher = rulePattern.matcher(profileJxlintOutput);
 
-            assertTrue(matcher.find());
+            assertThat(matcher.find()).isTrue();
         }
     }
 }
