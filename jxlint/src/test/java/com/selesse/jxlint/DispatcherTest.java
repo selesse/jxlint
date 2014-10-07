@@ -93,7 +93,7 @@ public class DispatcherTest extends AbstractTestCase {
 
     @Test
     public void testLintFailsOnNonExistentDirectory() {
-        final String expectedOutput = "Invalid source directory \"foobar\" : Directory does not exist.";
+        final String expectedOutput = "Invalid source directory \"foobar\" : \"foobar\" is not an existing directory.";
 
         runExitTest(new String[] { "foobar" }, tempDirectory, expectedOutput, ExitType.COMMAND_LINE_ERROR);
     }
@@ -104,7 +104,7 @@ public class DispatcherTest extends AbstractTestCase {
             File tempFile = File.createTempFile("jxlint", "tmp");
             tempFile.deleteOnExit();
             final String expectedOutput = "Invalid source directory \"" + tempFile.getAbsolutePath() + "\" : \"" +
-                    tempFile.getAbsolutePath() + "\" is not a directory.";
+                    tempFile.getAbsolutePath() + "\" is not an existing directory.";
 
             runExitTest(null, tempFile, expectedOutput, ExitType.COMMAND_LINE_ERROR);
         }

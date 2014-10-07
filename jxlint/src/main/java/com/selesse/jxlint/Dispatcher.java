@@ -99,11 +99,8 @@ public class Dispatcher {
             if (isInvalidSourceDirectory(sourceDirectoryString)) {
                 File sourceDirectory = new File(sourceDirectoryString);
                 String outputBuffer = "Invalid source directory \"" + sourceDirectoryString + "\" : ";
-                if (!sourceDirectory.exists()) {
-                    outputBuffer += "Directory does not exist.";
-                }
-                else if (!sourceDirectory.isDirectory()) {
-                    outputBuffer += "\"" + sourceDirectoryString + "\" is not a directory.";
+                if (!sourceDirectory.isDirectory()) {
+                    outputBuffer += "\"" + sourceDirectoryString + "\" is not an existing directory.";
                 }
                 else if (!sourceDirectory.canRead()) {
                     outputBuffer += "Cannot read directory.";
