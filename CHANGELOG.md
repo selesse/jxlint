@@ -1,4 +1,4 @@
-## jxlint x.x.x (unreleased)
+## jxlint 1.6.0 (October 13, 2014)
 
 BACKWARD INCOMPATIBILITIES:
   - Default port changed from 8080 to 8083
