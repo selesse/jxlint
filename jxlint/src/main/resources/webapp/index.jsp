@@ -78,6 +78,7 @@
                     htmlReportExecutor.generateReport();
         %>
         <h4><a href="report.jsp"> HTML Report - Standalone Page </a></h4>
+        <h4><a href="report.jsp?save"> Save Report </a></h4>
         <iframe src="report.jsp"></iframe>
         <% } else { %>
         Directory '<%= jxlintArgs.get(jxlintArgs.size() - 1) %>' does not exist

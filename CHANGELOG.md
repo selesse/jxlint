@@ -9,6 +9,7 @@ BACKWARD INCOMPATIBILITIES:
 
 IMPROVEMENTS:
   - Default reporter now provides exception summary
+  - Web mode now provides option for saving report
 
 ## jxlint 1.5.1 (September 21, 2014)
 
