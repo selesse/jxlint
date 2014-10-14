@@ -1,5 +1,6 @@
 package com.selesse.jxlint.cli;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.ProgramOptions;
 import org.apache.commons.cli.CommandLine;
@@ -12,6 +13,12 @@ import java.util.List;
  */
 public class ProgramOptionExtractor {
     public static final String DEFAULT_PORT = "8380";
+    @VisibleForTesting
+    static final String HTML_OPTION = "html";
+    @VisibleForTesting
+    static final String XML_OPTION = "xml";
+    @VisibleForTesting
+    static final String QUIET_OPTION = "quiet";
 
     public static ProgramOptions extractProgramOptions(CommandLine commandLine) {
         ProgramOptions programOptions = new ProgramOptions();
@@ -64,19 +71,27 @@ public class ProgramOptionExtractor {
         if (commandLine.hasOption(JxlintOption.WARNINGS_ARE_ERRORS.getOptionString())) {
             programOptions.addOption(JxlintOption.WARNINGS_ARE_ERRORS);
         }
-        if (commandLine.hasOption("quiet")) {
-            programOptions.addOption(JxlintOption.OUTPUT_TYPE, "quiet");
+        if (commandLine.hasOption(QUIET_OPTION)) {
+            programOptions.addOption(JxlintOption.OUTPUT_TYPE, QUIET_OPTION);
         }
-        if (commandLine.hasOption("html")) {
-            programOptions.addOption(JxlintOption.OUTPUT_TYPE, "html");
-            if (commandLine.getOptionValue("html") != null) {
-                programOptions.addOption(JxlintOption.OUTPUT_TYPE_PATH, commandLine.getOptionValue("html"));
+        if (commandLine.hasOption(HTML_OPTION)) {
+            programOptions.addOption(JxlintOption.OUTPUT_TYPE, HTML_OPTION);
+            String outputHtmlFile = commandLine.getOptionValue(HTML_OPTION);
+            if (outputHtmlFile != null) {
+                if (!outputHtmlFile.endsWith(".html")) {
+                    outputHtmlFile += ".html";
+                }
+                programOptions.addOption(JxlintOption.OUTPUT_TYPE_PATH, outputHtmlFile);
             }
         }
-        if (commandLine.hasOption("xml")) {
-            programOptions.addOption(JxlintOption.OUTPUT_TYPE, "xml");
-            if (commandLine.getOptionValue("xml") != null) {
-                programOptions.addOption(JxlintOption.OUTPUT_TYPE_PATH, commandLine.getOptionValue("xml"));
+        if (commandLine.hasOption(XML_OPTION)) {
+            programOptions.addOption(JxlintOption.OUTPUT_TYPE, XML_OPTION);
+            String outputXmlFile = commandLine.getOptionValue(XML_OPTION);
+            if (outputXmlFile != null) {
+                if (!outputXmlFile.endsWith(".xml")) {
+                    outputXmlFile += ".xml";
+                }
+                programOptions.addOption(JxlintOption.OUTPUT_TYPE_PATH, outputXmlFile);
             }
         }
 

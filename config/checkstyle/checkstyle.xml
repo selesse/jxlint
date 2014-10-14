@@ -15,7 +15,7 @@
         </module>
         <module name="ImportOrder">
               <!-- Checks for out of order import statements. -->
-              <property name="groups" value="com,japa,org.junit,net,org,javax,java"/>
+              <property name="groups" value="com,japa,org,net,javax,java"/>
               <!-- This ensures that static imports go last. -->
               <property name="option" value="bottom"/>
               <property name="tokens" value="STATIC_IMPORT, IMPORT"/>

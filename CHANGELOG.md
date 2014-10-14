@@ -3,7 +3,9 @@
 BACKWARD INCOMPATIBILITIES:
   - Default port changed from 8080 to 8083
   - For a given rule, every file for the validation is now `try/catch`ed. The
-    previous behavior was that one exception would cause Jxlint to "give up".
+    previous behavior was that one exception would cause Jxlint to "give up"
+  - When specifying a report file, if the extension is not specified, it is
+    now automatically appended
 
 IMPROVEMENTS:
   - Default reporter now provides exception summary
