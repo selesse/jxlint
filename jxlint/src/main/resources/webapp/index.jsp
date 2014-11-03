@@ -34,7 +34,16 @@
         function deselectAll() {
             setAllCheckboxes(false);
         }
+
+        function displaySave() {
+            document.getElementById('hidden-initially').style.display = 'block';
+        }
     </script>
+    <style>
+        div#hidden-initially {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 <div id="container">
@@ -54,13 +63,17 @@
         <input type="button" value="Select all" onclick="selectAll()"/>
         <input type="button" value="Deselect all" onclick="deselectAll()"/>
 
-        <form action="index.jsp">
+        <form action="index.jsp" target="_blank" onsubmit="displaySave()">
             <% for (LintRule lintRule : HtmlReportExecutor.getAvailableRules()) { %>
                 <input type="checkbox" name="ruleEnabled" value="<%=lintRule.getName()%>" <%=ruleIsChecked(rulesEnabled, lintRule) ? "checked" : "" %> > <%=lintRule.getName()%> <br>
             <% } %>
             <br>
             <input type="text" name="folder" <%= folder == null ? "" : "value=\"" + folder + "\"" %> placeholder="Folder to run validations against" />
         </form>
+
+        <div class="save-report" id="hidden-initially">
+            <h4><a href="report.jsp?save"> Save Report </a></h4>
+        </div>
 
         <%
             if (request.getParameter("folder") != null && rulesEnabled != null) {
@@ -76,14 +89,13 @@
                 HtmlReportExecutor htmlReportExecutor = new HtmlReportExecutor(folder, programSettings, rulesEnabled);
                 if (htmlReportExecutor.directoryExists()) {
                     htmlReportExecutor.generateReport();
+
+                    response.sendRedirect("report.jsp");
         %>
-        <h4><a href="report.jsp"> HTML Report - Standalone Page </a></h4>
-        <h4><a href="report.jsp?save"> Save Report </a></h4>
-        <iframe src="report.jsp"></iframe>
-        <% } else { %>
-        Directory '<%= jxlintArgs.get(jxlintArgs.size() - 1) %>' does not exist
-        <% }
-        } %>
+            <% } else { %>
+            Directory '<%= jxlintArgs.get(jxlintArgs.size() - 1) %>' does not exist
+            <% }
+            } %>
     </div>
 </div>
 </body>
