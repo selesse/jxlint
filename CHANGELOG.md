@@ -1,3 +1,10 @@
+## jxlint 1.6.1 (November 3, 2014)
+
+BUG FIXES:
+
+  - Explicitly set UTF-8 encoding in HTML report
+  - Fix iframe grossness: pressing enter now opens report in new page
+
 ## jxlint 1.6.0 (October 13, 2014)
 
 BACKWARD INCOMPATIBILITIES:
