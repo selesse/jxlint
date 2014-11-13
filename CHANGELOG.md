@@ -1,3 +1,11 @@
+## jxlint 1.6.2 (November 12, 2014)
+
+BUG FIXES:
+
+  - Fix bug where web validator errors double in size on successive runs.
+    The bug was due to lintRule.validate() doubling in size every time
+    `validate()` was called
+
 ## jxlint 1.6.1 (November 3, 2014)
 
 BUG FIXES:
