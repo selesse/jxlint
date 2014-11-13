@@ -91,6 +91,9 @@ public abstract class LintRule {
      * it is added to {@link #lintErrors}.
      */
     public void validate() {
+        // If validate is called successively, the size of lintErrors should be constant...
+        lintErrors = Lists.newArrayList();
+
         LOGGER.debug("[{}] will run against {} files", getName(), getFilesToValidate().size());
         for (File file : getFilesToValidate()) {
             try {

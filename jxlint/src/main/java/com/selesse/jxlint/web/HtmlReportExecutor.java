@@ -40,8 +40,8 @@ public class HtmlReportExecutor {
         try {
             return new String(Files.toByteArray(new File(reportPath)), Charset.defaultCharset());
         }
-        catch (IOException ignored) {
-            return ignored.getMessage();
+        catch (IOException e) {
+            return e.getMessage();
         }
     }
 
@@ -51,7 +51,7 @@ public class HtmlReportExecutor {
 
     public boolean directoryExists() {
         File directory = new File(argList.get(argList.size() - 1));
-        return directory.exists() && directory.isDirectory();
+        return directory.isDirectory();
     }
 
     public void generateReport() {

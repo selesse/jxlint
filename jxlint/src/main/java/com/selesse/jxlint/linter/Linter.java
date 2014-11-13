@@ -36,12 +36,14 @@ public class Linter {
      * {@link com.selesse.jxlint.model.rules.LintError}.
      */
     public void performLintValidations() {
+        lintErrors = Lists.newArrayList();
+
         try {
             LOGGER.debug("Initializing pool of {} threads", NUMBER_OF_THREADS);
             final ListeningExecutorService executorService =
                     MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(NUMBER_OF_THREADS));
 
-            for (final LintRule lintRule : rules) {
+            for (LintRule lintRule : rules) {
                 ValidationThread validationThread = new ValidationThread(lintRule);
 
                 ListenableFuture<List<LintError>> lintErrorFuture = executorService.submit(validationThread);
