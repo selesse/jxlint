@@ -3,6 +3,7 @@ package com.selesse.jxlint.model.rules;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.utils.FileUtils;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +37,7 @@ public abstract class AbstractLintRules implements LintRules {
     public abstract void initializeLintRules();
 
     @Override
+    @Nonnull
     public LintRule getLintRule(String ruleName) throws NonExistentLintRuleException {
         LintRule lintRule = null;
 

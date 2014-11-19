@@ -1,5 +1,6 @@
 package com.selesse.jxlint.actions;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Resources;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.settings.ProgramSettings;
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 public class JettyWebRunner {
@@ -25,8 +27,12 @@ public class JettyWebRunner {
     }
 
     public void start() {
-        int port = getPortValue();
-        startJetty(port);
+        startJettyHeadless(false);
+    }
+
+    @VisibleForTesting
+    void startJettyHeadless(boolean headless) {
+        startJetty(getPortValue(), headless);
     }
 
     private int getPortValue() {
@@ -44,7 +50,7 @@ public class JettyWebRunner {
         return portIntValue;
     }
 
-    private void startJetty(int port) {
+    private void startJetty(int port, boolean headless) {
         // Set JSP to use Standard JavaC always
         System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
 
@@ -59,21 +65,26 @@ public class JettyWebRunner {
         try {
             server.start();
 
-            URI jettyUri = new URI("http://localhost:" + port);
-
-            Desktop desktop = Desktop.getDesktop();
-            try {
-                LOGGER.info("Opening user's browser to {}", jettyUri);
-                desktop.browse(jettyUri);
-            }
-            catch (Exception e) {
-                LOGGER.error("Error opening " + jettyUri + ", try visiting the URL manually", e);
+            if (!headless) {
+                openUserDefaultBrowserToIndex(port);
             }
 
             server.join();
         }
         catch (Exception e) {
             LOGGER.error("Error starting Jetty", e);
+        }
+    }
+
+    private void openUserDefaultBrowserToIndex(int port) throws URISyntaxException {
+        URI jettyUri = new URI("http://localhost:" + port);
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            LOGGER.info("Opening user's browser to {}", jettyUri);
+            desktop.browse(jettyUri);
+        }
+        catch (Exception e) {
+            LOGGER.error("Error opening " + jettyUri + ", try visiting the URL manually", e);
         }
     }
 }
