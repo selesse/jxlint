@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':jxlint')
+    compile 'org.assertj:assertj-core:1.7.0'
+}
