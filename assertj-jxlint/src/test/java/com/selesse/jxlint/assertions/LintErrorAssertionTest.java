@@ -33,7 +33,8 @@ public class LintErrorAssertionTest {
         assertThat(lintError).occursOnLineNumber(10);
         try {
             assertThat(lintError).occursOnLineNumber(9);
-        } catch (AssertionError e) {
+        }
+        catch (AssertionError e) {
             assertThat(e).hasMessage("Expected error for \"name\" to occur on line number <9>, but was <10>");
         }
     }
@@ -43,7 +44,8 @@ public class LintErrorAssertionTest {
         assertThat(lintError).isViolatedIn("SamplePrompts.xml");
         try {
             assertThat(lintError).isViolatedIn("SamplePrompts2.xml");
-        } catch (AssertionError e) {
+        }
+        catch (AssertionError e) {
             assertThat(e).hasMessage("Expected error for \"name\" to have been violated in <\"SamplePrompts2.xml\">," +
                     " but was <\"SamplePrompts.xml\">");
         }
@@ -54,7 +56,8 @@ public class LintErrorAssertionTest {
         assertThat(lintError).isViolatedIn(new File("SamplePrompts.xml"));
         try {
             assertThat(lintError).isViolatedIn(new File("SamplePrompts2.xml"));
-        } catch (AssertionError e) {
+        }
+        catch (AssertionError e) {
             assertThat(e).hasMessage("Expected error for \"name\" to have been violated in <\"SamplePrompts2.xml\">," +
                     " but was <\"SamplePrompts.xml\">");
         }
@@ -65,7 +68,8 @@ public class LintErrorAssertionTest {
         assertThat(lintError).hasErrorMessage("message contains");
         try {
             assertThat(lintError).hasErrorMessage("does not contain");
-        } catch (AssertionError e) {
+        }
+        catch (AssertionError e) {
             assertThat(e).hasMessage("Expected error message for \"name\" to be <\"does not contain\">, but was " +
                     "<\"message contains\">");
         }
@@ -76,7 +80,8 @@ public class LintErrorAssertionTest {
         assertThat(lintError).hasErrorMessageContaining("message contains");
         try {
             assertThat(lintError).hasErrorMessageContaining("message does not contain");
-        } catch (AssertionError e) {
+        }
+        catch (AssertionError e) {
             assertThat(e).hasMessage("Expected error message for \"name\" to contain <\"message does not contain\">," +
                     " but was <\"message contains\">");
         }
