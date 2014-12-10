@@ -4,8 +4,6 @@ import com.selesse.jxlint.ProgramExitter;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.ExitType;
-import com.selesse.jxlint.model.JxlintOption;
-import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
@@ -59,11 +57,8 @@ public class LintHandler {
     }
 
     private void reportLintErrors(List<LintError> lintErrors, ProgramSettings settings, ProgramOptions options) {
-        OutputType outputType = options.getOutputType();
-        String outputTypePath = options.getOption(JxlintOption.OUTPUT_TYPE_PATH);
-
         try {
-            Reporter reporter = Reporters.createReporter(lintErrors, settings, outputType, outputTypePath);
+            Reporter reporter = Reporters.createReporter(lintErrors, settings, options);
             reporter.writeReport();
         }
         catch (UnableToCreateReportException e) {

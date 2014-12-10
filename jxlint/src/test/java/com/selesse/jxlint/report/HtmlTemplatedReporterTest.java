@@ -2,6 +2,7 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
 import org.junit.Before;
@@ -23,7 +24,7 @@ public class HtmlTemplatedReporterTest {
         output = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(output, true, Charsets.UTF_8.displayName());
         htmlReporter = new HtmlTemplatedReporter(
-                out, new JxlintProgramSettings(), Lists.<LintError>newArrayList()
+                out, new JxlintProgramSettings(), new ProgramOptions(), Lists.<LintError>newArrayList()
         );
     }
 

@@ -6,7 +6,9 @@ import com.selesse.jxlint.Jxlint;
 import com.selesse.jxlint.TestFileCreator;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;
+import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.OutputType;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
@@ -48,8 +50,12 @@ public class AbstractReportTest extends AbstractTestCase {
         Linter linter = LinterFactory.getInstance();
         assertThat(linter.getLintErrors()).hasSize(2);
 
+        ProgramOptions programOptions = new ProgramOptions();
+        programOptions.addOption(JxlintOption.OUTPUT_TYPE, outputType.extension());
+        programOptions.addOption(JxlintOption.OUTPUT_TYPE_PATH, desiredOutputPath);
+
         Reporter reporter = Reporters.createReporter(linter.getLintErrors(), new JxlintProgramSettings(),
-                outputType, desiredOutputPath);
+                programOptions);
         reporter.writeReport();
 
         assertThat(desiredFile).exists();

@@ -3,6 +3,7 @@ package com.selesse.jxlint.report;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.selesse.jxlint.model.LintErrorOrderings;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.settings.ProgramSettings;
@@ -21,11 +22,13 @@ public abstract class Reporter {
      */
     protected PrintStream out;
     protected ProgramSettings settings;
+    protected ProgramOptions options;
     protected List<LintError> lintErrorList;
 
-    public Reporter(PrintStream out, ProgramSettings settings, List<LintError> lintErrorList) {
+    public Reporter(PrintStream out, ProgramSettings settings, ProgramOptions options, List<LintError> lintErrorList) {
         this.out = out;
         this.settings = settings;
+        this.options = options;
         this.lintErrorList = lintErrorList;
     }
 

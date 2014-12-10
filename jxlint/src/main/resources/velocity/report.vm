@@ -53,6 +53,16 @@ $(document).ready(function() {
     <div class="well">
         <h2> $nameAndVersion - Lint Report </h2>
         <h3> $date </h3>
+        <h4> $validatedDirectory </h4>
+    </div>
+
+    <div>
+        <h4 class="center"> Verified rules </h4>
+        <ul class="list-group">
+            #foreach($ruleThatWasChecked in $rulesThatWereChecked)
+                <li class="list-group-item"> $ruleThatWasChecked.getName() </li>
+            #end
+        </ul>
     </div>
 
     <ul class="nav nav-tabs" role="tablist" id="category-nav">

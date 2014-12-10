@@ -5,7 +5,9 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.*;
 import com.google.common.io.Resources;
 import com.google.common.reflect.ClassPath;
+import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.LintErrorOrderings;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.settings.ProgramSettings;
@@ -32,8 +34,9 @@ public class HtmlTemplatedReporter extends Reporter {
     private Map<LintRule, Integer> summaryMap;
     private Collection<ClassPath.ResourceInfo> classPathWebJarResources;
 
-    public HtmlTemplatedReporter(PrintStream out, ProgramSettings settings, List<LintError> lintErrorList) {
-        super(out, settings, lintErrorList);
+    public HtmlTemplatedReporter(PrintStream out, ProgramSettings settings, ProgramOptions options,
+                                 List<LintError> lintErrorList) {
+        super(out, settings, options, lintErrorList);
         Set<Enum<?>> violatedCategories = Sets.newTreeSet(new Comparator<Enum<?>>() {
             @Override
             public int compare(Enum<?> o1, Enum<?> o2) {
@@ -94,6 +97,8 @@ public class HtmlTemplatedReporter extends Reporter {
         context.put("allJs", getAllJs());
         context.put("nameAndVersion", settings.getProgramName() + " " + settings.getProgramVersion());
         context.put("date", new Date());
+        context.put("validatedDirectory", options.getSourceDirectory());
+        context.put("rulesThatWereChecked", LinterFactory.getInstance().getLintRules());
         context.put("lintErrorList", lintErrorList);
         context.put("categoryList", violatedCategoryList);
         context.put("navDataTargets", generateNavListString(violatedCategoryList));

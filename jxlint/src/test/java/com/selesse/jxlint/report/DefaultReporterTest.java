@@ -2,6 +2,7 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
@@ -30,7 +31,7 @@ public class DefaultReporterTest {
         output = new ByteArrayOutputStream();
         out = new PrintStream(output, true, Charsets.UTF_8.displayName());
         reporter = new DefaultReporter(
-                out, new JxlintProgramSettings(), Lists.<LintError>newArrayList()
+                out, new JxlintProgramSettings(), new ProgramOptions(), Lists.<LintError>newArrayList()
         );
     }
 
@@ -53,7 +54,8 @@ public class DefaultReporterTest {
         assertThat(reportOutput).isEmpty();
 
         LintError lintError = LintError.with(new XmlEncodingRule(), new File("abc")).create();
-        reporter = new DefaultReporter(out, new JxlintProgramSettings(), Lists.newArrayList(lintError));
+        reporter = new DefaultReporter(out, new JxlintProgramSettings(), new ProgramOptions(),
+                Lists.newArrayList(lintError));
 
         reporter.printFooter();
 

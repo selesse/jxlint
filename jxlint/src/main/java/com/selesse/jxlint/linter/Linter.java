@@ -85,4 +85,8 @@ public class Linter {
     public List<LintError> getLintErrors() {
         return lintErrors;
     }
+
+    public List<LintRule> getLintRules() {
+        return rules;
+    }
 }

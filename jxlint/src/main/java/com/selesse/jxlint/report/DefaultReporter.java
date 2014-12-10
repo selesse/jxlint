@@ -2,6 +2,7 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
@@ -19,8 +20,9 @@ import java.util.List;
  */
 public class DefaultReporter extends Reporter {
 
-    public DefaultReporter(PrintStream out, ProgramSettings programSettings, List<LintError> lintErrorList) {
-        super(out, programSettings, lintErrorList);
+    public DefaultReporter(PrintStream out, ProgramSettings programSettings, ProgramOptions options,
+                           List<LintError> lintErrorList) {
+        super(out, programSettings, options, lintErrorList);
     }
 
     @Override

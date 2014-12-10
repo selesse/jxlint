@@ -3,7 +3,8 @@ package com.selesse.jxlint.report;
 import com.selesse.jxlint.TestFileCreator;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;
-import com.selesse.jxlint.model.OutputType;
+import com.selesse.jxlint.model.JxlintOption;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
 import org.junit.Test;
 
@@ -26,7 +27,9 @@ public class BaseReportTest extends AbstractReportTest {
         Linter linter = LinterFactory.getInstance();
         assertThat(linter.getLintErrors()).hasSize(1);
 
-        Reporters.createReporter(linter.getLintErrors(), new JxlintProgramSettings(),
-                OutputType.HTML, "////////////////");
+        ProgramOptions options = new ProgramOptions();
+        options.addOption(JxlintOption.OUTPUT_TYPE, "html");
+        options.addOption(JxlintOption.OUTPUT_TYPE_PATH, "/////////////////");
+        Reporters.createReporter(linter.getLintErrors(), new JxlintProgramSettings(), options);
     }
 }

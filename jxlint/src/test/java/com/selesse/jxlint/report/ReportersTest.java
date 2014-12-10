@@ -1,7 +1,9 @@
 package com.selesse.jxlint.report;
 
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.OutputType;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.samplerules.xml.rules.XmlEncodingRule;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
@@ -39,11 +41,13 @@ public class ReportersTest {
 
     @Test
     public void testCreateReporter() throws Exception {
-        Reporter defaultReporter = Reporters.createReporter(null, null, null, null);
+        ProgramOptions programOptions = new ProgramOptions();
+        Reporter defaultReporter = Reporters.createReporter(null, null, programOptions);
         assertThat(defaultReporter).isInstanceOf(DefaultReporter.class);
         assertThat(defaultReporter.out).isEqualTo(System.out);
 
-        Reporter quietReporter = Reporters.createReporter(null, null, OutputType.QUIET, null);
+        programOptions.addOption(JxlintOption.OUTPUT_TYPE, "quiet");
+        Reporter quietReporter = Reporters.createReporter(null, null, programOptions);
         assertThat(quietReporter).isInstanceOf(DefaultReporter.class);
         assertThat(quietReporter.out).isNotEqualTo(System.out);
 
@@ -51,11 +55,14 @@ public class ReportersTest {
                 LintError.with(new XmlEncodingRule(), new File(".")).create()
         );
         ProgramSettings programSettings = new JxlintProgramSettings();
-
-        Reporter htmlReporter = Reporters.createReporter(lintErrors, programSettings, OutputType.HTML, null);
+        programOptions = new ProgramOptions();
+        programOptions.addOption(JxlintOption.OUTPUT_TYPE, OutputType.HTML.extension());
+        Reporter htmlReporter = Reporters.createReporter(lintErrors, programSettings, programOptions);
         assertThat(htmlReporter).isInstanceOf(HtmlTemplatedReporter.class);
 
-        Reporter xmlReporter = Reporters.createReporter(lintErrors, programSettings, OutputType.XML, null);
+        programOptions = new ProgramOptions();
+        programOptions.addOption(JxlintOption.OUTPUT_TYPE, OutputType.XML.extension());
+        Reporter xmlReporter = Reporters.createReporter(lintErrors, programSettings, programOptions);
         assertThat(xmlReporter).isInstanceOf(XmlReporter.class);
     }
 }

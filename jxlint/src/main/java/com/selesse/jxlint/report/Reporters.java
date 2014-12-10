@@ -3,7 +3,9 @@ package com.selesse.jxlint.report;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Charsets;
 import com.google.common.collect.Maps;
+import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.OutputType;
+import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.settings.ProgramSettings;
 import org.slf4j.Logger;
@@ -57,9 +59,11 @@ public class Reporters {
     /**
      * Creates the appropriate {@link com.selesse.jxlint.report.Reporter} given the OutputType.
      */
-    public static Reporter createReporter(List<LintError> lintErrors, ProgramSettings settings, OutputType outputType,
-                                          String outputPath) throws UnableToCreateReportException {
-        Reporter reporter = new DefaultReporter(System.out, settings, lintErrors);
+    public static Reporter createReporter(List<LintError> lintErrors, ProgramSettings settings,
+                                          ProgramOptions options) throws UnableToCreateReportException {
+        Reporter reporter = new DefaultReporter(System.out, settings, options, lintErrors);
+        OutputType outputType = options.getOutputType();
+        String outputPath = options.getOption(JxlintOption.OUTPUT_TYPE_PATH);
 
         if (outputType == null) {
             return reporter;
@@ -100,11 +104,11 @@ public class Reporters {
                 case HTML:
                     Class<? extends Reporter> reporterType = outputTypeReporterMap.get(outputType);
                     Constructor<?> reporterTypeConstructor = reporterType.getConstructor(PrintStream.class,
-                            ProgramSettings.class, List.class);
-                    return (Reporter) reporterTypeConstructor.newInstance(out, settings, lintErrors);
+                            ProgramSettings.class, ProgramOptions.class, List.class);
+                    return (Reporter) reporterTypeConstructor.newInstance(out, settings, options, lintErrors);
                 case DEFAULT:
                 case QUIET:
-                    return new DefaultReporter(out, settings, lintErrors);
+                    return new DefaultReporter(out, settings, options, lintErrors);
             }
         }
         // If there any any exceptions, we default to System.out
