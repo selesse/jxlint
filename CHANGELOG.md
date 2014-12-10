@@ -1,3 +1,10 @@
+## jxlint 1.7.0 (December 9, 2014)
+
+IMPROVEMENTS:
+
+  - HTML report now includes directory it validated and names of rules it
+    validated with.
+
 ## jxlint 1.6.2 (November 12, 2014)
 
 BUG FIXES:
