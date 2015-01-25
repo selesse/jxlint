@@ -178,7 +178,7 @@ not have gradle installed, type `gradlew`.
 Examples
 --------
 
-Sample implementations can be found [here](src/test/java/com/selesse/jxlint/samplerules).
+Sample implementations can be found [here](jxlint-impl).
 
 Versioning
 ----------
