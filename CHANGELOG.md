@@ -1,3 +1,9 @@
+## jxlint 1.7.1 (unreleased)
+
+IMPROVEMENTS:
+
+  - "Verified rules" is now part of the "summary" tab and is now collapsible
+
 ## jxlint 1.7.0 (December 9, 2014)
 
 IMPROVEMENTS:
