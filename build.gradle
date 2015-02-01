@@ -7,6 +7,7 @@ buildscript {
     dependencies {
         classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
+        classpath 'net.ltgt.gradle:gradle-errorprone-plugin:latest.release'
     }
 }
 
@@ -15,11 +16,12 @@ subprojects {
     apply plugin: 'checkstyle'
     apply plugin: 'java'
     apply plugin: 'cobertura'
+    apply plugin: 'errorprone'
 
     defaultTasks 'clean', 'build'
 
     group = 'com.selesse'
-    version = '1.7.0'
+    version = '1.7.1'
     sourceCompatibility = 1.6
 
     repositories {
@@ -43,5 +45,9 @@ subprojects {
 
     checkstyle {
         configFile = file("$rootDir/config/checkstyle/checkstyle.xml")
+    }
+
+    configurations.errorprone {
+        resolutionStrategy.force 'com.google.errorprone:error_prone_core:1.1.2'
     }
 }
