@@ -1,0 +1,11 @@
+com.selesse.jxlint
+com.selesse.jxlint.actions
+com.selesse.jxlint.cli
+com.selesse.jxlint.linter
+com.selesse.jxlint.model
+com.selesse.jxlint.model.rules
+com.selesse.jxlint.report
+com.selesse.jxlint.report.color
+com.selesse.jxlint.settings
+com.selesse.jxlint.utils
+com.selesse.jxlint.web
