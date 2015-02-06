@@ -1,6 +1,7 @@
 include 'jxlint'
 include 'jxlint-impl'
 include 'assertj-jxlint'
+include 'idea-plugin'
 
 rootProject.children.each { project ->
     String fileBaseName = project.name.replaceAll("\\p{Upper}") { "-${it.toLowerCase()}" }

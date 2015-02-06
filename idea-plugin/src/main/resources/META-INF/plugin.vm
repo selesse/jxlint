@@ -1,0 +1,11 @@
+<idea-plugin version="2">
+    <name> $pluginName </name>
+    <description> $pluginDescription </description>
+    <version> $pluginVersion </version>
+    <vendor> $pluginVendor </vendor>
+
+    <extensions defaultExtensionNs="$pluginNamespace">
+        <inspectionToolProvider implementation="$provider" />
+    </extensions>
+
+</idea-plugin>
