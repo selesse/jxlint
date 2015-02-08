@@ -46,7 +46,7 @@ class PluginFileGenerator implements FileGenerator {
         velocityContext.put('pluginName', properties.name)
         velocityContext.put('pluginDescription', properties.description)
         velocityContext.put('pluginVersion', properties.version)
-        velocityContext.put('pluginNamespace', properties.namespace)
+        velocityContext.put('pluginVendor', properties.vendor)
         velocityContext.put('provider', "${properties.namespace}.provider.Provider")
 
         return velocityContext

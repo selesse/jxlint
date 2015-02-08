@@ -31,7 +31,7 @@ class PluginFileGeneratorTest extends Specification {
     <version> ${pluginProperties.version} </version>
     <vendor> ${pluginProperties.vendor} </vendor>
 
-    <extensions defaultExtensionNs="${pluginProperties.namespace}">
+    <extensions defaultExtensionNs="com.intellij">
         <inspectionToolProvider implementation="${pluginProperties.namespace}.provider.Provider" />
     </extensions>
 
