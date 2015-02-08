@@ -4,7 +4,7 @@
     <version> $pluginVersion </version>
     <vendor> $pluginVendor </vendor>
 
-    <extensions defaultExtensionNs="$pluginNamespace">
+    <extensions defaultExtensionNs="com.intellij">
         <inspectionToolProvider implementation="$provider" />
     </extensions>
 

@@ -51,6 +51,13 @@ class InspectionGenerator implements FileGenerator {
                 .addStatement('return $S', ShortNameResolver.getShortName(lintRuleImpl))
                 .build()
 
+        def getGroupDisplayName = MethodSpec.methodBuilder("getGroupDisplayName")
+                .returns(String.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addStatement('return $S', properties.name)
+                .build()
+
         def problemsHolderClass = ClassName.get('com.intellij.codeInspection', 'ProblemsHolder')
         def psiElementVisitorClass = ClassName.get('com.intellij.psi', 'PsiElementVisitor')
         def editorClass = ClassName.get('com.intellij.openapi.editor', 'Editor')
@@ -139,6 +146,7 @@ class InspectionGenerator implements FileGenerator {
                 .addMethod(isEnabledByDefault)
                 .addMethod(getDisplayName)
                 .addMethod(getShortName)
+                .addMethod(getGroupDisplayName)
                 .addMethod(buildVisitor)
                 .addType(myElementVisitor)
                 .build()
