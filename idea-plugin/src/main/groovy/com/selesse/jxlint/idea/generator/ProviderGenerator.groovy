@@ -22,7 +22,7 @@ class ProviderGenerator implements FileGenerator {
 
     @Override
     void generate() {
-        log.info "Generating"
+        log.info 'Generating provider for inspections'
 
         def packageBase = properties.namespace + '.inspection'
 

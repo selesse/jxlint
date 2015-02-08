@@ -9,12 +9,13 @@ import groovy.util.logging.Slf4j
 class Main {
     public static void main(String[] args) {
         def pluginNamespace = 'com.selesse'
-        def outputDirectory = new File(System.getProperty("user.home"), "intellij-plugin")
+        def pluginName = 'PluginName'
+        def outputDirectory = new File(System.getProperty("user.home"), pluginName)
 
         def rules = LintRuleFinder.getLintRules(pluginNamespace)
         def pluginProperties = new PluginProperties()
         pluginProperties.with {
-            name = 'PluginName'
+            name = pluginName
             version = 'PluginVersion'
             description = 'PluginDescription'
             vendor = 'PluginVendor'

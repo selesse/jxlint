@@ -9,19 +9,19 @@ import org.apache.velocity.runtime.RuntimeConstants
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader
 
 @Slf4j
-class PluginFileGenerator implements FileGenerator {
-    private static final String template = 'META-INF/plugin.vm'
+class IdeaFileGenerator implements FileGenerator {
+    private static final String template = 'iml.vm'
     PluginProperties properties
     PrintStream out
 
-    PluginFileGenerator(PluginProperties properties, PrintStream out) {
+    def IdeaFileGenerator(PluginProperties properties, PrintStream out) {
         this.properties = properties
         this.out = out
     }
 
     @Override
-    def void generate() {
-        log.info "Generating plugin.xml file"
+    void generate() {
+        log.info "Generating iml file"
 
         Properties velocityProperties = new Properties()
         velocityProperties.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath")
@@ -31,25 +31,12 @@ class PluginFileGenerator implements FileGenerator {
 
         Template template = velocityEngine.getTemplate(template)
 
-        VelocityContext context = getVelocityContext(properties)
+        VelocityContext context = new VelocityContext()
 
         StringWriter stringWriter = new StringWriter()
         template.merge(context, stringWriter)
 
         out.println(stringWriter.toString())
         out.close()
-    }
-
-    private VelocityContext getVelocityContext(PluginProperties properties) {
-        VelocityContext velocityContext = new VelocityContext()
-
-        velocityContext.put('pluginName', properties.name)
-        velocityContext.put('pluginDescription', properties.description)
-        velocityContext.put('pluginVersion', properties.version)
-        velocityContext.put('pluginVendor', properties.vendor)
-        velocityContext.put('pluginNamespace', properties.namespace)
-        velocityContext.put('provider', "${properties.namespace}.provider.Provider")
-
-        return velocityContext
     }
 }

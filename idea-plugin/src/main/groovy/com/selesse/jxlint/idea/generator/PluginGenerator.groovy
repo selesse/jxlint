@@ -26,7 +26,10 @@ class PluginGenerator {
         // Generate the provider for all the rules
         def providerGenerator = new ProviderGenerator(pluginProperties, rules, getProviderStream())
 
-        List<FileGenerator> generators = [pluginFileGenerator, providerGenerator]
+        // Generate an iml file that will contain necessary plugin metadata
+        def ideaFileGenerator = new IdeaFileGenerator(pluginProperties, getIdeaStream())
+
+        List<FileGenerator> generators = [pluginFileGenerator, providerGenerator, ideaFileGenerator]
 
         rules.each {
             // Generate an inspection description (appears in the help message of error message)
@@ -78,6 +81,13 @@ class PluginGenerator {
         providerFile.mkdirs()
 
         new PrintStream(new FileOutputStream(new File(providerFile, "Provider.java")))
+    }
+
+    PrintStream getIdeaStream() {
+        def providerFile = new File(outputDirectory, pluginProperties.name + '.iml')
+        providerFile.parentFile.mkdirs()
+
+        new PrintStream(new FileOutputStream(providerFile))
     }
 
     static String getBaseSourcePath(String namespace) {

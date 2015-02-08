@@ -20,7 +20,7 @@ class InspectionDescriptionGenerator implements FileGenerator {
 
     @Override
     void generate() {
-        log.info "Generating"
+        log.info "Generating description for ${lintRule.simpleName}"
 
         def markdownDescription = lintRule.newInstance().getDetailedOutput()
         PegDownProcessor pegDownProcessor = new PegDownProcessor()
