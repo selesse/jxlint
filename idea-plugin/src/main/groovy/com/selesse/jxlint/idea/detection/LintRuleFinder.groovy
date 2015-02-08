@@ -6,8 +6,8 @@ import org.reflections.Reflections
 
 @Slf4j
 class LintRuleFinder {
-    static def Set<Class<? extends LintRule>> getLintRules() {
-        def reflections = new Reflections("com.selesse")
+    static def Set<Class<? extends LintRule>> getLintRules(String basePackage) {
+        def reflections = new Reflections(basePackage)
         def lintRuleSubclasses = reflections.getSubTypesOf(LintRule.class)
 
         log.info "Got ${lintRuleSubclasses.size()} lintrule subclasses"

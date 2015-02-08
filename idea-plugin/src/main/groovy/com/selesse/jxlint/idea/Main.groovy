@@ -8,18 +8,20 @@ import groovy.util.logging.Slf4j
 @Slf4j
 class Main {
     public static void main(String[] args) {
-        def rules = LintRuleFinder.getLintRules()
+        def pluginNamespace = 'com.selesse'
+        def outputDirectory = new File('sample-plugin')
+
+        def rules = LintRuleFinder.getLintRules(pluginNamespace)
         def pluginProperties = new PluginProperties()
         pluginProperties.with {
-            name = 'name'
-            version = 'version'
-            description = 'description'
-            vendor = 'vendor'
-            namespace = 'com.selesse'
+            name = 'PluginName'
+            version = 'PluginVersion'
+            description = 'PluginDescription'
+            vendor = 'PluginVendor'
+            namespace = pluginNamespace
             ruleClasses = rules.collect( { it.getName() } )
         }
 
-        def outputDirectory = new File('temp')
         if (outputDirectory.isDirectory()) {
             log.warn "Deleting {$outputDirectory.absolutePath}"
             outputDirectory.deleteDir()
