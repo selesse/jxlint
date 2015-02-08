@@ -24,14 +24,16 @@ class ProviderGenerator implements FileGenerator {
     void generate() {
         log.info "Generating"
 
-        def classNames = classes.collect { "${it.getName()}Inspection.class" }
+        def packageBase = properties.namespace + '.inspection'
+
+        def classNames = classes.collect { "${packageBase}.${it.simpleName}Inspection.class" }
         def classes = Joiner.on(", ").join(classNames)
 
         def getInspectionClasses = MethodSpec.methodBuilder("getInspectionClasses")
             .returns(Class[].class)
             .addModifiers(Modifier.PUBLIC)
             .addAnnotation(Override.class)
-            .addStatement("return [ $classes ]")
+            .addStatement("return new Class[] { $classes }")
             .build()
 
         def providerClass = TypeSpec.classBuilder("Provider")

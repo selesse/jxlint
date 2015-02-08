@@ -47,7 +47,7 @@ class PluginGenerator {
     PrintStream getInspectionStream(Class<? extends LintRule> rule) {
         LintRule lintRuleImpl = rule.newInstance()
 
-        def baseSourcePath = getBaseSourcePath() + '/inspection/'
+        def baseSourcePath = getBaseSourcePath(pluginProperties.namespace) + '/inspection/'
         def inspectionDirectory = new File(outputDirectory, baseSourcePath)
         inspectionDirectory.mkdirs()
         def inspectionFile = new File(inspectionDirectory, lintRuleImpl.class.simpleName + "Inspection.java")
@@ -73,20 +73,16 @@ class PluginGenerator {
     }
 
     PrintStream getProviderStream() {
-        // i.e. com.selesse.jxlint => ['com', 'selesse', 'jxlint']
-        def packages = Splitter.on(".").split(pluginProperties.namespace)
-        // i.e. ['com', 'selesse', 'jxlint' => 'com/selesse/jxlint'
-        def packageDirectories = Joiner.on("/").join(packages)
-        def baseSourcePath = '/src/main/java/' + packageDirectories + '/provider/'
+        def baseSourcePath = getBaseSourcePath(pluginProperties.namespace) + '/provider/'
         def providerFile = new File(outputDirectory, baseSourcePath)
         providerFile.mkdirs()
 
         new PrintStream(new FileOutputStream(new File(providerFile, "Provider.java")))
     }
 
-    String getBaseSourcePath() {
+    static String getBaseSourcePath(String namespace) {
         // i.e. com.selesse.jxlint => ['com', 'selesse', 'jxlint']
-        def packages = Splitter.on(".").split(pluginProperties.namespace)
+        def packages = Splitter.on(".").split(namespace)
         // i.e. ['com', 'selesse', 'jxlint' => 'com/selesse/jxlint'
         def packageDirectories = Joiner.on("/").join(packages)
 

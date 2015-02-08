@@ -9,7 +9,7 @@ import groovy.util.logging.Slf4j
 class Main {
     public static void main(String[] args) {
         def pluginNamespace = 'com.selesse'
-        def outputDirectory = new File('sample-plugin')
+        def outputDirectory = new File(System.getProperty("user.home"), "intellij-plugin")
 
         def rules = LintRuleFinder.getLintRules(pluginNamespace)
         def pluginProperties = new PluginProperties()

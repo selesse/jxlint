@@ -30,11 +30,6 @@ class InspectionGenerator implements FileGenerator {
 
         def className = lintRule.getName().substring(lintRule.getName().lastIndexOf(".") + 1)
 
-        def constructor = MethodSpec.constructorBuilder()
-                .addStatement("this.lintRule = new ${lintRule.getName()}()")
-                .addModifiers(Modifier.PUBLIC)
-                .build()
-
         def isEnabledByDefault = MethodSpec.methodBuilder("isEnabledByDefault")
                 .returns(boolean.class)
                 .addModifiers(Modifier.PUBLIC)
@@ -70,7 +65,7 @@ class InspectionGenerator implements FileGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(problemsHolderClass, 'holder')
                 .addParameter(boolean.class, 'isOnTheFly')
-                .addStatement('return new $N($N)', 'MyEventVisitor', 'holder')
+                .addStatement('return new $N($N)', 'MyElementVisitor', 'holder')
                 .build()
 
         def myElementVisitorConstructor = MethodSpec.constructorBuilder()
@@ -87,7 +82,7 @@ class InspectionGenerator implements FileGenerator {
                     .addModifiers(Modifier.PUBLIC)
                         .addStatement('$T $N = $N.getLintErrors($N)',
                             ParameterizedTypeName.get(List.class, LintError.class),
-                            'lintErrors', 'lintRule', 'filesToValidate')
+                            'lintErrors', 'lintRule', 'fileToValidate')
                         .addCode(CodeBlock.builder()
                             .beginControlFlow('for ($T $N : $N)', LintError.class, 'lintError', 'lintErrors')
                             .addStatement('$T $N = $T.findEditor($N)', editorClass, 'editor', psiUtilBaseClass, 'file')
@@ -106,7 +101,7 @@ class InspectionGenerator implements FileGenerator {
                     .build())
                 .build()
 
-        def visitFile = MethodSpec.constructorBuilder()
+        def visitFile = MethodSpec.methodBuilder('visitFile')
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ClassName.get('com.intellij.psi', 'PsiFile'), 'file', Modifier.FINAL)
@@ -116,7 +111,7 @@ class InspectionGenerator implements FileGenerator {
                 .addCode(CodeBlock.builder()
                 .beginControlFlow('for (final $T $N : $N)', File.class, 'fileToValidate', 'filesToValidate')
                             .add(CodeBlock.builder()
-                                    .beginControlFlow('if ($N.equals($N.getAbsolutePath()', 'path', 'filesToValidate')
+                                    .beginControlFlow('if ($N.equals($N.getAbsolutePath()))', 'path', 'fileToValidate')
                                     .addStatement('$T.invokeLater($L)', SwingUtilities.class, runThread)
                                     .endControlFlow()
                                     .build())
@@ -132,11 +127,15 @@ class InspectionGenerator implements FileGenerator {
                 .addMethod(visitFile)
                 .build()
 
+        def lintRuleField = FieldSpec.builder(LintRule.class, "lintRule")
+                .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
+                .initializer("new ${lintRule.getName()}()")
+                .build()
+
         def inspectionClass = TypeSpec.classBuilder("${className}Inspection")
-                .addSuperinterface(ClassName.get('com.intellij.codeInspection.ex', 'BaseLocalInspectionTool'))
+                .superclass(ClassName.get('com.intellij.codeInspection.ex', 'BaseLocalInspectionTool'))
                 .addModifiers(Modifier.PUBLIC)
-                .addField(LintRule.class, "lintRule", Modifier.PUBLIC, Modifier.FINAL)
-                .addMethod(constructor)
+                .addField(lintRuleField)
                 .addMethod(isEnabledByDefault)
                 .addMethod(getDisplayName)
                 .addMethod(getShortName)
