@@ -29,7 +29,10 @@ class PluginGenerator {
         // Generate an iml file that will contain necessary plugin metadata
         def ideaFileGenerator = new IdeaFileGenerator(pluginProperties, getIdeaStream())
 
-        List<FileGenerator> generators = [pluginFileGenerator, providerGenerator, ideaFileGenerator]
+        // Generate an overrideable base file visitor
+        def fileVisitorStream = new BaseFileVisitorGenerator(pluginProperties, getFileVisitorStream())
+
+        List<FileGenerator> generators = [pluginFileGenerator, providerGenerator, ideaFileGenerator, fileVisitorStream]
 
         rules.each {
             // Generate an inspection description (appears in the help message of error message)
@@ -88,6 +91,14 @@ class PluginGenerator {
         providerFile.parentFile.mkdirs()
 
         new PrintStream(new FileOutputStream(providerFile))
+    }
+
+    PrintStream getFileVisitorStream() {
+        def providerFile = getBaseSourcePath(pluginProperties.namespace) + '/inspection/'
+        def baseFileVisitorFile = new File(outputDirectory, providerFile + 'BaseFileVisitor.java')
+        baseFileVisitorFile.parentFile.mkdirs()
+
+        new PrintStream(new FileOutputStream(baseFileVisitorFile))
     }
 
     static String getBaseSourcePath(String namespace) {

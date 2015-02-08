@@ -63,15 +63,15 @@ class InspectionGenerator implements FileGenerator {
                 .returns(psiElementVisitorClass)
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(problemsHolderClass, 'holder')
+                .addParameter(problemsHolderClass, 'myHolder')
                 .addParameter(boolean.class, 'isOnTheFly')
-                .addStatement('return new $N($N)', 'MyElementVisitor', 'holder')
+                .addStatement('return new $N($N)', 'MyElementVisitor', 'myHolder')
                 .build()
 
         def myElementVisitorConstructor = MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(problemsHolderClass, 'myHolder')
-                .addStatement('this.$N = $N', 'myHolder', 'myHolder')
+                .addStatement('super($N)', 'myHolder')
                 .build()
 
         def runThread = TypeSpec.anonymousClassBuilder('')
@@ -105,6 +105,7 @@ class InspectionGenerator implements FileGenerator {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(ClassName.get('com.intellij.psi', 'PsiFile'), 'file', Modifier.FINAL)
+                .addStatement('super.visitFile($N)', 'file')
                 .addStatement('String path = file.getVirtualFile().getPath()')
                 .addStatement('$T $N = $N.getFilesToValidate()',
                         ParameterizedTypeName.get(List.class, File.class), 'filesToValidate', 'lintRule')
@@ -120,9 +121,8 @@ class InspectionGenerator implements FileGenerator {
                 .build()
 
         def myElementVisitor = TypeSpec.classBuilder("MyElementVisitor")
-                .superclass(psiElementVisitorClass)
+                .superclass(ClassName.get(properties.namespace + '.inspection', 'BaseFileVisitor'))
                 .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                .addField(problemsHolderClass, "myHolder", Modifier.PRIVATE, Modifier.FINAL)
                 .addMethod(myElementVisitorConstructor)
                 .addMethod(visitFile)
                 .build()
