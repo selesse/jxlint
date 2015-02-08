@@ -1,6 +1,7 @@
 package com.selesse.jxlint.idea.generator
 
 import com.selesse.jxlint.idea.model.PluginProperties
+import com.selesse.jxlint.idea.resolver.ShortNameResolver
 import com.selesse.jxlint.model.rules.LintError
 import com.selesse.jxlint.model.rules.LintRule
 import com.squareup.javapoet.*
@@ -52,7 +53,7 @@ class InspectionGenerator implements FileGenerator {
                 .returns(String.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
-                .addStatement('return $S', lintRuleImpl.getName().replaceAll(/[^0-9a-zA-Z]/, ''))
+                .addStatement('return $S', ShortNameResolver.getShortName(lintRuleImpl))
                 .build()
 
         def problemsHolderClass = ClassName.get('com.intellij.codeInspection', 'ProblemsHolder')
