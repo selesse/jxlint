@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -164,11 +165,14 @@ public abstract class LintRule {
     protected String getMarkdownDescription() {
         String markdownDescription = "";
         try {
-            URL documentationUrl = Resources.getResource("doc/rules/" + this.getClass().getSimpleName() + ".md");
-            List<String> fileContents = Resources.readLines(documentationUrl, Charsets.UTF_8);
-            markdownDescription = Joiner.on("\n").join(fileContents);
+            URL documentationUrl = getClass().getClassLoader()
+                    .getResource("doc/rules/" + this.getClass().getSimpleName() + ".md");
+            if (documentationUrl != null) {
+                List<String> fileContents = Resources.readLines(documentationUrl, Charsets.UTF_8);
+                markdownDescription = Joiner.on("\n").join(fileContents);
+            }
         }
-        catch (Exception e) {
+        catch (IOException e) {
             LOGGER.error("Error: could not read Markdown description for {}", this.getClass().getSimpleName(), e);
         }
         return markdownDescription;
