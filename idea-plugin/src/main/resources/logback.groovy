@@ -4,7 +4,8 @@ import ch.qos.logback.core.ConsoleAppender
 appender("CONSOLE", ConsoleAppender) {
     withJansi = true
     encoder(PatternLayoutEncoder) {
-        pattern = "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+        pattern = "%d{HH:mm:ss.SSS} [%.8thread] %highlight(%-5level) %cyan(%logger{36}) - %boldWhite(%msg) %n"
+
     }
 }
 

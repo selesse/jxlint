@@ -26,7 +26,7 @@ class PluginGenerator {
         // Generate the provider for all the rules
         def providerGenerator = new ProviderGenerator(pluginProperties, rules, getProviderStream())
 
-        // Generate an iml file that will contain necessary plugin metadata
+        // Generate an iml file that will contain necessary IntelliJ metadata
         def ideaFileGenerator = new IdeaFileGenerator(pluginProperties, getIdeaStream())
 
         // Generate an overrideable base file visitor

@@ -30,5 +30,7 @@ class Main {
 
         def pluginGenerator = new PluginGenerator(pluginProperties, rules, outputDirectory)
         pluginGenerator.generatePlugin()
+
+        log.info "Done generating $pluginName at $outputDirectory"
     }
 }

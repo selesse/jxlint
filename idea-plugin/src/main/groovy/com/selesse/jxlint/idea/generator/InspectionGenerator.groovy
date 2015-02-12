@@ -60,11 +60,6 @@ class InspectionGenerator implements FileGenerator {
 
         def problemsHolderClass = ClassName.get('com.intellij.codeInspection', 'ProblemsHolder')
         def psiElementVisitorClass = ClassName.get('com.intellij.psi', 'PsiElementVisitor')
-        def editorClass = ClassName.get('com.intellij.openapi.editor', 'Editor')
-        def psiUtilBaseClass = ClassName.get('com.intellij.psi.util', 'PsiUtilBase')
-        def psiElementClass = ClassName.get('com.intellij.psi', 'PsiElement')
-        def problemHighlightTypeClass = ClassName.get('com.intellij.codeInspection', 'ProblemHighlightType', 'ERROR')
-        def localQuickFixClass = ClassName.get('com.intellij.codeInspection', 'LocalQuickFix', 'EMPTY_ARRAY')
 
         def buildVisitor = MethodSpec.methodBuilder('buildVisitor')
                 .returns(psiElementVisitorClass)
@@ -72,66 +67,7 @@ class InspectionGenerator implements FileGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(problemsHolderClass, 'myHolder')
                 .addParameter(boolean.class, 'isOnTheFly')
-                .addStatement('return new $N($N)', 'MyElementVisitor', 'myHolder')
-                .build()
-
-        def myElementVisitorConstructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(problemsHolderClass, 'myHolder')
-                .addStatement('super($N)', 'myHolder')
-                .build()
-
-        def runThread = TypeSpec.anonymousClassBuilder('')
-                .addSuperinterface(Runnable.class)
-                .addMethod(
-                MethodSpec.methodBuilder('run')
-                    .addAnnotation(Override.class)
-                    .addModifiers(Modifier.PUBLIC)
-                        .addStatement('$T $N = $N.getLintErrors($N)',
-                            ParameterizedTypeName.get(List.class, LintError.class),
-                            'lintErrors', 'lintRule', 'fileToValidate')
-                        .addCode(CodeBlock.builder()
-                            .beginControlFlow('for ($T $N : $N)', LintError.class, 'lintError', 'lintErrors')
-                            .addStatement('$T $N = $T.findEditor($N)', editorClass, 'editor', psiUtilBaseClass, 'file')
-                            .add(CodeBlock.builder()
-                                .beginControlFlow('if ($N != null)', 'editor')
-                                .addStatement('int $N = $N.getDocument().getLineStartOffset($N.getLineNumber())',
-                                    'offset', 'editor', 'lintError')
-                                .addStatement('$T $N = $T.getElementAtOffset($N, $N)', psiElementClass,
-                                    'problemElement', psiUtilBaseClass, 'file', 'offset')
-                                .addStatement('$N.registerProblem($N, $N.getMessage(), $L, $L)', 'myHolder',
-                                    'problemElement', 'lintError', problemHighlightTypeClass, localQuickFixClass)
-                                .endControlFlow()
-                                .build())
-                            .endControlFlow()
-                            .build())
-                    .build())
-                .build()
-
-        def visitFile = MethodSpec.methodBuilder('visitFile')
-                .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(ClassName.get('com.intellij.psi', 'PsiFile'), 'file', Modifier.FINAL)
-                .addStatement('super.visitFile($N)', 'file')
-                .addStatement('String path = file.getVirtualFile().getPath()')
-                .addStatement('$T $N = $N.getFilesToValidate()',
-                        ParameterizedTypeName.get(List.class, File.class), 'filesToValidate', 'lintRule')
-                .addCode(CodeBlock.builder()
-                .beginControlFlow('for (final $T $N : $N)', File.class, 'fileToValidate', 'filesToValidate')
-                            .add(CodeBlock.builder()
-                                    .beginControlFlow('if ($N.equals($N.getAbsolutePath()))', 'path', 'fileToValidate')
-                                    .addStatement('$T.invokeLater($L)', SwingUtilities.class, runThread)
-                                    .endControlFlow()
-                                    .build())
-                            .build())
-                .endControlFlow()
-                .build()
-
-        def myElementVisitor = TypeSpec.classBuilder("MyElementVisitor")
-                .superclass(ClassName.get(properties.namespace + '.inspection', 'BaseFileVisitor'))
-                .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
-                .addMethod(myElementVisitorConstructor)
-                .addMethod(visitFile)
+                .addStatement('return new $N($N, $N)', 'BaseFileVisitor', 'myHolder', 'lintRule')
                 .build()
 
         def lintRuleField = FieldSpec.builder(LintRule.class, "lintRule")
@@ -148,7 +84,6 @@ class InspectionGenerator implements FileGenerator {
                 .addMethod(getShortName)
                 .addMethod(getGroupDisplayName)
                 .addMethod(buildVisitor)
-                .addType(myElementVisitor)
                 .build()
 
         def javaFile = JavaFile.builder("${properties.namespace}.inspection", inspectionClass)
