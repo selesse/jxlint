@@ -5,32 +5,33 @@ stuff is taken care of for you:
 
 ```
 usage: jxlint [flags] <directory>
--h,--help                     Usage information, help message.
--v,--version                  Output version information.
--p,--profile                  Measure time every rule takes to complete.
--l,--list                     Lists lint rules with a short, summary
-explanation.
-    -b,--web <port>               Run in the background, as a website.  (default port: 8380)
-    -r,--rules                    Prints a Markdown dump of the program's
-    rules.
-    -s,--show <RULE[s]>           Lists a verbose rule explanation.
-    -c,--check <RULE[s]>          Only check for these rules.
-    -d,--disable <RULE[s]>        Disable the list of rules.
-    -e,--enable <RULE[s]>         Enable the list of rules.
-    -y,--category <CATEGORY[s]>   Run all rules of a certain category.
-    -w,--nowarn                   Only check for errors; ignore warnings.
-    -Wall,--Wall                  Check all warnings, including those off by
-    default.
-    -Werror,--Werror              Treat all warnings as errors.
-    -q,--quiet                    Don't output any progress or reports.
-    -t,--html <filename>          Create an HTML report.
-    -x,--xml <filename>           Create an XML (!!) report.
+ -h,--help                     Usage information, help message.
+ -v,--version                  Output version information.
+ -p,--profile                  Measure time every rule takes to complete.
+ -l,--list                     Lists lint rules with a short, summary
+                               explanation.
+ -b,--web <port>               Run in the background, as a website.
+                               (default port: 8380)
+ -r,--rules                    Prints a Markdown dump of the program's
+                               rules.
+ -s,--show <RULE[s]>           Lists a verbose rule explanation.
+ -c,--check <RULE[s]>          Only check for these rules.
+ -d,--disable <RULE[s]>        Disable the list of rules.
+ -e,--enable <RULE[s]>         Enable the list of rules.
+ -y,--category <CATEGORY[s]>   Run all rules of a certain category.
+ -w,--nowarn                   Only check for errors; ignore warnings.
+ -Wall,--Wall                  Check all warnings, including those off by
+                               default.
+ -Werror,--Werror              Treat all warnings as errors.
+ -q,--quiet                    Don't output any progress or reports.
+ -t,--html <filename>          Create an HTML report.
+ -x,--xml <filename>           Create an XML (!!) report.
 
-    <RULE[s]> should be comma separated, without spaces.
-    Exit Status:
-    0                     Success
-    1                     Failed
-    2                     Command line error
+<RULE[s]> should be comma separated, without spaces.
+Exit Status:
+0                     Success
+1                     Failed
+2                     Command line error
 ```
 
 Motivation
