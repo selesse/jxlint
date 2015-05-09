@@ -59,127 +59,102 @@ should be straightforward.
 * If you are trying to create a lint/static analysis tool, you might want
   to use this framework so you don't have to reinvent the wheel. Various
   components are already implemented for you. See the
-  [architecture](doc/architecture.md) for more details.
-
-Requirements
-------------
-
-[Gradle](http://gradle.org) is required to build the code. If Gradle is not
-already installed, you can use the wrapper to install it for you.
-
-The required libraries/dependencies can be found in
-[the Gradle build file](build.gradle).
+  [architecture](https://github.com/selesse/jxlint/blob/master/doc/architecture.md) for more details.
 
 Quick Start
 -----------
 
-1. Specify `com.selesse:jxlint:1.7.0` as a Maven dependency.
-2. Make customizations:
+* Specify `com.selesse:jxlint:1.7.0` as a Maven dependency.
+* Make customizations:
 
   Create all your rules. It's recommended to put all the rules in one directory,
-  as can be seen in the [sample implementations](src/test/java/com/selesse/jxlint/samplerules).
+  as can be seen in the [sample implementations](https://github.com/selesse/jxlint/tree/master/jxlint-impl/src/main/java/com/selesse/jxlintimpl/rules/impl).
 
-  ```java
-  public class XmlEncodingRule extends LintRule {
-      public XmlEncodingRule () {
-          super("XML encoding specified", "Encoding of the XML should be specified.",
-                  "The XML encoding should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
-                  Severity.WARNING, Category.LINT, false);
-      }
-
-      @Override
-      public List<File> getFilesToValidate() {
-          return FileUtils.allFilesWithExtension(getSourceDirectory(), "xml");
-      }
-
-      @Override
-      public List<LintError> getLintErrors(File file) {
-          List<LintError> lintErrorList = Lists.newArrayList();
-          try {
-              DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-              DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-              documentBuilder.setErrorHandler(null); // silence the DOM error handler
-              Document document = documentBuilder.parse(file);
-
-              document.getDocumentElement().normalize();
-
-              if (Strings.isNullOrEmpty(document.getXmlEncoding())) {
-                  lintErrorList.add(LintError.with(this, file).
-                      addMessage("Encoding wasn't specified").create());
-              }
-          }
-          catch (Exception e) {
-              lintErrorList.add(LintError.with(this, file).
-                  addMessage("Error checking rule, could not parse XML").
-                  addException(e).create());
-          }
-
-          return lintErrorList;
-      }
+   ```java
+public class XmlEncodingRule extends LintRule {
+  public XmlEncodingRule () {
+      super("XML encoding specified", "Encoding of the XML should be specified.",
+              "The XML encoding should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
+              Severity.WARNING, Category.LINT, false);
   }
+
+  @Override
+  public List<File> getFilesToValidate() {
+      return FileUtils.allFilesWithExtension(getSourceDirectory(), "xml");
+  }
+
+  @Override
+  public List<LintError> getLintErrors(File file) {
+      List<LintError> lintErrorList = Lists.newArrayList();
+      try {
+          DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+          DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+          documentBuilder.setErrorHandler(null); // silence the DOM error handler
+          Document document = documentBuilder.parse(file);
+
+          document.getDocumentElement().normalize();
+
+          if (Strings.isNullOrEmpty(document.getXmlEncoding())) {
+              lintErrorList.add(LintError.with(this, file).
+                  addMessage("Encoding wasn't specified").create());
+          }
+      }
+      catch (Exception e) {
+          lintErrorList.add(
+              LintError.with(this, file)
+                  .addMessage("Error checking rule, could not parse XML")
+                  .addException(e)
+                  .create()
+          );
+      }
+
+      return lintErrorList;
+  }
+}
   ```
 
   Add (at least) 1 positive and 1 negative test case. A (recommended) version
-  of such a tester can be found [here](src/test/java/com/selesse/jxlint/AbstractPassFailFileTest.java).
+  of such a tester can be found [here](https://github.com/selesse/jxlint/tree/master/jxlint/src/test/java/com/selesse/jxlint/samplerules).
   See the Javadoc for instructions on how to set this up. Extending this class leads to
-  [the following positive + negative test case](src/test/java/com/selesse/jxlint/samplerulestest/xml/XmlEncodingTest.java):
+  [the following positive + negative test case](https://github.com/selesse/jxlint/tree/master/jxlint/src/test/java/com/selesse/jxlint/samplerulestest/xml/XmlEncodingTest.java):
 
   ```java
-  public class XmlEncodingTest extends AbstractPassFailFileXmlFileTest {
-      public XmlEncodingTest() {
-          super(new XmlEncodingRule());
-      }
+public class XmlEncodingTest extends AbstractPassFailFileXmlFileTest {
+  public XmlEncodingTest() {
+      super(new XmlEncodingRule());
   }
+}
   ```
 
   Set up the container by adding all your custom-defined rules.
 
   ```java
-  public class MyXmlLintRulesImpl extends AbstractLintRules {
-      @Override
-      public void initializeLintRules() {
-          // Example rule saying that XML must be valid
-          lintRules.add(new ValidXmlRule());
+public class MyXmlLintRulesImpl extends AbstractLintRules {
+  @Override
+  public void initializeLintRules() {
+      // Example rule saying that XML must be valid
+      lintRules.add(new ValidXmlRule());
 
-          // Example rule saying that duplicate attribute tags within XML are bad
-          lintRules.add(new UniqueAttributeRule());
+      // Example rule saying that duplicate attribute tags within XML are bad
+      lintRules.add(new UniqueAttributeRule());
 
-          // Example (disabled-by-default) rules
-          lintRules.add(new XmlVersionRule());
-          lintRules.add(new XmlEncodingRule());
-      }
+      // Example (disabled-by-default) rules
+      lintRules.add(new XmlVersionRule());
+      lintRules.add(new XmlEncodingRule());
   }
+}
   ```
 
   In your application's Main class:
 
   ```java
-  public class Main {
-      public static void main(String[] args) {
-          Jxlint jxlint = new Jxlint(new MyXmlLintRulesImpl(), new MyProgramSettings());
-          jxlint.parseArgumentsAndDispatch(args);
-      }
+public class Main {
+  public static void main(String[] args) {
+      Jxlint jxlint = new Jxlint(new MyXmlLintRulesImpl(), new MyProgramSettings());
+      jxlint.parseArgumentsAndDispatch(args);
   }
+}
   ```
-
-3. Build your application.
-
-Building the Code
------------------
-
-To build the code, run `gradle`. This will create a jxlint jar. If you do
-not have gradle installed, type `gradlew`.
-
-Examples
---------
-
-Sample implementations can be found [here](jxlint-impl).
-
-Versioning
-----------
-
-This project follows [Semantic Versioning](http://semver.org/) as much as
-possible.
 
 License
 -------
