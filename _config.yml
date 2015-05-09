@@ -1,0 +1,4 @@
+title: selesse.com/jxlint/
+baseurl: "" # the subpath of your site, e.g. /blog/
+url: "http://selesse.com/jxlint/" # the base hostname & protocol for your site
+permalink: /:year/:month/:day/:title.html
