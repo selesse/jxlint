@@ -1,5 +1,5 @@
 apply plugin: 'findbugs'
-apply plugin: 'nexus'
+apply plugin: 'com.bmuschko.nexus'
 
 ext.jettyVersion = '8.1.15.v20140411'
 
@@ -87,10 +87,13 @@ modifyPom {
     }
 }
 
+extraArchive {
+    javadoc = true
+    sources = true
+    tests = false
+}
+
 nexus {
-    attachJavadoc = true
-    attachSources = true
-    attachTests = false
     sign = true
     repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
     snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots'

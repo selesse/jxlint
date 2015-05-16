@@ -5,7 +5,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.7.1'
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
         classpath 'net.saliman:gradle-cobertura-plugin:2.2.4'
     }
 }
