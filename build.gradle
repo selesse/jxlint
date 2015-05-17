@@ -19,7 +19,7 @@ subprojects {
     defaultTasks 'clean', 'build'
 
     group = 'com.selesse'
-    version = '1.7.1'
+    version = '1.7.1-SNAPSHOT'
     sourceCompatibility = 1.6
 
     repositories {
