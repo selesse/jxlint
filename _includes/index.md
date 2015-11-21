@@ -70,91 +70,113 @@ Quick Start
   Create all your rules. It's recommended to put all the rules in one directory,
   as can be seen in the [sample implementations](https://github.com/selesse/jxlint/tree/master/jxlint-impl/src/main/java/com/selesse/jxlintimpl/rules/impl).
 
-   ```java
+```java
 public class XmlEncodingRule extends LintRule {
-  public XmlEncodingRule () {
-      super("XML encoding specified", "Encoding of the XML should be specified.",
-              "The XML encoding should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
-              Severity.WARNING, Category.LINT, false);
-  }
+    public XmlEncodingRule () {
+        super("XML encoding specified", "Encoding of the XML should be specified.",
+                "The XML encoding should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
+                Severity.WARNING, Category.LINT, false);
+    }
 
-  @Override
-  public List<File> getFilesToValidate() {
-      return FileUtils.allFilesWithExtension(getSourceDirectory(), "xml");
-  }
+    @Override
+    public List<File> getFilesToValidate() {
+        return FileUtils.allFilesWithExtension(getSourceDirectory(), "xml");
+    }
 
-  @Override
-  public List<LintError> getLintErrors(File file) {
-      List<LintError> lintErrorList = Lists.newArrayList();
-      try {
-          DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-          DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-          documentBuilder.setErrorHandler(null); // silence the DOM error handler
-          Document document = documentBuilder.parse(file);
+    @Override
+    public List<LintError> getLintErrors(File file) {
+        List<LintError> lintErrorList = Lists.newArrayList();
+        try {
+            DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+            documentBuilder.setErrorHandler(null); // silence the DOM error handler
+            Document document = documentBuilder.parse(file);
 
-          document.getDocumentElement().normalize();
+            document.getDocumentElement().normalize();
 
-          if (Strings.isNullOrEmpty(document.getXmlEncoding())) {
-              lintErrorList.add(LintError.with(this, file).
-                  addMessage("Encoding wasn't specified").create());
-          }
-      }
-      catch (Exception e) {
-          lintErrorList.add(
-              LintError.with(this, file)
-                  .addMessage("Error checking rule, could not parse XML")
-                  .addException(e)
-                  .create()
-          );
-      }
+            if (Strings.isNullOrEmpty(document.getXmlEncoding())) {
+                lintErrorList.add(LintError.with(this, file).
+                    addMessage("Encoding wasn't specified").create());
+            }
+        }
+        catch (Exception e) {
+            lintErrorList.add(
+                LintError.with(this, file)
+                    .addMessage("Error checking rule, could not parse XML")
+                    .addException(e)
+                    .create()
+            );
+        }
 
-      return lintErrorList;
-  }
+        return lintErrorList;
+    }
 }
-  ```
+```
 
   Add (at least) 1 positive and 1 negative test case. A (recommended) version
   of such a tester can be found [here](https://github.com/selesse/jxlint/tree/master/jxlint/src/test/java/com/selesse/jxlint/samplerules).
   See the Javadoc for instructions on how to set this up. Extending this class leads to
   [the following positive + negative test case](https://github.com/selesse/jxlint/tree/master/jxlint/src/test/java/com/selesse/jxlint/samplerulestest/xml/XmlEncodingTest.java):
 
-  ```java
+```java
 public class XmlEncodingTest extends AbstractPassFailFileXmlFileTest {
-  public XmlEncodingTest() {
-      super(new XmlEncodingRule());
-  }
+    public XmlEncodingTest() {
+        super(new XmlEncodingRule());
+    }
 }
-  ```
+```
 
   Set up the container by adding all your custom-defined rules.
 
-  ```java
+```java
 public class MyXmlLintRulesImpl extends AbstractLintRules {
-  @Override
-  public void initializeLintRules() {
-      // Example rule saying that XML must be valid
-      lintRules.add(new ValidXmlRule());
+    @Override
+    public void initializeLintRules() {
+        // Example rule saying that XML must be valid
+        lintRules.add(new ValidXmlRule());
 
-      // Example rule saying that duplicate attribute tags within XML are bad
-      lintRules.add(new UniqueAttributeRule());
+        // Example rule saying that duplicate attribute tags within XML are bad
+        lintRules.add(new UniqueAttributeRule());
 
-      // Example (disabled-by-default) rules
-      lintRules.add(new XmlVersionRule());
-      lintRules.add(new XmlEncodingRule());
-  }
+        // Example (disabled-by-default) rules
+        lintRules.add(new XmlVersionRule());
+        lintRules.add(new XmlEncodingRule());
+    }
 }
-  ```
+```
 
   In your application's Main class:
 
-  ```java
+```java
 public class Main {
-  public static void main(String[] args) {
-      Jxlint jxlint = new Jxlint(new MyXmlLintRulesImpl(), new MyProgramSettings());
-      jxlint.parseArgumentsAndDispatch(args);
-  }
+    public static void main(String[] args) {
+        Jxlint jxlint = new Jxlint(new MyXmlLintRulesImpl(), new MyProgramSettings());
+        jxlint.parseArgumentsAndDispatch(args);
+    }
 }
-  ```
+```
+
+  Compile your class with your favorite build tool. You should be able to run
+  Jxlint like so:
+
+```bash
+java -jar MyJxlint.jar --html index.html my/source/directory
+```
+
+  A report will be generated -- it'll look something like [this one](sample-report/index.html).
+  The report's links to files will only be valid on the computer where it's
+  generated.
+
+Web View
+--------
+
+The `--web` option starts a local web application that allows you to select
+which rules to run through a web interface:
+
+![Jxlint Web View](images/jxlint-web.png)
+
+Once the path to a (local) folder is inserted, Jxlint will run and produce an
+HTML report.
 
 License
 -------
