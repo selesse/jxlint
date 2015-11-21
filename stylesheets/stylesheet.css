@@ -315,15 +315,15 @@ Full-Width Styles
   text-shadow: #111 0px 0px 10px;
 }
 
-#links {
-    font-size: 24px;
+section#links {
+    font-size: 18px;
     position: absolute;
     right: 0;
     padding-right: 20px;
     bottom: 90px;
 }
 
-#links a:visited, a:hover, a:link {
+section#links a:visited, section#links a:hover, section#links a:link {
     color: white;
 }
 
