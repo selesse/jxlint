@@ -95,15 +95,18 @@ public class XmlEncodingRule extends LintRule {
             document.getDocumentElement().normalize();
 
             if (Strings.isNullOrEmpty(document.getXmlEncoding())) {
-                lintErrorList.add(LintError.with(this, file).
-                    addMessage("Encoding wasn't specified").create());
+                lintErrorList.add(
+                    LintError.with(this, file)
+                        .andMessage("Encoding wasn't specified")
+                        .create()
+                );
             }
         }
         catch (Exception e) {
             lintErrorList.add(
                 LintError.with(this, file)
-                    .addMessage("Error checking rule, could not parse XML")
-                    .addException(e)
+                    .andMessage("Error checking rule, could not parse XML")
+                    .andException(e)
                     .create()
             );
         }
