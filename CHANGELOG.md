@@ -1,4 +1,11 @@
-## jxlint 1.7.1 (unreleased)
+## jxlint 1.7.2 (August 20, 2016)
+
+BUG FIXES:
+
+  - Fixed NullPointerException when producing an HTML report that had an
+    Exception without a message.
+
+## jxlint 1.7.1
 
 IMPROVEMENTS:
 
