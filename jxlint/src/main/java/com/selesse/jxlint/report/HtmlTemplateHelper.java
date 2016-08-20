@@ -1,5 +1,6 @@
 package com.selesse.jxlint.report;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.html.HtmlEscapers;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
@@ -51,7 +52,8 @@ public class HtmlTemplateHelper {
     }
 
     public static String sanitizeStackTrace(Exception exception) {
-        StringBuilder sanitizedStackTrace = new StringBuilder(exception.getMessage()).append("\n");
+        String exceptionMessage = Objects.firstNonNull(exception.getMessage(), exception.getClass().getSimpleName());
+        StringBuilder sanitizedStackTrace = new StringBuilder(exceptionMessage).append("\n");
         List<StackTraceElement> stackTrace = Lists.newArrayList(exception.getStackTrace());
         for (StackTraceElement stackTraceElement : stackTrace) {
             sanitizedStackTrace.append(HtmlTemplateHelper.htmlEscape(stackTraceElement.toString())).append("\n");
