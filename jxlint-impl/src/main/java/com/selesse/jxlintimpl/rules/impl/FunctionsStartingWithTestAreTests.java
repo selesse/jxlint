@@ -1,19 +1,19 @@
 package com.selesse.jxlintimpl.rules.impl;
 
-import com.github.javaparser.JavaParser;
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Node;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.ModifierSet;
-import com.github.javaparser.ast.body.TypeDeclaration;
-import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.ast.type.VoidType;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.utils.FileUtils;
 import com.selesse.jxlintimpl.CustomCategories;
+import japa.parser.JavaParser;
+import japa.parser.ast.CompilationUnit;
+import japa.parser.ast.Node;
+import japa.parser.ast.body.MethodDeclaration;
+import japa.parser.ast.body.ModifierSet;
+import japa.parser.ast.body.TypeDeclaration;
+import japa.parser.ast.expr.AnnotationExpr;
+import japa.parser.ast.type.VoidType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
