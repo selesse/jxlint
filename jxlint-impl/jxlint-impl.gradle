@@ -6,7 +6,7 @@ dependencies {
     compile project(":jxlint")
 
     compile 'ch.qos.logback:logback-classic:1.1.2'
-    compile 'com.google.code.javaparser:javaparser:1.0.11'
+    compile 'com.github.javaparser:javaparser-core:2.5.1'
 }
 
 ext.rulesFile = new File(projectDir, "RULES.md")
