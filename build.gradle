@@ -19,15 +19,15 @@ subprojects {
     defaultTasks 'clean', 'build'
 
     group = 'com.selesse'
-    version = '1.7.2'
-    sourceCompatibility = 1.6
+    version = '2.0.0'
+    sourceCompatibility = 1.8
 
     repositories {
         mavenCentral()
     }
 
     dependencies {
-        compile 'com.google.code.findbugs:annotations:2.0.3'
+        compile 'com.google.code.findbugs:annotations:3.0.1'
         compile 'com.google.guava:guava:18.0'
         compile 'org.fusesource.jansi:jansi:1.11'
         compile 'org.slf4j:slf4j-api:1.7.7'
