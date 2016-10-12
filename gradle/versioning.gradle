@@ -1,0 +1,40 @@
+version = new ProjectVersion(2, 0, 0)
+
+task release(dependsOn: ['clean', 'build']) {
+    group = 'Publishing'
+    description = 'Assemble all JARs needed for publishing (Javadoc, source, library).'
+
+    doLast {
+        out.println "Releasing ${project.name} $version"
+    }
+}
+
+release.mustRunAfter clean
+
+gradle.taskGraph.whenReady { taskGraph ->
+    version.snapshot = !taskGraph.hasTask(release)
+}
+
+class ProjectVersion {
+    Integer major
+    Integer minor
+    Integer patch
+    boolean snapshot
+
+    ProjectVersion(Integer major, Integer minor, Integer patch) {
+        this.major = major
+        this.minor = minor
+        this.patch = patch
+    }
+
+    @Override
+    String toString() {
+        String fullVersion = "$major.$minor.$patch"
+
+        if (snapshot) {
+            fullVersion += "-SNAPSHOT"
+        }
+
+        fullVersion
+    }
+}

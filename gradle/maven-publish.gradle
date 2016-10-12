@@ -1,0 +1,42 @@
+apply plugin: 'com.bmuschko.nexus'
+
+modifyPom {
+    project {
+        url 'https://github.com/selesse/jxlint'
+        inceptionYear '2013'
+
+        scm {
+            url 'https://github.com/selesse/jxlint'
+            connection 'scm:https://selesse@github.com/selesse/jxlint.git'
+            developerConnection 'scm:git://github.com/selesse/jxlint.git'
+        }
+
+        licenses {
+            license {
+                name 'MIT license'
+                url 'http://opensource.org/licenses/mit-license.php'
+                distribution 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                id 'selesse'
+                name 'Alex Selesse'
+                email 'alex@selesse.com'
+            }
+        }
+    }
+}
+
+extraArchive {
+    sources = true
+    tests = false
+    javadoc = true
+}
+
+nexus {
+    sign = true
+    repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
+    snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
+}

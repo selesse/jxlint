@@ -1,5 +1,5 @@
+apply from: rootProject.file('gradle/maven-publish.gradle')
 apply plugin: 'findbugs'
-apply plugin: 'com.bmuschko.nexus'
 
 dependencies {
     compile "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
@@ -17,23 +17,6 @@ dependencies {
     compile 'org.webjars:bootstrap:3.1.0'
     compile 'org.webjars:prettify:4-Mar-2013'
     compile 'org.webjars:tablesorter:2.15.5'
-}
-
-task release(dependsOn: ['clean', 'build', 'javadocJar', 'sourcesJar']) << {
-    out.println "Releasing jxlint-$version"
-}
-
-release.mustRunAfter clean
-
-configure(release) {
-    group = 'Publishing'
-    description = 'Assemble all JARs needed for publishing (Javadoc, source, library).'
-}
-
-gradle.taskGraph.whenReady { taskGraph ->
-    if (!taskGraph.hasTask(release)) {
-        version += "-SNAPSHOT"
-    }
 }
 
 jar {
@@ -58,43 +41,7 @@ modifyPom {
     project {
         name 'jxlint'
         description 'Framework for doing static analysis in Java'
-        url 'https://github.com/selesse/jxlint'
-        inceptionYear '2013'
-
-        scm {
-            url 'https://github.com/selesse/jxlint'
-            connection 'scm:https://selesse@github.com/selesse/jxlint.git'
-            developerConnection 'scm:git://github.com/selesse/jxlint.git'
-        }
-
-        licenses {
-            license {
-                name 'MIT license'
-                url 'http://opensource.org/licenses/mit-license.php'
-                distribution 'repo'
-            }
-        }
-
-        developers {
-            developer {
-                id 'selesse'
-                name 'Alex Selesse'
-                email 'alex@selesse.com'
-            }
-        }
     }
-}
-
-extraArchive {
-    javadoc = true
-    sources = true
-    tests = false
-}
-
-nexus {
-    sign = true
-    repositoryUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2'
-    snapshotRepositoryUrl = 'https://oss.sonatype.org/content/repositories/snapshots'
 }
 
 javadoc {

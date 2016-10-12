@@ -15,11 +15,11 @@ subprojects {
     apply plugin: 'checkstyle'
     apply plugin: 'java'
     apply plugin: 'cobertura'
+    apply from: rootProject.file('gradle/versioning.gradle')
 
     defaultTasks 'clean', 'build'
 
     group = 'com.selesse'
-    version = '2.0.0'
     sourceCompatibility = 1.8
 
     ext {
