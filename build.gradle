@@ -22,23 +22,29 @@ subprojects {
     version = '2.0.0'
     sourceCompatibility = 1.8
 
+    ext {
+        findbugsVersion = '3.0.1'
+        slf4jVersion = '1.7.21'
+        jettyVersion = '8.1.15.v20140411'
+    }
+
     repositories {
         mavenCentral()
     }
 
     dependencies {
-        compile 'com.google.code.findbugs:annotations:3.0.1'
-        compile 'com.google.guava:guava:18.0'
-        compile 'org.fusesource.jansi:jansi:1.11'
-        compile 'org.slf4j:slf4j-api:1.7.7'
+        compile "com.google.code.findbugs:annotations:${findbugsVersion}"
+        compile 'com.google.guava:guava:19.0'
+        compile 'org.fusesource.jansi:jansi:1.14'
+        compile "org.slf4j:slf4j-api:${slf4jVersion}"
 
-        testCompile 'junit:junit:4.11'
-        testCompile 'org.assertj:assertj-core:1.7.0'
-        testCompile 'org.jsoup:jsoup:1.8.1'
-        testCompile 'org.glassfish.jersey.core:jersey-client:2.13'
-        testCompile 'org.mockito:mockito-all:1.8.4'
+        testCompile 'junit:junit:4.12'
+        testCompile 'org.assertj:assertj-core:3.5.2'
+        testCompile 'org.jsoup:jsoup:1.9.2'
+        testCompile 'org.glassfish.jersey.core:jersey-client:2.23.2'
+        testCompile 'org.mockito:mockito-all:1.10.19'
 
-        testRuntime 'ch.qos.logback:logback-classic:1.1.2'
+        testRuntime 'ch.qos.logback:logback-classic:1.1.7'
     }
 
     checkstyle {

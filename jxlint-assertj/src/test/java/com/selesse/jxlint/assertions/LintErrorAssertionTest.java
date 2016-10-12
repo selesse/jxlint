@@ -46,8 +46,8 @@ public class LintErrorAssertionTest {
             assertThat(lintError).isViolatedIn("SamplePrompts2.xml");
         }
         catch (AssertionError e) {
-            assertThat(e).hasMessage("Expected error for \"name\" to have been violated in <\"SamplePrompts2.xml\">," +
-                    " but was <\"SamplePrompts.xml\">");
+            assertThat(e).hasMessage("Expected error for \"name\" to have been violated in <SamplePrompts2.xml>," +
+                    " but was <SamplePrompts.xml>");
         }
     }
 
@@ -58,8 +58,8 @@ public class LintErrorAssertionTest {
             assertThat(lintError).isViolatedIn(new File("SamplePrompts2.xml"));
         }
         catch (AssertionError e) {
-            assertThat(e).hasMessage("Expected error for \"name\" to have been violated in <\"SamplePrompts2.xml\">," +
-                    " but was <\"SamplePrompts.xml\">");
+            assertThat(e).hasMessage("Expected error for \"name\" to have been violated in <SamplePrompts2.xml>," +
+                    " but was <SamplePrompts.xml>");
         }
     }
 
@@ -70,8 +70,8 @@ public class LintErrorAssertionTest {
             assertThat(lintError).hasErrorMessage("does not contain");
         }
         catch (AssertionError e) {
-            assertThat(e).hasMessage("Expected error message for \"name\" to be <\"does not contain\">, but was " +
-                    "<\"message contains\">");
+            assertThat(e).hasMessage("Expected error message for \"name\" to be <does not contain>, but was " +
+                    "<message contains>");
         }
     }
 
@@ -82,8 +82,8 @@ public class LintErrorAssertionTest {
             assertThat(lintError).hasErrorMessageContaining("message does not contain");
         }
         catch (AssertionError e) {
-            assertThat(e).hasMessage("Expected error message for \"name\" to contain <\"message does not contain\">," +
-                    " but was <\"message contains\">");
+            assertThat(e).hasMessage("Expected error message for \"name\" to contain <message does not contain>," +
+                    " but was <message contains>");
         }
     }
 
