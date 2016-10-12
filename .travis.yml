@@ -1,13 +1,17 @@
 language: java
+
 jdk:
 - oraclejdk8
+
 after_success:
 - ".buildscript/deploy_snapshot.sh"
+
 env:
   global:
-  - secure: mbGtJIqVQwenoRA/BWvEYibiXkVoXQ7oEBCB9hDiMdJ4unWGBwFCs1eAIE7xukUIWx3WtXhW3lh4HMGlgTnscq+V28UVSlJXdL9lInJtofELSAksPFopCjfgv6Wk4HbDYN2esv3QJa+camtNI+NbY+awH3B0wqI5opSjUYrF6Fo=
-  - secure: Y3BjyjxuSHk3Y4Gs7/A0/VGgg0mksVVjdsGWSIJH9+AEVtf5y+XJZpfdAwVeExqkWIbQzCTsyeVdpkL+fuW5iOxU+ha6clEHg8de9dnCb/DwQa+heIweLlmgPKItwtMKz8jGXVIBMlZNtAN23SLaOOT5PtzlZX08zKffbKI9EnQ=
-  - secure: Z9osFx4AMArPRcSdlOpB+K2AcvNb/x2BhGZc7kJv7V3Gvi37DXqb0cWIxDZ1btZ53ARwIh97rkXOakkQdOu6oRxtBa35WV+uB/QBlYXO3BK9iKP3ovFU5iCx11RKFbi9CcEhKDgQrhGQhlf+9MNa3ZFOUc+AxOJtK0TLUEgpRZQ=
+  - secure: TtZwE21Fetw9NSAiHnlMCvCfvpbu+k16Te0tKFXpf9+SQzD1z/+l+FgB5peGYfwjRLctC1uR9Hx1iF1FzkNGRoKewUBZxL/MXSSR3jltQldnQ4A2FI14iDi0mmISw1nXjd0QeqxMWUE8gyw43qhxZrmtgsC6EUNS0rg/O0XbCbk=
+  - secure: WJx+lq+TqOwtvnb4KQMuQLpahsGsdP0jJWaqXr7YYljhi7oLpZ6pg5k9ObsIYX0oBk5HKmb5C768zKsm20b0AgEhLaZyLk/+RBfkji76BtvB+WEEdx2qlcJHS12JxblmrfszVcPdYdXtLQaF8x9Bd6+3nJcRCKC/Y6xmF8ByraA=
+  - secure: I/Uy646pqJdsW6Ei3JsuRk5IU5SvNprBalq5UHC/28rPZ5iBXb3fyZMxk28W7luQaPimkSVpyJn5RFzPumbzDE6+Gl2okb7BH494+V9o8idnGwPsslCVkgs8DoFTMK0DrgbSRbdqN2HlpeWRNnhnHLvdwlQi+KZEhCxGGSLNiKY=
+
 branches:
   except:
   - gh-pages
