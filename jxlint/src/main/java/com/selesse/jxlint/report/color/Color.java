@@ -16,7 +16,7 @@ public enum Color {
 
     private String color;
 
-    private Color(String s) {
+    Color(String s) {
         this.color = s;
     }
 

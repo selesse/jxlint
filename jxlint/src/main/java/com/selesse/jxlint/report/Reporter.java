@@ -1,7 +1,5 @@
 package com.selesse.jxlint.report;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.selesse.jxlint.model.LintErrorOrderings;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
@@ -80,7 +78,7 @@ public abstract class Reporter {
      * Report the number of errors for every category. For example,
      * "There are 4 errors, 0 warnings, and 1 fatal error (5 total)."
      */
-    public String getErrorReportString() {
+    String getErrorReportString() {
         int numberOfErrors = getNumberOfSeverityErrors(Severity.ERROR);
         int numberOfWarnings = getNumberOfSeverityErrors(Severity.WARNING);
         int numberOfFatal = getNumberOfSeverityErrors(Severity.FATAL);
@@ -98,19 +96,8 @@ public abstract class Reporter {
     }
 
     private int getNumberOfSeverityErrors(final Severity severity) {
-        Iterable<LintError> severityList = Iterables.filter(lintErrorList, new Predicate<LintError>() {
-            @Override
-            public boolean apply(LintError input) {
-                return input.getViolatedRule().getSeverity() == severity;
-            }
-        });
-
-        int errors = 0;
-
-        for (LintError ignored : severityList) {
-            errors++;
-        }
-
-        return errors;
+        return (int) lintErrorList.stream()
+                .filter(input -> input.getViolatedRule().getSeverity() == severity)
+                .count();
     }
 }

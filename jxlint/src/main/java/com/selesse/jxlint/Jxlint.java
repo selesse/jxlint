@@ -62,6 +62,7 @@ public class Jxlint {
         Profiler.setEnabled(false);
     }
 
+    @SuppressWarnings("unused")
     public void setCustomCategories(Class<? extends Enum<?>> categories) {
         LOGGER.debug("Setting custom categories to {}", categories.getCanonicalName());
         Categories.setCategories(categories);

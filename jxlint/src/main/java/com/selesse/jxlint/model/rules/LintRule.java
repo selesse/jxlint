@@ -59,7 +59,7 @@ public abstract class LintRule {
     private Severity severity;
     private Enum<?> category;
     private boolean enabled = true;
-    protected List<LintError> lintErrors;
+    private List<LintError> lintErrors;
 
     public LintRule(String name, String summary, String detailedDescription, Severity severity, Enum<?> category) {
         this.name = name;
@@ -274,7 +274,7 @@ public abstract class LintRule {
      * It's like {@link List#contains(Object)}, but on the {@link com.selesse.jxlint.model.rules.LintRule}
      * rather than the list. Does a case-insensitive string comparison.
      */
-    public boolean hasNameInList(List<String> ruleStrings) {
+    boolean hasNameInList(List<String> ruleStrings) {
         for (String string : ruleStrings) {
             if (string.equalsIgnoreCase(getName())) {
                 return true;

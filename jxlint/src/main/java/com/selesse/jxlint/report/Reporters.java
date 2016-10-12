@@ -47,7 +47,7 @@ public class Reporters {
         outputTypeReporterMap.put(OutputType.QUIET, DefaultReporter.class);
     }
 
-    @SuppressWarnings("UnusedDeclaration")
+    @SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
     /**
      * Add a custom {@link com.selesse.jxlint.report.Reporter} for a particular
      * {@link com.selesse.jxlint.model.OutputType}. It will be instantiated using reflection.

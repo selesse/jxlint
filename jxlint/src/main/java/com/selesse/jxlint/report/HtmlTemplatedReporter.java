@@ -1,7 +1,6 @@
 package com.selesse.jxlint.report;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Predicate;
 import com.google.common.collect.*;
 import com.google.common.io.Resources;
 import com.google.common.reflect.ClassPath;
@@ -24,8 +23,9 @@ import java.io.PrintStream;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
-public class HtmlTemplatedReporter extends Reporter {
+class HtmlTemplatedReporter extends Reporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(HtmlTemplatedReporter.class);
     private static final String WEB_JAR_RESOURCE_PATH = "META-INF/resources/webjars";
 
@@ -34,21 +34,12 @@ public class HtmlTemplatedReporter extends Reporter {
     private Map<LintRule, Integer> summaryMap;
     private Collection<ClassPath.ResourceInfo> classPathWebJarResources;
 
+    @SuppressWarnings("WeakerAccess") // instantiated via reflection
     public HtmlTemplatedReporter(PrintStream out, ProgramSettings settings, ProgramOptions options,
                                  List<LintError> lintErrorList) {
         super(out, settings, options, lintErrorList);
-        Set<Enum<?>> violatedCategories = Sets.newTreeSet(new Comparator<Enum<?>>() {
-            @Override
-            public int compare(Enum<?> o1, Enum<?> o2) {
-                return o1.toString().compareToIgnoreCase(o2.toString());
-            }
-        });
-        summaryMap = Maps.<LintRule, LintRule, Integer>newTreeMap(new Comparator<LintRule>() {
-            @Override
-            public int compare(LintRule o1, LintRule o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
+        Set<Enum<?>> violatedCategories = Sets.newTreeSet((o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
+        summaryMap = Maps.newTreeMap((o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         lintRuleSet = Sets.newLinkedHashSet();
 
         for (LintError lintError : lintErrorList) {
@@ -190,12 +181,9 @@ public class HtmlTemplatedReporter extends Reporter {
                 }
 
                 ImmutableSet<ClassPath.ResourceInfo> resources = ClassPath.from(classLoader).getResources();
-                classPathWebJarResources = Collections2.filter(resources, new Predicate<ClassPath.ResourceInfo>() {
-                    @Override
-                    public boolean apply(ClassPath.ResourceInfo input) {
-                        return input != null && input.getResourceName().startsWith(WEB_JAR_RESOURCE_PATH);
-                    }
-                });
+                classPathWebJarResources = resources.stream()
+                        .filter(input -> input.getResourceName().startsWith(WEB_JAR_RESOURCE_PATH))
+                        .collect(Collectors.toList());
             }
             catch (IOException e) {
                 classPathWebJarResources = ImmutableSet.of();

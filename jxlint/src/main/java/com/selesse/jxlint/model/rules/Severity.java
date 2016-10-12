@@ -12,7 +12,7 @@ public enum Severity {
 
     private Color severityColor;
 
-    private Severity(Color color) {
+    Severity(Color color) {
         this.severityColor = color;
     }
 

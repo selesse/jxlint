@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
  * be created.
  */
 public class UnableToCreateReportException extends FileNotFoundException {
-    public UnableToCreateReportException(File file) {
+    UnableToCreateReportException(File file) {
         super("Unable to create the report file for '" + file.getAbsolutePath() + "'.");
     }
 }

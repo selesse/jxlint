@@ -22,7 +22,7 @@ import java.util.List;
  * }</pre>
  *
  */
-public class XmlReporter extends Reporter {
+class XmlReporter extends Reporter {
 
     public XmlReporter(PrintStream out, ProgramSettings programSettings, ProgramOptions options,
                        List<LintError> lintErrorList) {

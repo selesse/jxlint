@@ -25,7 +25,7 @@ public class Linter {
     private List<LintRule> rules;
     private List<LintError> lintErrors;
 
-    public Linter(List<LintRule> rules) {
+    Linter(List<LintRule> rules) {
         this.rules = rules;
         this.lintErrors = Lists.newArrayList();
     }

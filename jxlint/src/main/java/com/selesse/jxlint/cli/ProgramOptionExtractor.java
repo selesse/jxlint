@@ -95,7 +95,7 @@ public class ProgramOptionExtractor {
             }
         }
 
-        @SuppressWarnings("unchecked") List<String> argList = commandLine.getArgList();
+        List<String> argList = commandLine.getArgList();
 
         if (argList.size() > 0) {
             programOptions.setSourceDirectory(argList.get(0));

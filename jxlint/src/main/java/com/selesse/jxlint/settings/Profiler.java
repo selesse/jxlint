@@ -4,7 +4,6 @@ import com.google.common.base.Stopwatch;
 import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.report.color.Color;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -17,12 +16,7 @@ public class Profiler {
     private Map<LintRule, Long> ruleExecutionTimeMap;
 
     private Profiler() {
-        ruleExecutionTimeMap = new TreeMap<LintRule, Long>(new Comparator<LintRule>() {
-            @Override
-            public int compare(LintRule lintRule, LintRule lintRule2) {
-                return lintRule.getName().compareToIgnoreCase(lintRule2.getName());
-            }
-        });
+        ruleExecutionTimeMap = new TreeMap<>((rule1, rule2) -> rule1.getName().compareToIgnoreCase(rule2.getName()));
     }
 
     public static void beginProgramProfiling() {

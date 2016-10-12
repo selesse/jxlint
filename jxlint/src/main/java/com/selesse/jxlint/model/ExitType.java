@@ -12,7 +12,7 @@ public enum ExitType {
     private final int errorCode;
     private final String printFriendlyMessage;
 
-    private ExitType(int errorCode, String printFriendlyMessage) {
+    ExitType(int errorCode, String printFriendlyMessage) {
         this.errorCode = errorCode;
         this.printFriendlyMessage = printFriendlyMessage;
     }

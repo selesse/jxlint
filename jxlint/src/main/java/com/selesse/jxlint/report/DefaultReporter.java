@@ -18,10 +18,10 @@ import java.util.List;
 /**
  * The DefaultReporter is the default CLI {@link com.selesse.jxlint.report.Reporter}.
  */
-public class DefaultReporter extends Reporter {
+class DefaultReporter extends Reporter {
 
-    public DefaultReporter(PrintStream out, ProgramSettings programSettings, ProgramOptions options,
-                           List<LintError> lintErrorList) {
+    DefaultReporter(PrintStream out, ProgramSettings programSettings, ProgramOptions options,
+                    List<LintError> lintErrorList) {
         super(out, programSettings, options, lintErrorList);
     }
 

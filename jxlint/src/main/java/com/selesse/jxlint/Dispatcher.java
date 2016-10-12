@@ -1,8 +1,6 @@
 package com.selesse.jxlint;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.selesse.jxlint.actions.JettyWebRunner;
 import com.selesse.jxlint.actions.LintHandler;
@@ -17,9 +15,9 @@ import com.selesse.jxlint.settings.ProgramSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Dispatcher guides the application's logic flow. It looks at the options provided in
@@ -32,7 +30,7 @@ public class Dispatcher {
     private final ProgramOptions programOptions;
     private final ProgramSettings programSettings;
 
-    public Dispatcher(ProgramOptions programOptions, ProgramSettings programSettings) {
+    Dispatcher(ProgramOptions programOptions, ProgramSettings programSettings) {
         this.programOptions = programOptions;
         this.programSettings = programSettings;
     }
@@ -59,7 +57,7 @@ public class Dispatcher {
      *
      * </ol>
      */
-    public void dispatch() {
+    void dispatch() {
         Profiler.setEnabled(programOptions.hasOption(JxlintOption.PROFILE));
 
         LintRules lintRules = LintRulesImpl.getInstance();
@@ -147,13 +145,10 @@ public class Dispatcher {
             try {
                 final List<String> enabledCategoriesList =
                         ProgramOptions.getCategoryListFromOptionString(enabledCategories);
-                lintRuleList = Lists.newArrayList(Iterables.filter(lintRuleList, new Predicate<LintRule>() {
-                    @Override
-                    public boolean apply(@Nullable LintRule input) {
-                        return input != null && enabledCategoriesList.contains(input.getCategory().toString());
-
-                    }
-                }));
+                lintRuleList =
+                        lintRuleList.stream()
+                                .filter(input -> enabledCategoriesList.contains(input.getCategory().toString()))
+                                .collect(Collectors.toList());
             }
             catch (IllegalArgumentException e) {
                 ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
