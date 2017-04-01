@@ -14,13 +14,12 @@ import java.util.List;
 
 /**
  * The XmlReporter provides a basic XML report. The schema is:
- *
+ * <p>
  * <pre>{@code
  * <issues>
  *     <issue name severity message category summary explanation location />
  * </issues>
  * }</pre>
- *
  */
 class XmlReporter extends Reporter {
 
@@ -50,10 +49,15 @@ class XmlReporter extends Reporter {
                 "        category=\"" + xmlEncode(violatedRule.getCategory().toString()) + "\"",
                 "        summary=\"" + xmlEncode(violatedRule.getSummary()) + "\"",
                 "        explanation=\"" + xmlEncode(violatedRule.getDetailedDescription()) + "\"",
-                "        location=\"" + xmlEncode(error.getFile().getAbsolutePath()) + "\"",
-                "    />"
-
+                "        location=\"" + xmlEncode(error.getFile().getAbsolutePath()) + "\""
         );
+        if (error.getLineNumber() > 0) {
+            outputBuffer.add(
+                    "        lineNumber=\"" + error.getLineNumber() + "\""
+            );
+        }
+        outputBuffer.add("    />");
+
         out.println(Joiner.on("\n").join(outputBuffer));
     }
 
