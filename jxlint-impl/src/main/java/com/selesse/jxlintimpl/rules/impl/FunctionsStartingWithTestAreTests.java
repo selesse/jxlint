@@ -3,8 +3,8 @@ package com.selesse.jxlintimpl.rules.impl;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.ModifierSet;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.type.VoidType;
@@ -43,14 +43,14 @@ public class FunctionsStartingWithTestAreTests extends LintRule {
 
         try {
             CompilationUnit compilationUnit = JavaParser.parse(file);
-            List<TypeDeclaration> compilationUnitTypes = compilationUnit.getTypes();
+            NodeList<TypeDeclaration<?>> compilationUnitTypes = compilationUnit.getTypes();
             for (TypeDeclaration typeDeclaration : compilationUnitTypes) {
-                for (Node node : typeDeclaration.getChildrenNodes()) {
+                for (Node node : typeDeclaration.getChildNodes()) {
                     if (node instanceof MethodDeclaration) {
                         MethodDeclaration methodDeclaration = (MethodDeclaration) node;
 
                         if (isPublicVoidTestFunction(methodDeclaration)) {
-                            String methodName = methodDeclaration.getName();
+                            String methodName = methodDeclaration.getNameAsString();
 
                             LOGGER.info("Found public void method {}", methodName);
 
@@ -62,7 +62,7 @@ public class FunctionsStartingWithTestAreTests extends LintRule {
                                 lintErrors.add(
                                         LintError.with(this, file)
                                                 .andErrorMessage(errorMessage)
-                                                .andLineNumber(methodDeclaration.getBeginLine())
+                                                .andLineNumber(methodDeclaration.getBegin().orElse(null).line)
                                                 .create()
                                 );
                             }
@@ -79,15 +79,15 @@ public class FunctionsStartingWithTestAreTests extends LintRule {
     }
 
     private boolean isPublicVoidTestFunction(MethodDeclaration methodDeclaration) {
-        return ModifierSet.isPublic(methodDeclaration.getModifiers())
+        return methodDeclaration.isPublic()
                 && methodDeclaration.getType() instanceof VoidType
-                && methodDeclaration.getName().startsWith("test");
+                && methodDeclaration.getNameAsString().startsWith("test");
     }
 
     private boolean hasTestAnnotation(List<AnnotationExpr> annotationExprs) {
         if (annotationExprs != null) {
             for (AnnotationExpr annotationExpr : annotationExprs) {
-                String annotationName = annotationExpr.getName().getName();
+                String annotationName = annotationExpr.getNameAsString();
                 if (annotationName.equals("Test") || annotationName.equals("org.junit.Test")) {
                     return true;
                 }
