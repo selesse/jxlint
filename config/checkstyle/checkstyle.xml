@@ -43,7 +43,6 @@
         </module>
         <module name="ParenPad"/>
         <module name="RedundantImport"/>
-        <module name="RedundantModifier"/>
         <module name="Regexp">
             <property name="format" value="[ \t]+$"/>
             <property name="illegalPattern" value="true"/>
