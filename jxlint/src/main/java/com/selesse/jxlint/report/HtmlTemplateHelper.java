@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @SuppressWarnings({"unused", "WeakerAccess"}) // These functions are used by `report.vm`.
-class HtmlTemplateHelper {
+public class HtmlTemplateHelper {
     private static final Pattern alphanumeric = Pattern.compile("[a-zA-Z0-9_]");
 
     public static String getHrefSafeName(String string) {
