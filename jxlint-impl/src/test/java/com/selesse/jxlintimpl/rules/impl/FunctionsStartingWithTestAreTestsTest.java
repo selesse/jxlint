@@ -50,12 +50,12 @@ public class FunctionsStartingWithTestAreTestsTest extends JxlintImplTest {
             String errorMessage = lintError.getMessage();
 
             switch (lintError.getLineNumber()) {
-                case 4:
+                case 8:
                     assertThat(fileName).isEqualTo("SomeJuicyTest.java");
                     assertThat(errorMessage).
                             isEqualTo("public void testThisShouldFail does not have @Test annotation");
                     break;
-                case 8:
+                case 13:
                     assertThat(fileName).isEqualTo("SomeJuicyTest.java");
                     assertThat(errorMessage).
                             isEqualTo("public void testThisShouldFailToo does not have @Test annotation");
