@@ -125,6 +125,9 @@ public class Reporters {
 
     private static void createParentDirectoryIfNecessary(String outputPath) throws UnableToCreateReportException {
         File outputDirectory = new File(outputPath).getParentFile();
+        if (outputDirectory == null) {
+            throw new UnableToCreateReportException(new File(outputPath));
+        }
         if (!outputDirectory.isDirectory()) {
             boolean directoriesCreated = outputDirectory.mkdirs();
             if (!directoriesCreated) {
