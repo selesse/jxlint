@@ -8,6 +8,7 @@ import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
 import com.selesse.jxlint.settings.ProgramSettings;
+import com.selesse.jxlint.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,9 +88,12 @@ public class Reporters {
         else {
             if (outputPath != null) {
                 try {
+                    outputPath = FileUtils.normalizeFile(new File(outputPath)).getAbsolutePath();
+                    createParentDirectoryIfNecessary(outputPath);
                     out = new PrintStream(new FileOutputStream(outputPath), true, Charsets.UTF_8.displayName());
                 }
                 catch (FileNotFoundException e) {
+                    LOGGER.error("Could not create file output stream", e);
                     throw new UnableToCreateReportException(new File(outputPath));
                 }
                 catch (UnsupportedEncodingException e) {
@@ -117,6 +121,17 @@ public class Reporters {
         }
 
         return reporter;
+    }
+
+    private static void createParentDirectoryIfNecessary(String outputPath) throws UnableToCreateReportException {
+        File outputDirectory = new File(outputPath).getParentFile();
+        if (!outputDirectory.isDirectory()) {
+            boolean directoriesCreated = outputDirectory.mkdirs();
+            if (!directoriesCreated) {
+                LOGGER.error("Unable to create parent directories for {}", outputPath);
+                throw new UnableToCreateReportException(new File(outputPath));
+            }
+        }
     }
 
     @VisibleForTesting
