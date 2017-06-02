@@ -2,10 +2,14 @@ package com.selesse.jxlint.report;
 
 import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
+import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRules;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.samplerules.textfiles.rules.MustHaveAuthor;
+import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +36,11 @@ public class HtmlTemplatedReporterTest {
         htmlReporter = new HtmlTemplatedReporter(
                 out, new JxlintProgramSettings(), new ProgramOptions(), lintErrorList
         );
+
+        LintRules rules = new XmlLintRulesTestImpl();
+        LintRulesImpl.setInstance(rules);
+        LintRulesImpl.getInstance().setSourceDirectory(new File("."));
+        LinterFactory.createNewLinter(rules.getAllRules());
     }
 
     @Test
