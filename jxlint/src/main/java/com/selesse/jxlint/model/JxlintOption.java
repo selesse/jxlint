@@ -17,6 +17,7 @@ public enum JxlintOption {
     REPORT_RULES("rules"),
     PROFILE("profile"),
     CATEGORY("category"),
+    SRC_PATH_PREFIX("srcpath"),
     ;
 
     private String optionString;

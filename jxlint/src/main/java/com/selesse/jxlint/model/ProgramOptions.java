@@ -8,7 +8,9 @@ import com.google.common.collect.Maps;
 import com.selesse.jxlint.model.rules.Categories;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
+import com.selesse.jxlint.utils.FileUtils;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +71,34 @@ public class ProgramOptions {
         }
     }
 
+    public String getSourcePathPrefix() {
+        String result;
+        if (options.containsKey(JxlintOption.SRC_PATH_PREFIX)) {
+            result = options.get(JxlintOption.SRC_PATH_PREFIX);
+        }
+        else {
+            if (getSourceDirectory() == null) {
+                return "";
+            }
+            if (options.containsKey(JxlintOption.OUTPUT_TYPE_PATH)) {
+                File outputFolder = new File(options.get(JxlintOption.OUTPUT_TYPE_PATH)).getParentFile();
+                if (outputFolder != null) {
+                    result = FileUtils.getRelativePath(outputFolder.getAbsoluteFile(), new File(getSourceDirectory()));
+                }
+                else {
+                    result = new File(getSourceDirectory()).toURI().toString();
+                }
+            }
+            else {
+                result = new File(getSourceDirectory()).toURI().toString();
+            }
+        }
+        if (!result.isEmpty() && !result.endsWith("/")) {
+            result = result + "/";
+        }
+        return result;
+    }
+
     /**
      * Get the source/root directory. This is the directory that was passed to the program,
      * i.e. "java -jar myjar.jar sourceDirectory".
@@ -110,9 +140,9 @@ public class ProgramOptions {
         Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
         List<String> rawCategoryStringList = splitter.splitToList(categoryOptionString);
 
-        Enum[] categories = Categories.get().getEnumConstants();
+        Enum<?>[] categories = Categories.get().getEnumConstants();
         List<String> categoryNames = Lists.newArrayList();
-        for (Enum category : categories) {
+        for (Enum<?> category : categories) {
             categoryNames.add(category.toString());
         }
 

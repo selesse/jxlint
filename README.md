@@ -32,8 +32,18 @@ taken care of for you:
      -q,--quiet                    Don't output any progress or reports.
      -t,--html <filename>          Create an HTML report.
      -x,--xml <filename>           Create an XML (!!) report.
+     -sp,--srcpath <PATH-PREFIX>   Local or remote path to the source
+                                   directory, if not set a relative path to
+                                   the local file will be computed.
 
     <RULE[s]> should be comma separated, without spaces.
+    <PATH-PREFIX>:
+    Links to the source code files will use this value as value as prefix.
+    Possible values:
+     - relative path: ../../my-project/
+     - absolute path: file:///C:/work/my-project/
+     - online path: https://github.com/selesse/jxlint/blob/master/jxlint-impl/
+
     Exit Status:
     0                     Success
     1                     Failed

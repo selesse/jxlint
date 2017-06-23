@@ -94,6 +94,10 @@ public class ProgramOptionExtractor {
                 programOptions.addOption(JxlintOption.OUTPUT_TYPE_PATH, outputXmlFile);
             }
         }
+        if (commandLine.hasOption(JxlintOption.SRC_PATH_PREFIX.getOptionString())) {
+            programOptions.addOption(JxlintOption.SRC_PATH_PREFIX,
+                    commandLine.getOptionValue(JxlintOption.SRC_PATH_PREFIX.getOptionString()));
+        }
 
         List<String> argList = commandLine.getArgList();
 

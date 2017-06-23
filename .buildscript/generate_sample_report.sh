@@ -34,6 +34,7 @@ generate_report() {
     ./gradlew clean installDist
     jxlint-impl/build/install/jxlint-impl/bin/jxlint-impl \
         -t sample-report.html \
+        -sp https://github.com/selesse/jxlint/blob/master/jxlint-impl/ \
         jxlint-impl || true
 }
 

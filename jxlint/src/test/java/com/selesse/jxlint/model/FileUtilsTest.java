@@ -89,4 +89,17 @@ public class FileUtilsTest {
         List<File> files = FileUtils.allFilesContaining(rootTempDir, "test");
         assertItemsEqualInAnyOrder(files, "test.xml", "test.xml");
     }
+
+    @Test
+    public void testGetRelativePath() {
+        assertThat(FileUtils.getRelativePath(rootTempDir, rootTempDir)).isEqualTo("");
+        assertThat(FileUtils.getRelativePath(rootTempDir, new File(rootTempDir, "file.txt"))).isEqualTo("file.txt");
+        assertThat(FileUtils.getRelativePath(rootTempDir, new File(new File(rootTempDir, "dir"), "file.txt")))
+            .isEqualTo("dir/file.txt");
+        assertThat(FileUtils.getRelativePath(new File(rootTempDir, "out"), new File(rootTempDir, "file.txt")))
+            .isEqualTo("../file.txt");
+        assertThat(FileUtils.getRelativePath(new File(rootTempDir, "out"),
+                new File(new File(rootTempDir, "dir"), "file.txt")))
+            .isEqualTo("../dir/file.txt");
+    }
 }

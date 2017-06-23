@@ -7,8 +7,11 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 public class FileUtils {
+    private static final String FILE_SEPARATOR = System.getProperty("file.separator");
+
     private static List<File> allFilesWithNameSatisfyingPredicate(File rootDir, Predicate<String> predicate) {
         return Files.fileTreeTraverser()
             .preOrderTraversal(rootDir)
@@ -69,7 +72,11 @@ public class FileUtils {
     }
 
     public static String getRelativePath(File parent, File child) {
-        return parent.toURI().relativize(child.toURI()).getPath();
+        String result = parent.toPath().relativize(child.toPath()).toString();
+        if (!"/".equals(FILE_SEPARATOR)) {
+            result = result.replaceAll(Pattern.quote(FILE_SEPARATOR), "/");
+        }
+        return result;
     }
 
 }

@@ -52,6 +52,8 @@ public class HtmlReportTest extends AbstractReportTest {
                 "                            <td> 1 </td>"
         );
 
+        assertThat(fileContents).contains("violated in <a href=\"bad-encoding.xml\">bad-encoding.xml</a>");
+
         assertThat(fileContents).contains(authorTagRule.getSeverity().toString());
         assertThat(fileContents).contains(authorTagRule.getCategory().toString());
         assertThat(fileContents).contains("<tr> <th> Enabled by default? </th> <td> No </tr>");

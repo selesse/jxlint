@@ -96,6 +96,7 @@ class HtmlTemplatedReporter extends Reporter {
         context.put("summaryMap", summaryMap);
         context.put("errorSummaryString", getErrorReportString());
         context.put("lintRuleSet", lintRuleSet);
+        context.put("sourcePathPrefix", options.getSourcePathPrefix());
 
         return context;
     }
