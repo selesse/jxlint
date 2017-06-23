@@ -1,6 +1,7 @@
 package com.selesse.jxlint.cli;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Ordering;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.settings.ProgramSettings;
@@ -9,6 +10,7 @@ import org.apache.commons.cli.*;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 @SuppressWarnings("AccessStaticViaInstance")
 /**
@@ -84,6 +86,12 @@ public class CommandLineOptions {
                 withArgName("filename").
                 create('x')
         );
+        options.addOption(OptionBuilder.withLongOpt("srcpath").
+                withDescription("Local or remote path to the source directory, "
+                    + "if not set a relative path to the local file will be computed.").
+                hasArg().
+                withArgName("PATH-PREFIX").create("sp")
+        );
 
         options.addOptionGroup(outputOptionGroup);
 
@@ -99,6 +107,13 @@ public class CommandLineOptions {
         helpFormatter.setOptionComparator(optionsOrdering);
 
         StringBuilder exitStatusFooter = new StringBuilder("<RULE[s]> should be comma separated, without spaces.\n");
+        exitStatusFooter.append("<PATH-PREFIX>:\n");
+        exitStatusFooter.append("Links to the source code files will use this value as value as prefix.");
+        exitStatusFooter.append(" Possible values:\n");
+        exitStatusFooter.append(" - relative path: ../../my-project/\n");
+        exitStatusFooter.append(" - absolute path: file:///C:/work/my-project/\n");
+        exitStatusFooter.append(" - online path: https://github.com/selesse/jxlint/blob/master/jxlint-impl/\n");
+        exitStatusFooter.append("\n");
         exitStatusFooter.append("Exit Status:\n");
         for (ExitType exitType : ExitType.values()) {
             exitStatusFooter.append(String.format("%-21d %-30s%n", exitType.getErrorCode(), exitType.getExplanation()));
@@ -131,8 +146,27 @@ public class CommandLineOptions {
      * Our desired options order. This gives us control on how our help gets printed, via
      * {@link #optionsOrdering}.
      */
-    private static String getOptionsOrder() {
-        return "hvplbrscdeywWallWerrorqtx";
+    private static Map<String, Integer> getOptionsOrder() {
+        return ImmutableMap.<String, Integer>builder()
+                .put("h", 1)
+                .put("v", 2)
+                .put("p", 3)
+                .put("l", 4)
+                .put("b", 5)
+                .put("r", 6)
+                .put("s", 7)
+                .put("c", 8)
+                .put("d", 9)
+                .put("e", 10)
+                .put("y", 11)
+                .put("w", 12)
+                .put("Wall", 13)
+                .put("Werror", 14)
+                .put("q", 15)
+                .put("t", 16)
+                .put("x", 17)
+                .put("sp", 18)
+                .build();
     }
 
     /**
@@ -141,7 +175,7 @@ public class CommandLineOptions {
     private static final Ordering<Option> optionsOrdering = new Ordering<Option>() {
         @Override
         public int compare(Option o1, Option o2) {
-            return getOptionsOrder().indexOf(o1.getOpt()) - getOptionsOrder().indexOf(o2.getOpt());
+            return getOptionsOrder().get(o1.getOpt()) - getOptionsOrder().get(o2.getOpt());
         }
     };
 }

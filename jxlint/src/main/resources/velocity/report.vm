@@ -113,7 +113,8 @@ $(document).ready(function() {
                             <h4>
                                 <span class="label label-$TemplateHelper.getLabel($lintError.severity)">$lintError.severity</span>
                                 #set($nameHrefSafe = $TemplateHelper.getHrefSafeName($lintError.violatedRule.name))
-                                <a href="#$nameHrefSafe">$lintError.violatedRule.name</a> violated in <a href="$lintError.file">$TemplateHelper.relativize($lintError.file)</a>
+                                #set($fileRelativized = $TemplateHelper.relativize($lintError.file))
+                                <a href="#$nameHrefSafe">$lintError.violatedRule.name</a> violated in <a href="$sourcePathPrefix$fileRelativized">$fileRelativized</a>
                                 #if ($lintError.lineNumber > 0)
                                     on line $lintError.lineNumber
                                 #end
