@@ -107,8 +107,8 @@ $(document).ready(function() {
 <div class="container">
     <div class="well">
         <h2> jxlint-impl 0.1.0 - Lint Report </h2>
-        <h3> Sat Nov 21 13:26:08 EST 2015 </h3>
-        <h4> /home/alex/jxlint/jxlint-impl/src </h4>
+        <h3> Mon Jun 26 22:22:17 EDT 2017 </h3>
+        <h4> jxlint-impl </h4>
     </div>
 
     <ul class="nav nav-tabs" role="tablist" id="category-nav">
@@ -123,6 +123,7 @@ $(document).ready(function() {
                 <h4 class="center"> Verified rules </h4>
                 <ul class="list-group in" id="verified-rule-list">
                                             <li class="list-group-item"> Functions starting with 'test' are tests </li>
+                                            <li class="list-group-item"> SLF4J loggers should not use String.format </li>
                                     </ul>
             </div>
 
@@ -142,10 +143,15 @@ $(document).ready(function() {
                             <td> Probably An Accident </td>
                             <td> 2 </td>
                         </tr>
+                                            <tr>
+                            <td> SLF4J loggers should not use String.format </td>
+                            <td> Probably An Accident </td>
+                            <td> 1 </td>
+                        </tr>
                                         </tbody>
                 </table>
             </div>
-            <div class="alert alert-danger"> There are 0 warnings, 2 errors, and 0 fatal errors (2 total). </div>
+            <div class="alert alert-danger"> There are 1 warning, 2 errors, and 0 fatal errors (3 total). </div>
         </div>
 
                     <div class="tab-pane active" id="probablyanaccident">
@@ -154,8 +160,8 @@ $(document).ready(function() {
                         <div class="panel-heading">
                             <h4>
                                 <span class="label label-danger">ERROR</span>
-                                                                <a href="#functionsstartingwithtestaretests">Functions starting with 'test' are tests</a> violated in <a href="/home/alex/jxlint/jxlint-impl/src/test/resources/sample-test/SomeJuicyTest.java">test/resources/sample-test/SomeJuicyTest.java</a>
-                                                                    on line 4
+                                                                <a href="#functionsstartingwithtestaretests">Functions starting with 'test' are tests</a> violated in <a href="/Users/alex/git/jxlint2/jxlint-impl/src/test/resources/sample-test/SomeJuicyTest.java">src/test/resources/sample-test/SomeJuicyTest.java</a>
+                                                                    on line 8
                                                             </h4>
                         </div>
                         <div class="panel-body">
@@ -166,12 +172,24 @@ $(document).ready(function() {
                         <div class="panel-heading">
                             <h4>
                                 <span class="label label-danger">ERROR</span>
-                                                                <a href="#functionsstartingwithtestaretests">Functions starting with 'test' are tests</a> violated in <a href="/home/alex/jxlint/jxlint-impl/src/test/resources/sample-test/SomeJuicyTest.java">test/resources/sample-test/SomeJuicyTest.java</a>
-                                                                    on line 8
+                                                                <a href="#functionsstartingwithtestaretests">Functions starting with 'test' are tests</a> violated in <a href="/Users/alex/git/jxlint2/jxlint-impl/src/test/resources/sample-test/SomeJuicyTest.java">src/test/resources/sample-test/SomeJuicyTest.java</a>
+                                                                    on line 13
                                                             </h4>
                         </div>
                         <div class="panel-body">
                             public void testThisShouldFailToo does not have @Test annotation
+                                                    </div>
+                    </div>
+                                                                <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4>
+                                <span class="label label-warning">WARNING</span>
+                                                                <a href="#slf4jloggersshouldnotusestringformat">SLF4J loggers should not use String.format</a> violated in <a href="/Users/alex/git/jxlint2/jxlint-impl/src/test/resources/sample-test/SomeJuicyTest.java">src/test/resources/sample-test/SomeJuicyTest.java</a>
+                                                                    on line 10
+                                                            </h4>
+                        </div>
+                        <div class="panel-body">
+                            logger.debug(String.format(&quot;This is %s&quot;, bad))
                                                     </div>
                     </div>
                                         </div>
@@ -195,7 +213,9 @@ $(document).ready(function() {
                         <tr> <th> Category </th> <td> Probably An Accident </td> </tr>
                                                 <tr> <th> Enabled by default? </th> <td> Yes </tr>
                     </table>
-                    <p>This rule is only applicable to JUnit 4+ applications.</p><p>In a class ending with <code>Test.java</code>, functions that start with the pattern 'public void test' should probably be annotated with @Test.</p><p>For example:</p>
+                    <p>This rule is only applicable to JUnit 4+ applications.</p>
+<p>In a class ending with <code>Test.java</code>, functions that start with the pattern 'public void test' should probably be annotated with @Test.</p>
+<p>For example:</p>
 <pre><code>@Test
 public void testThatOneIsEqualToTwo() {
     assertThat(1).isEqualTo(2);
@@ -206,7 +226,33 @@ public void testThatThisRuleIsAmazing() {
 
     assertThat(someString).isEqualTo(&quot;someOtherString&quot;);
 }
-</code></pre><p>In this case, <code>testThatThisRuleIsAmazing</code> won't get executed because it is not annotated with <code>@Test</code>.</p>
+</code></pre>
+<p>In this case, <code>testThatThisRuleIsAmazing</code> won't get executed because it is not annotated with <code>@Test</code>.</p>
+                </div>
+            </div>
+                    <div class="panel panel-success">
+                <div class="panel-heading">
+                    <div>
+                        <span id="slf4jloggersshouldnotusestringformat" class="panel-title"> SLF4J loggers should not use String.format </span>
+                        <span class="panel-title pull-right"> Probably An Accident </span>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <tr> <th> Rule Name </th> <td> SLF4J loggers should not use String.format </td> </tr>
+                        <tr> <th> Summary </th> <td> SLF4J loggers should use parametrized logging, not String.format </td> </tr>
+                        <tr> <th> Severity </th> <td> WARNING </td> </tr>
+                        <tr> <th> Category </th> <td> Probably An Accident </td> </tr>
+                                                <tr> <th> Enabled by default? </th> <td> Yes </tr>
+                    </table>
+                    <p>Java files that make use of SLF4J should generally favor parametrized logging over <code>String.format</code> logging</p>
+<p>For example:</p>
+<pre><code>logger.info(String.format(&quot;Found %s&quot;, someVariable));
+</code></pre>
+<p>Could more easily be written as</p>
+<pre><code>logger.info(&quot;Found {}&quot;, someVariable);
+</code></pre>
+<p><strong>Note</strong>: the implementation does not fully parse symbols, so it approximates by looking for SLF4J imports and usages of <code>LoggerFactory.getLogger</code>.</p>
                 </div>
             </div>
             </div>
