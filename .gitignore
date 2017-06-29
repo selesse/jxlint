@@ -2,7 +2,16 @@
 .idea/
 classes/
 
+.project
+.checkstyle
+.classpath
+*.prefs
+
 out/
+bin/
+
+pom.xml
+target/
 
 .class
 
