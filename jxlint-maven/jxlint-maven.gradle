@@ -1,0 +1,18 @@
+apply from: rootProject.file('gradle/maven-publish.gradle')
+
+dependencies {
+    compile project(":jxlint")
+
+    compile 'org.apache.maven:maven-plugin-api:3.3.3'
+    compile 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.5'
+    testCompile project(':jxlint-impl')
+}
+
+modifyPom {
+    project {
+        name 'jxlint-maven'
+        description 'Maven support for the jxlint framework'
+        inceptionYear '2017'
+    }
+}
+
