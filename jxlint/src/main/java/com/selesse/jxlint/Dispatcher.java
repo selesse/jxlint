@@ -2,6 +2,7 @@ package com.selesse.jxlint;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.selesse.jxlint.actions.JettyWebRunner;
 import com.selesse.jxlint.actions.LintHandler;
 import com.selesse.jxlint.actions.LintRuleInformationDisplayer;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -130,14 +132,17 @@ public class Dispatcher {
 
         // By default, we only check enabled rules.
         // We adjust this according to the options below.
-        List<LintRule> lintRuleList = Lists.newArrayList(lintRules.getAllEnabledRules());
+        Set<LintRule> lintRulesSet;
 
         if (programOptions.hasOption(JxlintOption.ALL_WARNINGS)) {
-            lintRuleList = Lists.newArrayList(lintRules.getAllRules());
+            lintRulesSet = Sets.newHashSet(lintRules.getAllRules());
         }
         else if (programOptions.hasOption(JxlintOption.NO_WARNINGS)) {
-            lintRuleList = Lists.newArrayList(lintRules.getAllRulesWithSeverity(Severity.ERROR));
-            lintRuleList.addAll(lintRules.getAllRulesWithSeverity(Severity.FATAL));
+            lintRulesSet = Sets.newHashSet(lintRules.getAllRulesWithSeverity(Severity.ERROR));
+            lintRulesSet.addAll(lintRules.getAllRulesWithSeverity(Severity.FATAL));
+        }
+        else {
+            lintRulesSet = Sets.newHashSet(lintRules.getAllEnabledRules());
         }
 
         if (programOptions.hasOption(JxlintOption.CATEGORY)) {
@@ -145,10 +150,10 @@ public class Dispatcher {
             try {
                 final List<String> enabledCategoriesList =
                         ProgramOptions.getCategoryListFromOptionString(enabledCategories);
-                lintRuleList =
-                        lintRuleList.stream()
+                lintRulesSet =
+                        lintRulesSet.stream()
                                 .filter(input -> enabledCategoriesList.contains(input.getCategory().toString()))
-                                .collect(Collectors.toList());
+                                .collect(Collectors.toSet());
             }
             catch (IllegalArgumentException e) {
                 ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
@@ -160,7 +165,7 @@ public class Dispatcher {
             String disabledRules = programOptions.getOption(JxlintOption.DISABLE);
             try {
                 List<String> disabledRulesList = ProgramOptions.getRuleListFromOptionString(disabledRules);
-                lintRuleList.removeAll(lintRules.getOnlyRules(disabledRulesList));
+                lintRulesSet.removeAll(lintRules.getOnlyRules(disabledRulesList));
             }
             catch (NonExistentLintRuleException e) {
                 ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
@@ -170,13 +175,13 @@ public class Dispatcher {
             String enabledRules = programOptions.getOption(JxlintOption.ENABLE);
             try {
                 List<String> enabledRulesList = ProgramOptions.getRuleListFromOptionString(enabledRules);
-                lintRuleList.addAll(lintRules.getOnlyRules(enabledRulesList));
+                lintRulesSet.addAll(lintRules.getOnlyRules(enabledRulesList));
             }
             catch (NonExistentLintRuleException e) {
                 ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }
-        handleLint(lintRuleList, warningsAreErrors, programOptions, programSettings);
+        handleLint(Lists.newArrayList(lintRulesSet), warningsAreErrors, programOptions, programSettings);
     }
 
     @VisibleForTesting

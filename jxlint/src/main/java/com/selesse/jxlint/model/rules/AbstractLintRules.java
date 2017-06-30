@@ -150,12 +150,12 @@ public abstract class AbstractLintRules implements LintRules {
     }
 
     @Override
-    public List<LintRule> getOnlyRules(List<String> checkRules) {
+    public List<LintRule> getOnlyRules(List<String> rulesList) {
         List<LintRule> filteredLintRules = Lists.newArrayList();
 
-        for (String enabledLintString : checkRules) {
+        for (String ruleName : rulesList) {
             try {
-                LintRule lintRule = getLintRule(enabledLintString);
+                LintRule lintRule = getLintRule(ruleName);
                 filteredLintRules.add(lintRule);
             }
             catch (NonExistentLintRuleException e) {
