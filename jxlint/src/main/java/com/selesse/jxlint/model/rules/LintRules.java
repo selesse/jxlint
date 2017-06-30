@@ -32,7 +32,7 @@ public interface LintRules {
 
     List<LintRule> getRulesWithCategoryNames(List<String> enabledCategoriesList);
 
-    List<LintRule> getOnlyRules(List<String> checkRulesList);
+    List<LintRule> getOnlyRules(List<String> rulesList);
 
     List<LintRule> getAllRulesWithSeverity(Severity severity);
 
