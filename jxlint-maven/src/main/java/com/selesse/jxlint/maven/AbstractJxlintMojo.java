@@ -22,17 +22,17 @@ import java.util.List;
 
 public abstract class AbstractJxlintMojo extends AbstractMojo {
 
-    private static final String DISABLE_RULES = "disableRules";
-    private static final String ENABLE_ONLY_RULES = "enableOnlyRules";
-    private static final String ENABLE_RULES = "enableRules";
-    private static final String ENABLE_CATEGORY = "enableCategories";
-    private static final String SOURCE_DIRECTORY = "sourceDirectory";
-    private static final String NO_WARNINGS = "noWarnings";
-    private static final String ALL_WARNINGS = "allWarnings";
-    private static final String WARNINGS_ARE_ERRORS = "warningAsErrors";
-    private static final String OUTPUT_TYPE = "outputType";
-    private static final String OUTPUT_FILE = "outputFile";
-    private static final String SRC_PATH_PREFIX = "srcPath";
+    public static final String DISABLE_RULES = "disableRules";
+    public static final String ENABLE_ONLY_RULES = "enableOnlyRules";
+    public static final String ENABLE_RULES = "enableRules";
+    public static final String ENABLE_CATEGORY = "enableCategories";
+    public static final String SOURCE_DIRECTORY = "sourceDirectory";
+    public static final String NO_WARNINGS = "noWarnings";
+    public static final String ALL_WARNINGS = "allWarnings";
+    public static final String WARNINGS_ARE_ERRORS = "warningAsErrors";
+    public static final String OUTPUT_TYPE = "outputType";
+    public static final String OUTPUT_FILE = "outputFile";
+    public static final String SRC_PATH_PREFIX = "srcPath";
 
     /**
      * Disable the list of rules.
