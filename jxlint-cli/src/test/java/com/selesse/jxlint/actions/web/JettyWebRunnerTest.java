@@ -1,4 +1,4 @@
-package com.selesse.jxlint.actions;
+package com.selesse.jxlint.actions.web;
 
 import com.google.common.collect.Maps;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;

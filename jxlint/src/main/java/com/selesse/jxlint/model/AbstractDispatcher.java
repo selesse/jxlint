@@ -1,18 +1,17 @@
-package com.selesse.jxlint;
+package com.selesse.jxlint.model;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.selesse.jxlint.actions.JettyWebRunner;
 import com.selesse.jxlint.actions.LintHandler;
 import com.selesse.jxlint.actions.LintRuleInformationDisplayer;
-import com.selesse.jxlint.cli.CommandLineOptions;
-import com.selesse.jxlint.model.ExitType;
-import com.selesse.jxlint.model.JxlintOption;
-import com.selesse.jxlint.model.ProgramOptions;
-import com.selesse.jxlint.model.rules.*;
+import com.selesse.jxlint.model.rules.LintRule;
+import com.selesse.jxlint.model.rules.LintRules;
+import com.selesse.jxlint.model.rules.LintRulesImpl;
+import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
+import com.selesse.jxlint.model.rules.Severity;
 import com.selesse.jxlint.settings.Profiler;
 import com.selesse.jxlint.settings.ProgramSettings;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,42 +23,33 @@ import java.util.stream.Collectors;
 /**
  * The Dispatcher guides the application's logic flow. It looks at the options provided in
  * {@link com.selesse.jxlint.model.ProgramOptions} and decides what objects, functions, etc. to call based on the
- * options. Its logical route is documented in
- * {@link Dispatcher#dispatch()}.
+ * options. Its logical route is documented in {@link AbstractDispatcher#doDispatch()}.
  */
-public class Dispatcher {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Dispatcher.class);
-    private final ProgramOptions programOptions;
-    private final ProgramSettings programSettings;
+public abstract class AbstractDispatcher {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDispatcher.class);
+    protected final ProgramOptions programOptions;
+    protected final ProgramSettings programSettings;
 
-    Dispatcher(ProgramOptions programOptions, ProgramSettings programSettings) {
+    public AbstractDispatcher(ProgramOptions programOptions, ProgramSettings programSettings) {
         this.programOptions = programOptions;
         this.programSettings = programSettings;
     }
 
     /**
      * The order for the dispatcher is as such:
-     *
      * <ol>
-     * <li> First, look for the mutually exclusive options ("help", "version", "list", "show").
-     * These are first-come, first-serve. If enabled, branch out to those options. </li>
-     *
-     * <li> Second, check to see if warnings are errors and keep note of it. </li>
-     *
-     * <li> Thirdly, check to see if the source directory exists. Exit if it doesn't. </li>
-     *
-     * <li> Fourthly, check to see if "check" was called. Branch out if it is. </li>
-     *
-     * <li> Then, by default, we only do enabled rules. We check to see if "Wall" or "nowarn" are set.
-     * If they are, adjust accordingly. </li>
-     *
-     * <li> Finally, we check to see if "enable" or "disable" are set and modify our list of rules accordingly. </li>
-     *
-     * <li> Dispatch to {@link com.selesse.jxlint.actions.LintHandler}. </li>
-     *
+     * <li>First, look for the mutually exclusive options ("help", "version", "list", "show"). These are first-come,
+     * first-serve. If enabled, branch out to those options.</li>
+     * <li>Second, check to see if warnings are errors and keep note of it.</li>
+     * <li>Thirdly, check to see if the source directory exists. Exit if it doesn't.</li>
+     * <li>Fourthly, check to see if "check" was called. Branch out if it is.</li>
+     * <li>Then, by default, we only do enabled rules. We check to see if "Wall" or "nowarn" are set. If they are,
+     * adjust accordingly.</li>
+     * <li>Finally, we check to see if "enable" or "disable" are set and modify our list of rules accordingly.</li>
+     * <li>Dispatch to {@link com.selesse.jxlint.actions.LintHandler}.</li>
      * </ol>
      */
-    void dispatch() {
+    protected void doDispatch() throws ExitException {
         Profiler.setEnabled(programOptions.hasOption(JxlintOption.PROFILE));
 
         LintRules lintRules = LintRulesImpl.getInstance();
@@ -75,10 +65,7 @@ public class Dispatcher {
             LintRuleInformationDisplayer.listRules();
         }
         else if (programOptions.hasOption(JxlintOption.WEB)) {
-            String port = programOptions.getOption(JxlintOption.WEB);
-
-            JettyWebRunner jettyWebRunner = getJettyWebRunner(port);
-            jettyWebRunner.start();
+            startWebServer();
             return;
         }
         else if (programOptions.hasOption(JxlintOption.SHOW)) {
@@ -106,13 +93,13 @@ public class Dispatcher {
                     outputBuffer += "Cannot read directory.";
                 }
 
-                ProgramExitter.exitProgramWithMessage(outputBuffer, ExitType.COMMAND_LINE_ERROR);
+                throw new ExitException(outputBuffer, ExitType.COMMAND_LINE_ERROR);
             }
 
             lintRules.setSourceDirectory(new File(sourceDirectoryString));
         }
         else {
-            ProgramExitter.exitProgramWithMessage("Error: could not find directory to validate.",
+            throw new ExitException("Error: could not find directory to validate.",
                     ExitType.COMMAND_LINE_ERROR);
         }
 
@@ -156,7 +143,7 @@ public class Dispatcher {
                                 .collect(Collectors.toSet());
             }
             catch (IllegalArgumentException e) {
-                ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+                throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }
 
@@ -168,7 +155,7 @@ public class Dispatcher {
                 lintRulesSet.removeAll(lintRules.getOnlyRules(disabledRulesList));
             }
             catch (NonExistentLintRuleException e) {
-                ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+                throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }
         if (programOptions.hasOption(JxlintOption.ENABLE)) {
@@ -178,30 +165,29 @@ public class Dispatcher {
                 lintRulesSet.addAll(lintRules.getOnlyRules(enabledRulesList));
             }
             catch (NonExistentLintRuleException e) {
-                ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+                throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }
         handleLint(Lists.newArrayList(lintRulesSet), warningsAreErrors, programOptions, programSettings);
     }
 
-    @VisibleForTesting
-    JettyWebRunner getJettyWebRunner(String port) {
-        return new JettyWebRunner(programSettings, port);
-    }
+    protected abstract void startWebServer();
 
     private void handleLint(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options,
-                                   ProgramSettings settings) {
+            ProgramSettings settings) throws ExitException {
         LintHandler lintHandler = new LintHandler(lintRules, warningsAreErrors, options, settings);
         lintHandler.lintAndReportAndExit(LintRulesImpl.willExitAfterReporting());
     }
 
-    private void doHelp(ProgramSettings programSettings) {
-        ProgramExitter.exitProgramWithMessage(CommandLineOptions.getHelpMessage(programSettings), ExitType.SUCCESS);
+    private void doHelp(ProgramSettings settings) throws ExitException {
+        throw new ExitException(createHelpMessage(settings), ExitType.SUCCESS);
     }
 
-    private void doVersion(ProgramSettings programSettings) {
-        ProgramExitter.exitProgramWithMessage(programSettings.getProgramName() + ": version " +
-                programSettings.getProgramVersion(), ExitType.SUCCESS);
+    protected abstract String createHelpMessage(ProgramSettings settings);
+
+    private void doVersion(ProgramSettings settings) throws ExitException {
+        throw new ExitException(settings.getProgramName() + ": version " +
+                settings.getProgramVersion(), ExitType.SUCCESS);
     }
 
     private boolean isInvalidSourceDirectory(String sourceDirectoryString) {

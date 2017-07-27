@@ -1,4 +1,5 @@
 include 'jxlint'
+include 'jxlint-cli'
 include 'jxlint-impl'
 include 'jxlint-assertj'
 include 'jxlint-maven'

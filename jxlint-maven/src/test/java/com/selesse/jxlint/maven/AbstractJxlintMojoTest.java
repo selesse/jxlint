@@ -4,12 +4,9 @@ import com.google.common.io.Files;
 import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.ProgramOptions;
+import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.settings.ProgramSettings;
-import com.selesse.jxlintimpl.CustomCategories;
-import com.selesse.jxlintimpl.rules.JxlintImplRules;
-import com.selesse.jxlintimpl.rules.impl.FunctionsStartingWithTestAreTests;
-import com.selesse.jxlintimpl.settings.JxlintImplProgramSettings;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Before;
@@ -25,8 +22,8 @@ import static org.junit.Assert.fail;
 public class AbstractJxlintMojoTest {
 
     private static final String SRC_PATH_PREFIX_VALUE = "https://github.com/selesse/jxlint/blob/master/jxlint-impl/";
-    private static final String CATEGORY_NAME = CustomCategories.PROBABLY_ACCIDENT.toString();
-    private static final String RULE_NAME = (new FunctionsStartingWithTestAreTests()).getName();
+    private static final String CATEGORY_NAME = Category.CORRECTNESS.toString();
+    private static final String RULE_NAME = (new SampleRule()).getName();
     private TestJxlintImplMojo mojoUnderTest;
     protected File tempDirectory;
 
@@ -153,7 +150,8 @@ public class AbstractJxlintMojoTest {
             fail("MojoExecutionException expected");
         }
         catch (MojoExecutionException e) {
-            assertThat(e.getMessage()).isEqualTo("Category \"xyz\" does not exist. Try one of: Probably An Accident.");
+            assertThat(e.getMessage()).isEqualTo(
+                    "Category \"xyz\" does not exist. Try one of: LINT, CORRECTNESS, PERFORMANCE, SECURITY, STYLE.");
         }
     }
 
@@ -161,17 +159,17 @@ public class AbstractJxlintMojoTest {
 
         @Override
         protected ProgramSettings provideProgramSettings() {
-            return new JxlintImplProgramSettings();
+            return new SampleProgramSettings();
         }
 
         @Override
         protected LintRules provideLintRules() {
-            return new JxlintImplRules();
+            return new SampleLintRules();
         }
 
         @Override
         protected Class<? extends Enum<?>> provideCategories() {
-            return CustomCategories.class;
+            return Category.class;
         }
 
         public void setSourceDirectory(File sourceDirectory) {

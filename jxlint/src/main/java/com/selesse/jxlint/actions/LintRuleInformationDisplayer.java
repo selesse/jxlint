@@ -3,7 +3,7 @@ package com.selesse.jxlint.actions;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import com.selesse.jxlint.ProgramExitter;
+import com.selesse.jxlint.model.ExitException;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.ProgramOptions;
@@ -16,8 +16,8 @@ import com.selesse.jxlint.settings.ProgramSettings;
 import java.util.List;
 
 /**
- * Class that is knowledgeable about {@link LintRules}. The corresponding static methods print out their knowledge,
- * and exit the program using {@link com.selesse.jxlint.ProgramExitter}.
+ * Class that is knowledgeable about {@link LintRules}. The corresponding static methods print out their knowledge, and
+ * exit the program using {@link com.selesse.jxlint.ProgramExitter}.
  */
 public class LintRuleInformationDisplayer {
     /**
@@ -27,8 +27,10 @@ public class LintRuleInformationDisplayer {
      *     "Lint Rule 1" : This rule looks at source code.
      *     "Lint Rule 2" : This rule looks at source code comments.
      * </pre>
+     *
+     * @throws ExitException
      */
-    public static void listRules() {
+    public static void listRules() throws ExitException {
         List<String> outputBuffer = Lists.newArrayList();
 
         LintRules lintRules = LintRulesImpl.getInstance();
@@ -39,14 +41,16 @@ public class LintRuleInformationDisplayer {
             outputBuffer.add(lintRule.getSummaryOutput());
         }
 
-        ProgramExitter.exitProgramWithMessage(Joiner.on("\n").join(outputBuffer), ExitType.SUCCESS);
+        throw new ExitException(Joiner.on("\n").join(outputBuffer), ExitType.SUCCESS);
     }
 
     /**
      * List the {@link LintRule}s, in detailed form. Uses
      * {@link com.selesse.jxlint.model.rules.LintRule#getDetailedOutput()} to print individual rules.
+     *
+     * @throws ExitException
      */
-    public static void showRules(ProgramOptions programOptions) {
+    public static void showRules(ProgramOptions programOptions) throws ExitException {
         try {
             StringBuilder outputBuffer = new StringBuilder();
             if (programOptions.hasOption(JxlintOption.SHOW) && programOptions.getOption(JxlintOption.SHOW) == null) {
@@ -65,15 +69,15 @@ public class LintRuleInformationDisplayer {
                     outputBuffer.append(lintRule.getDetailedOutput()).append("\n\n");
                 }
             }
-            ProgramExitter.exitProgramWithMessage(outputBuffer.toString(), ExitType.SUCCESS);
+            throw new ExitException(outputBuffer.toString(), ExitType.SUCCESS);
         }
         catch (NonExistentLintRuleException e) {
-            ProgramExitter.exitProgramWithMessage(String.format("'%s' is not a valid rule.", e.getRuleName()),
+            throw new ExitException(String.format("'%s' is not a valid rule.", e.getRuleName()),
                     ExitType.COMMAND_LINE_ERROR);
         }
     }
 
-    public static void printMarkdownRuleReport(ProgramSettings settings) {
+    public static void printMarkdownRuleReport(ProgramSettings settings) throws ExitException {
         StringBuilder outputStringBuilder = new StringBuilder();
         String headerString =
                 String.format("Rules for %s - %s", settings.getProgramName(), settings.getProgramVersion());
@@ -89,7 +93,7 @@ public class LintRuleInformationDisplayer {
             outputStringBuilder.append("\n\n");
         }
 
-        ProgramExitter.exitProgramWithMessage(outputStringBuilder.toString(), ExitType.SUCCESS);
+        throw new ExitException(outputStringBuilder.toString(), ExitType.SUCCESS);
     }
 
     private static String underline(String string, String underlineCharacter) {
@@ -121,8 +125,8 @@ public class LintRuleInformationDisplayer {
         outputStringBuilder.append("**Summary** : ").append(lintRule.getSummary()).append("\n\n");
         outputStringBuilder.append("**Category** : ").append(lintRule.getCategory()).append("\n\n");
         outputStringBuilder.append("**Severity** : ").append(lintRule.getSeverity()).append("\n\n");
-        outputStringBuilder.append("**Enabled by default?** : ").
-                append(lintRule.isEnabled() ? "yes" : "no").append("\n\n");
+        outputStringBuilder.append("**Enabled by default?** : ").append(lintRule.isEnabled() ? "yes" : "no")
+                .append("\n\n");
         outputStringBuilder.append("\n").append("**Detailed description** :").append("\n\n");
 
         String explanation = lintRule.getDetailedDescription();

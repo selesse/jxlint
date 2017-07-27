@@ -1,4 +1,4 @@
-package com.selesse.jxlint.actions;
+package com.selesse.jxlint.actions.web;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Resources;
@@ -19,11 +19,11 @@ public class JettyWebRunner {
     private static final String webApplicationDirectory = "webapp";
     private static final String contextPath = "/";
     private ProgramSettings programSettings;
-    private String port;
+    private String portStringValue;
 
     public JettyWebRunner(ProgramSettings programSettings, String port) {
         this.programSettings = programSettings;
-        this.port = port;
+        this.portStringValue = port;
     }
 
     public void start() {
@@ -39,11 +39,11 @@ public class JettyWebRunner {
         int portIntValue;
 
         try {
-            portIntValue = Integer.parseInt(port);
+            portIntValue = Integer.parseInt(portStringValue);
         }
         catch (NumberFormatException e) {
             String defaultPort = ProgramOptionExtractor.DEFAULT_PORT;
-            LOGGER.error("Error parsing port '{}', reverting to default of {}", port, defaultPort);
+            LOGGER.error("Error parsing port '{}', reverting to default of {}", portStringValue, defaultPort);
             portIntValue = Integer.parseInt(defaultPort);
         }
 
