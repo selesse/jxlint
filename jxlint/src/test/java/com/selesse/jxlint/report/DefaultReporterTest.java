@@ -5,12 +5,14 @@ import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRuleTestImpl;
+import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
+import com.selesse.jxlint.model.rules.LintRulesTestImpl;
 import com.selesse.jxlint.model.rules.Severity;
-import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
-import com.selesse.jxlint.samplerules.xml.rules.XmlEncodingRule;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
 import com.selesse.jxlint.utils.EnumUtils;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -53,7 +55,7 @@ public class DefaultReporterTest {
         // The reporter has an empty list, so there should be no footer
         assertThat(reportOutput).isEmpty();
 
-        LintError lintError = LintError.with(new XmlEncodingRule(), new File("abc")).create();
+        LintError lintError = LintError.with(new LintRuleTestImpl(), new File("abc")).create();
         reporter = new DefaultReporter(out, new JxlintProgramSettings(), new ProgramOptions(),
                 Lists.newArrayList(lintError));
 
@@ -71,7 +73,7 @@ public class DefaultReporterTest {
         File faultyFile = new File(sourceDirectory, "relativePath");
         Severity fatal = Severity.FATAL;
 
-        LintError lintError = LintError.with(new XmlEncodingRule(), faultyFile)
+        LintError lintError = LintError.with(new LintRuleTestImpl(), faultyFile)
                 .andSeverity(fatal)
                 .create();
 
@@ -93,7 +95,7 @@ public class DefaultReporterTest {
         File faultyFile = new File(sourceDirectory, "someFileRelativeToRoot");
         Severity error = Severity.ERROR;
 
-        LintError lintError = LintError.with(new XmlEncodingRule(), faultyFile)
+        LintError lintError = LintError.with(new LintRuleTestImpl(), faultyFile)
                 .andSeverity(error)
                 .andLineNumber(9001)
                 .andException(new RuntimeException("Runtime exceptions are my favorite!"))
@@ -116,7 +118,7 @@ public class DefaultReporterTest {
         // Need to set up the LintRulesImpl before the reporter can print the error. This is because the
         // reporter relativizes paths from the source directory. This is definitely a code smell, it doesn't make
         // sense to need this kind of setup.
-        XmlLintRulesTestImpl lintRulesTest = new XmlLintRulesTestImpl();
+        LintRules lintRulesTest = new LintRulesTestImpl();
         File sourceDirectory = new File(".");
         lintRulesTest.setSourceDirectory(sourceDirectory);
 

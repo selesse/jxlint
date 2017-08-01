@@ -7,6 +7,7 @@ import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.settings.ProgramSettings;
 import org.apache.commons.cli.*;
 
+import javax.annotation.Nonnull;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -174,7 +175,7 @@ public class CommandLineOptions {
      */
     private static final Ordering<Option> optionsOrdering = new Ordering<Option>() {
         @Override
-        public int compare(Option o1, Option o2) {
+        public int compare(@Nonnull Option o1, @Nonnull Option o2) {
             return getOptionsOrder().get(o1.getOpt()) - getOptionsOrder().get(o2.getOpt());
         }
     };

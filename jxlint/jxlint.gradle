@@ -2,13 +2,9 @@ apply from: rootProject.file('gradle/maven-publish.gradle')
 apply plugin: 'findbugs'
 
 dependencies {
-    compile "org.eclipse.jetty:jetty-webapp:${jettyVersion}"
-    compile 'commons-cli:commons-cli:1.3.1'
     compile 'org.apache.velocity:velocity:1.7'
     compile 'org.pegdown:pegdown:1.6.0'
     compile "org.slf4j:slf4j-api:${slf4jVersion}"
-
-    runtime "org.eclipse.jetty:jetty-jsp:${jettyVersion}"
 
     testCompile 'com.github.stefanbirkner:system-rules:1.3.1'
     testCompile 'commons-io:commons-io:2.4'

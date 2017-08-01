@@ -1,8 +1,8 @@
 package com.selesse.jxlint.actions;
 
-import com.selesse.jxlint.ProgramExitter;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;
+import com.selesse.jxlint.model.ExitException;
 import com.selesse.jxlint.model.ExitType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
@@ -12,6 +12,7 @@ import com.selesse.jxlint.report.Reporter;
 import com.selesse.jxlint.report.Reporters;
 import com.selesse.jxlint.report.UnableToCreateReportException;
 import com.selesse.jxlint.settings.ProgramSettings;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,7 +31,7 @@ public class LintHandler {
     private final ProgramSettings settings;
 
     public LintHandler(List<LintRule> lintRules, boolean warningsAreErrors, ProgramOptions options,
-                       ProgramSettings settings) {
+            ProgramSettings settings) {
         this.lintRules = lintRules;
         this.warningsAreErrors = warningsAreErrors;
         this.options = options;
@@ -39,11 +40,13 @@ public class LintHandler {
 
     /**
      * Performs the linting via the {@link Linter}, reports the errors, and exits the program via
-     * {@link com.selesse.jxlint.ProgramExitter}, if exitAfterReport is true.
-     * The {@link com.selesse.jxlint.report.Reporter} created is based on the
+     * {@link com.selesse.jxlint.ProgramExitter}, if exitAfterReport is true. The
+     * {@link com.selesse.jxlint.report.Reporter} created is based on the
      * {@link com.selesse.jxlint.model.ProgramOptions} passed in the constructor.
+     *
+     * @throws ExitException
      */
-    public void lintAndReportAndExit(boolean exitAfterReport) {
+    public void lintAndReportAndExit(boolean exitAfterReport) throws ExitException {
         LOGGER.debug("Performing validations against these lint rules: {}", lintRules);
         Linter linter = LinterFactory.createNewLinter(lintRules);
         linter.performLintValidations();
@@ -56,28 +59,29 @@ public class LintHandler {
         }
     }
 
-    private void reportLintErrors(List<LintError> lintErrors, ProgramSettings settings, ProgramOptions options) {
+    private void reportLintErrors(List<LintError> lintErrors, ProgramSettings settings, ProgramOptions options)
+            throws ExitException {
         try {
             Reporter reporter = Reporters.createReporter(lintErrors, settings, options);
             reporter.writeReport();
         }
         catch (UnableToCreateReportException e) {
-            ProgramExitter.exitProgramWithMessage(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+            throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
         }
     }
 
-    private void exitWithAppropriateStatus(List<LintError> lintErrors) {
+    private void exitWithAppropriateStatus(List<LintError> lintErrors) throws ExitException {
         if (warningsAreErrors && lintErrors.size() > 0) {
-            ProgramExitter.exitProgram(ExitType.FAILED);
+            throw new ExitException("", ExitType.FAILED);
         }
 
         if (lintErrors.size() > 0) {
             for (LintError error : lintErrors) {
                 if (error.getSeverity().ordinal() >= Severity.ERROR.ordinal()) {
-                    ProgramExitter.exitProgram(ExitType.FAILED);
+                    throw new ExitException("", ExitType.FAILED);
                 }
             }
         }
-        ProgramExitter.exitProgram(ExitType.SUCCESS);
+        throw new ExitException("", ExitType.SUCCESS);
     }
 }

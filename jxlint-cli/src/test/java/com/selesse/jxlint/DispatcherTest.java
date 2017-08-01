@@ -4,7 +4,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
-import com.selesse.jxlint.actions.JettyWebRunner;
+import com.selesse.jxlint.actions.web.JettyWebRunner;
 import com.selesse.jxlint.cli.ProgramOptionExtractor;
 import com.selesse.jxlint.linter.Linter;
 import com.selesse.jxlint.linter.LinterFactory;

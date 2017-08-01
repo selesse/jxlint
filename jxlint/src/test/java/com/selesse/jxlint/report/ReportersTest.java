@@ -5,7 +5,7 @@ import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.OutputType;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
-import com.selesse.jxlint.samplerules.xml.rules.XmlEncodingRule;
+import com.selesse.jxlint.model.rules.LintRuleTestImpl;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
 import com.selesse.jxlint.settings.ProgramSettings;
 import org.junit.Test;
@@ -52,7 +52,7 @@ public class ReportersTest {
         assertThat(quietReporter.out).isNotEqualTo(System.out);
 
         List<LintError> lintErrors = Lists.newArrayList(
-                LintError.with(new XmlEncodingRule(), new File(".")).create()
+                LintError.with(new LintRuleTestImpl(), new File(".")).create()
         );
         ProgramSettings programSettings = new JxlintProgramSettings();
         programOptions = new ProgramOptions();

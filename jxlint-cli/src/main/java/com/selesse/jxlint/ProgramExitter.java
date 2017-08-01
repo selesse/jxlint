@@ -21,18 +21,18 @@ public class ProgramExitter {
      * Exits the program, displaying the message. Calls System.exit on {@link com.selesse.jxlint.model.ExitType}'s
      * error code.
      */
-    public static void exitProgramWithMessage(String outputMessage, ExitType exitType) {
+    public static void exitProgramWithMessage(String message, ExitType exitType) {
         // This is done both here, and in Jxlint#parseArgumentsAndDispatch.
         // Why? Because we have two possible program flows: we exit with System.exit, or we don't.
         if (Profiler.isEnabled()) {
             Profiler.endProgramProfiling();
-            outputMessage += Profiler.getGeneratedProfileReport();
+            message += Profiler.getGeneratedProfileReport();
         }
 
-        ProgramExitter.outputMessage = outputMessage;
+        ProgramExitter.outputMessage = message;
 
-        if (outputMessage.trim().length() > 0) {
-            System.out.println(outputMessage);
+        if (message.trim().length() > 0) {
+            System.out.println(message);
         }
         System.exit(exitType.getErrorCode());
     }

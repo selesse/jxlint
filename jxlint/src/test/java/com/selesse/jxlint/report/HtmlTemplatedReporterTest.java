@@ -5,11 +5,11 @@ import com.google.common.collect.Lists;
 import com.selesse.jxlint.linter.LinterFactory;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.LintError;
+import com.selesse.jxlint.model.rules.LintRuleTestImpl;
 import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
+import com.selesse.jxlint.model.rules.LintRulesTestImpl;
 import com.selesse.jxlint.model.rules.Severity;
-import com.selesse.jxlint.samplerules.textfiles.rules.MustHaveAuthor;
-import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import com.selesse.jxlint.settings.JxlintProgramSettings;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +37,7 @@ public class HtmlTemplatedReporterTest {
                 out, new JxlintProgramSettings(), new ProgramOptions(), lintErrorList
         );
 
-        LintRules rules = new XmlLintRulesTestImpl();
+        LintRules rules = new LintRulesTestImpl();
         LintRulesImpl.setInstance(rules);
         LintRulesImpl.getInstance().setSourceDirectory(new File("."));
         LinterFactory.createNewLinter(rules.getAllRules());
@@ -62,7 +62,7 @@ public class HtmlTemplatedReporterTest {
 
     private List<LintError> createSampleLintErrors() {
         return Lists.newArrayList(
-                LintError.with(new MustHaveAuthor(), new File("."))
+                LintError.with(new LintRuleTestImpl(), new File("."))
                         .andErrorMessage("Must have author")
                         .andLineNumber(10)
                         .andSeverity(Severity.FATAL)
