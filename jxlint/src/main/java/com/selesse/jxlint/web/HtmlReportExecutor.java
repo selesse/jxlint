@@ -55,10 +55,13 @@ public class HtmlReportExecutor {
     }
 
     public void generateReport() {
-        programSettings.initializeForWeb(new File(folderToValidate));
-        String[] newArgs = new String[argList.size() + 2];
+        File projectRoot = new File(folderToValidate);
+        programSettings.initializeForWeb(projectRoot);
+        String[] newArgs = new String[argList.size() + 4];
         argList.add(0, "--html");
         argList.add(1, reportPath);
+        argList.add(2, "--srcpath");
+        argList.add(3, projectRoot.toURI().toString());
 
         argList.toArray(newArgs);
 
@@ -68,4 +71,3 @@ public class HtmlReportExecutor {
     }
 
 }
-
