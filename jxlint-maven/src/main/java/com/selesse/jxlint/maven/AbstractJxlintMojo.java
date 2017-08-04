@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.Categories;
+import com.selesse.jxlint.model.rules.Category;
 import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
@@ -100,7 +101,9 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
 
     protected abstract LintRules provideLintRules();
 
-    protected abstract Class<? extends Enum<?>> provideCategories();
+    protected Class<? extends Enum<?>> provideCategories() {
+        return Category.class;
+    }
 
     protected ProgramOptions createProgramOptions() throws MojoExecutionException {
         ProgramOptions options = new ProgramOptions();
