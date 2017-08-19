@@ -8,7 +8,11 @@ import java.util.List;
 
 public class LintRuleTestImpl extends LintRule {
     public LintRuleTestImpl() {
-        super("lint", "lint rule.", "A rule that does nothing", Severity.WARNING, Category.LINT);
+        this("lint");
+    }
+
+    public LintRuleTestImpl(String name) {
+        super(name, "lint rule.", "A rule that does nothing", Severity.WARNING, Category.LINT);
     }
 
     @Override
