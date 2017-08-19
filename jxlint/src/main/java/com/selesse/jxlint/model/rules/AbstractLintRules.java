@@ -1,12 +1,16 @@
 package com.selesse.jxlint.model.rules;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.selesse.jxlint.utils.FileUtils;
 
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 /**
  * Abstract {@link LintRules}. Provides most of the implementation that should be expected from {@link LintRules}.
@@ -29,12 +33,46 @@ public abstract class AbstractLintRules implements LintRules {
     public AbstractLintRules() {
         this.lintRules = Lists.newArrayList();
         initializeLintRules();
+        verifyLintRules();
     }
 
     /**
      * Add all desired {@link LintRule}s to {@link #lintRules}.
      */
     public abstract void initializeLintRules();
+
+    private void verifyLintRules() {
+        Map<String, List<LintRule>> map = Maps.newHashMap();
+        for (LintRule rule : lintRules) {
+            String key = rule.getName().toUpperCase();
+            List<LintRule> list;
+            if (map.containsKey(key)) {
+                list = map.get(key);
+            }
+            else {
+                list = Lists.newArrayList();
+                map.put(key, list);
+            }
+            list.add(rule);
+        }
+        boolean error = false;
+        StringBuilder sb = new StringBuilder();
+        sb.append("Some of the rules are sharing the same name: ");
+        for (Entry<String, List<LintRule>> e : map.entrySet()) {
+            if (e.getValue().size() > 1) {
+                if (error) {
+                    sb.append(", ");
+                }
+                sb.append("'" + e.getKey() + "' used by ");
+                sb.append(e.getValue().stream().map(r -> r.getClass().getName())
+                        .collect(Collectors.joining(", ", "{", "}")));
+                error = true;
+            }
+        }
+        if (error) {
+            throw new IllegalStateException(sb.toString());
+        }
+    }
 
     @Override
     @Nonnull
