@@ -1,8 +1,8 @@
 package com.selesse.jxlint.maven;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import com.selesse.jxlint.model.JxlintOption;
+import com.selesse.jxlint.model.NonExistentCategoryException;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.Categories;
 import com.selesse.jxlint.model.rules.Category;
@@ -141,15 +141,14 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
     private void addRulesOption(ProgramOptions options, JxlintOption option, List<String> list)
             throws MojoExecutionException {
         if (list != null && !list.isEmpty()) {
-            for (String rule : list) {
-                try {
-                    LintRulesImpl.getInstance().getLintRule(rule);
-                }
-                catch (NonExistentLintRuleException e) {
-                    throw new MojoExecutionException(e.getMessage());
-                }
+            List<String> ruleList;
+            try {
+                ruleList = ProgramOptions.getRuleListFromRuleNameList(list);
             }
-            String value = Joiner.on(',').join(list);
+            catch (NonExistentLintRuleException e) {
+                throw new MojoExecutionException(e.getMessage());
+            }
+            String value = Joiner.on(',').join(ruleList);
             addOption(options, option, value);
         }
         else {
@@ -160,20 +159,14 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
     private void addCategoryOption(ProgramOptions options, List<String> rawCategoryStringList)
             throws MojoExecutionException {
         if (rawCategoryStringList != null && !rawCategoryStringList.isEmpty()) {
-            Enum<?>[] categories = Categories.get().getEnumConstants();
-            List<String> categoryNames = Lists.newArrayList();
-            for (Enum<?> category : categories) {
-                categoryNames.add(category.toString());
+            List<String> categories;
+            try {
+                categories = ProgramOptions.getCategoryListFromCategoryNameList(rawCategoryStringList);
             }
-
-            for (String categoryString : rawCategoryStringList) {
-                if (!categoryNames.contains(categoryString)) {
-                    throw new MojoExecutionException(
-                            "Category \"" + categoryString + "\" does not exist. Try one of: " +
-                                    Joiner.on(", ").join(categories) + ".");
-                }
+            catch (NonExistentCategoryException e) {
+                throw new MojoExecutionException(e.getMessage());
             }
-            String value = Joiner.on(',').join(rawCategoryStringList);
+            String value = Joiner.on(',').join(categories);
             addOption(options, JxlintOption.CATEGORY, value);
         }
         else {

@@ -15,8 +15,10 @@ import java.io.File;
 import java.util.List;
 
 public class UniqueAttributeRule extends LintRule {
+    public static final String NAME = "Unique attribute";
+
     public UniqueAttributeRule() {
-        super("Unique attribute", "Attributes within a tag must be unique.",
+        super(NAME, "Attributes within a tag must be unique.",
                 "Attributes within an XML tag must be unique. That is, <tag a=\"x\" a=\"y\"> is invalid.",
                 Severity.ERROR, Category.PERFORMANCE);
     }

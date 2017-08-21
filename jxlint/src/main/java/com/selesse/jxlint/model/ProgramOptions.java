@@ -1,6 +1,5 @@
 package com.selesse.jxlint.model;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -126,30 +125,47 @@ public class ProgramOptions {
         Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
 
         List<String> rulesStringList = splitter.splitToList(optionString);
-        for (String disabledRuleString : rulesStringList) {
-            LintRulesImpl.getInstance().getLintRule(disabledRuleString);
+        return getRuleListFromRuleNameList(rulesStringList);
+    }
+
+    public static List<String> getRuleListFromRuleNameList(List<String> ruleNameList)
+            throws NonExistentLintRuleException {
+        for (String ruleName : ruleNameList) {
+            LintRulesImpl.getInstance().getLintRule(ruleName);
         }
 
-        return Lists.newArrayList(rulesStringList);
+        return Lists.newArrayList(ruleNameList);
     }
 
     public static List<String> getCategoryListFromOptionString(String categoryOptionString)
-            throws IllegalArgumentException {
-        List<String> categoryList = Lists.newArrayList();
+            throws NonExistentCategoryException {
 
         Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
         List<String> rawCategoryStringList = splitter.splitToList(categoryOptionString);
 
+        return getCategoryListFromCategoryNameList(rawCategoryStringList);
+    }
+
+    /**
+     * Ensure that the category names are valid and return a list containing the valid category names. If the name is
+     * not valid, an {@link NonExistentCategoryException} is thrown.
+     *
+     * @param categoryNameList
+     * @return categories as list
+     * @throws NonExistentCategoryException
+     */
+    public static List<String> getCategoryListFromCategoryNameList(List<String> categoryNameList)
+            throws NonExistentCategoryException {
+        List<String> categoryList = Lists.newArrayList();
         Enum<?>[] categories = Categories.get().getEnumConstants();
         List<String> categoryNames = Lists.newArrayList();
         for (Enum<?> category : categories) {
             categoryNames.add(category.toString());
         }
 
-        for (String categoryString : rawCategoryStringList) {
+        for (String categoryString : categoryNameList) {
             if (!categoryNames.contains(categoryString)) {
-                throw new IllegalArgumentException("Category \"" + categoryString + "\" does not exist. Try one of: " +
-                        Joiner.on(", ").join(categories) + ".");
+                throw new NonExistentCategoryException(categoryString, categoryNames);
             }
             categoryList.add(categoryString);
         }
