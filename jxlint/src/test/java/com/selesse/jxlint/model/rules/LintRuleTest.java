@@ -105,4 +105,14 @@ public class LintRuleTest {
                         + "'L2' used by {com.selesse.jxlint.model.rules.LintRuleTestImpl, "
                         + "com.selesse.jxlint.model.rules.LintRuleTestImpl}");
     }
+
+    @Test
+    public void testRuleName() throws Exception {
+        LintRule rule1 = new LintRuleTestImpl("My first rule");
+        assertThat(rule1.getName()).isEqualTo("My first rule");
+
+        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+            new LintRuleTestImpl("My first, rule");
+        }).withMessage("Rule name can not contain a comma");
+    }
 }

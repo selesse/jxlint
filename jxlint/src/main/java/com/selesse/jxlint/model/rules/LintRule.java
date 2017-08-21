@@ -3,6 +3,7 @@ package com.selesse.jxlint.model.rules;
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
 import com.selesse.jxlint.utils.EnumUtils;
@@ -62,6 +63,7 @@ public abstract class LintRule {
     private List<LintError> lintErrors;
 
     public LintRule(String name, String summary, String detailedDescription, Severity severity, Enum<?> category) {
+        Preconditions.checkArgument(!name.contains(","), "Rule name can not contain a comma");
         this.name = name;
         this.summary = summary;
         this.detailedDescription = detailedDescription;
