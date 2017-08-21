@@ -5,19 +5,23 @@ import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.selesse.jxlint.AbstractTestCase;
 import com.selesse.jxlint.model.rules.Category;
-import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
 import com.selesse.jxlint.samplerules.xml.XmlLintRulesTestImpl;
 import com.selesse.jxlint.samplerules.xml.rules.AuthorTagRule;
 import com.selesse.jxlint.samplerules.xml.rules.UniqueAttributeRule;
+import com.selesse.jxlint.samplerules.xml.rules.XmlEncodingRule;
+import com.selesse.jxlint.samplerules.xml.rules.XmlVersionRule;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class ProgramOptionsTest extends AbstractTestCase {
     private static File rootTempDir;
@@ -29,35 +33,72 @@ public class ProgramOptionsTest extends AbstractTestCase {
         rootTempDir.deleteOnExit();
     }
 
-    @Test(expected = NonExistentLintRuleException.class)
-    public void testGettingAnInvalidRuleThrowsException() throws NonExistentLintRuleException {
-        ProgramOptions.getRuleListFromOptionString("blah");
+    @Test
+    public void testGettingInvalidRuleThrowsException() throws NonExistentLintRuleException {
+        assertThatExceptionOfType(NonExistentLintRuleException.class).isThrownBy(() -> {
+            ProgramOptions.getRuleListFromOptionString("blah");
+        }).withMessage("Lint rule 'blah' does not exist.");
+    }
+
+    @Test
+    public void testGettingOneInvalidRuleThrowsException() {
+        assertThatExceptionOfType(NonExistentLintRuleException.class).isThrownBy(() -> {
+            ProgramOptions.getRuleListFromOptionString(
+                    Joiner.on(", ").join(Lists.newArrayList(XmlEncodingRule.NAME, "yxz", XmlVersionRule.NAME))
+            );
+        }).withMessage("Lint rule 'yxz' does not exist.");
     }
 
     @Test
     public void testGettingValidRulesReturnsThem() throws NonExistentLintRuleException {
-        LintRule authorTagRule = new AuthorTagRule();
-        LintRule uniqueAttributeRule = new UniqueAttributeRule();
-
         List<String> ruleList = ProgramOptions.getRuleListFromOptionString(
-                Joiner.on(", ").join(Lists.newArrayList(authorTagRule.getName(), uniqueAttributeRule.getName()))
+                Joiner.on(", ").join(Lists.newArrayList(AuthorTagRule.NAME, UniqueAttributeRule.NAME))
         );
 
         assertThat(ruleList).hasSize(2);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testGettingInvalidCategoriesThrowsAnException() {
-        ProgramOptions.getCategoryListFromOptionString("blah");
+        assertThat(ruleList).isEqualTo(Lists.newArrayList(AuthorTagRule.NAME, UniqueAttributeRule.NAME));
     }
 
     @Test
-    public void testGettingValidCategoriesReturnsThem() {
+    public void testGettingValidRulesFromEmptyString() throws Exception {
+        List<String> categoryList = ProgramOptions.getRuleListFromOptionString("");
+        assertThat(categoryList).hasSize(0);
+    }
+
+    @Test
+    public void testGettingInvalidCategoryThrowsAnException() {
+        assertThatExceptionOfType(NonExistentCategoryException.class).isThrownBy(() -> {
+            ProgramOptions.getCategoryListFromOptionString("blah");
+        }).withMessage(
+                "Category 'blah' does not exist. Try one of: LINT, CORRECTNESS, PERFORMANCE, SECURITY, STYLE.");
+    }
+
+    @Test
+    public void testGettingOneInvalidCategoryThrowsAnException() {
+        assertThatExceptionOfType(NonExistentCategoryException.class).isThrownBy(() -> {
+            ProgramOptions.getCategoryListFromOptionString(
+                    Joiner.on(", ").join(Category.CORRECTNESS, Category.LINT, "xyz")
+            );
+        }).withMessage(
+                "Category 'xyz' does not exist. Try one of: LINT, CORRECTNESS, PERFORMANCE, SECURITY, STYLE.");
+    }
+
+    @Test
+    public void testGettingValidCategoriesReturnsThem() throws Exception {
         List<String> categoryList = ProgramOptions.getCategoryListFromOptionString(
                 Joiner.on(", ").join(Category.CORRECTNESS, Category.LINT, Category.PERFORMANCE, Category.STYLE)
         );
 
         assertThat(categoryList).hasSize(4);
+        assertThat(categoryList)
+                .isEqualTo(Arrays.asList(Category.CORRECTNESS.toString(), Category.LINT.toString(),
+                        Category.PERFORMANCE.toString(), Category.STYLE.toString()));
+    }
+
+    @Test
+    public void testGettingValidCategoriesFromEmptyString() throws Exception {
+        List<String> categoryList = ProgramOptions.getCategoryListFromOptionString("");
+        assertThat(categoryList).hasSize(0);
     }
 
     @Test

@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 public class AbstractJxlintMojoTest {
 
@@ -128,31 +128,23 @@ public class AbstractJxlintMojoTest {
 
     @Test
     public void testInvalidRuleNameType() throws Exception {
-        try {
+        assertThatExceptionOfType(MojoExecutionException.class).isThrownBy(() -> {
             initValidConfiguration();
             mojoUnderTest.setEnableOnlyRules(Collections.singletonList("abcd"));
 
             mojoUnderTest.callCreateProgramOptions();
-            fail("MojoExecutionException expected");
-        }
-        catch (MojoExecutionException e) {
-            assertThat(e.getMessage()).isEqualTo("Lint rule 'abcd' does not exist.");
-        }
+        }).withMessage("Lint rule 'abcd' does not exist.");
     }
 
     @Test
     public void testInvalidCategoryNameType() throws Exception {
-        try {
+        assertThatExceptionOfType(MojoExecutionException.class).isThrownBy(() -> {
             initValidConfiguration();
             mojoUnderTest.setEnableCategories(Collections.singletonList("xyz"));
 
             mojoUnderTest.callCreateProgramOptions();
-            fail("MojoExecutionException expected");
-        }
-        catch (MojoExecutionException e) {
-            assertThat(e.getMessage()).isEqualTo(
-                    "Category \"xyz\" does not exist. Try one of: LINT, CORRECTNESS, PERFORMANCE, SECURITY, STYLE.");
-        }
+        }).withMessage(
+                "Category 'xyz' does not exist. Try one of: LINT, CORRECTNESS, PERFORMANCE, SECURITY, STYLE.");
     }
 
     private static class TestJxlintImplMojo extends AbstractJxlintMojo {

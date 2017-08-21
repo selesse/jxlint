@@ -15,8 +15,10 @@ import java.io.File;
 import java.util.List;
 
 public class XmlEncodingRule extends LintRule {
+    public static final String NAME = "XML encoding specified";
+
     public XmlEncodingRule() {
-        super("XML encoding specified", "Encoding of the XML must be specified.",
+        super(NAME, "Encoding of the XML must be specified.",
                 "The XML encoding should be specified. For example, <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
                 Severity.WARNING, Category.LINT);
     }

@@ -142,7 +142,7 @@ public abstract class AbstractDispatcher {
                                 .filter(input -> enabledCategoriesList.contains(input.getCategory().toString()))
                                 .collect(Collectors.toSet());
             }
-            catch (IllegalArgumentException e) {
+            catch (NonExistentCategoryException e) {
                 throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
             }
         }

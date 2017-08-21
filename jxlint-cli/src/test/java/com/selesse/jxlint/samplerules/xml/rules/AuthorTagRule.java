@@ -16,8 +16,10 @@ import java.io.File;
 import java.util.List;
 
 public class AuthorTagRule extends LintRule {
+    public static final String NAME = "Author tag specified";
+
     public AuthorTagRule() {
-        super("Author tag specified", "author.xml files must contain a valid root-element <author> tag.", "",
+        super(NAME, "author.xml files must contain a valid root-element <author> tag.", "",
                 Severity.WARNING, Category.STYLE, false);
         setDetailedDescription(getMarkdownDescription());
     }
