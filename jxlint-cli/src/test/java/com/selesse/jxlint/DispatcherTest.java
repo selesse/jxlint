@@ -282,4 +282,32 @@ public class DispatcherTest extends AbstractTestCase {
 
         verify(jettyWebRunnerMock).start();
     }
+
+    @Test
+    public void testBadCategory() throws Exception {
+        runExitTest(new String[]{"--category", "abc"}, tempDirectory,
+                "Category 'abc' does not exist. Try one of: LINT, CORRECTNESS, PERFORMANCE, SECURITY, STYLE.",
+                ExitType.COMMAND_LINE_ERROR);
+    }
+
+    @Test
+    public void testBadCheckRules() throws Exception {
+        runExitTest(new String[]{"--check", "xyz"}, tempDirectory,
+                "Lint rule 'xyz' does not exist.",
+                ExitType.COMMAND_LINE_ERROR);
+    }
+
+    @Test
+    public void testBadEnableRules() throws Exception {
+        runExitTest(new String[]{"--enable", "abc"}, tempDirectory,
+                "Lint rule 'abc' does not exist.",
+                ExitType.COMMAND_LINE_ERROR);
+    }
+
+    @Test
+    public void testBadDisableRules() throws Exception {
+        runExitTest(new String[]{"--disable", "zyx"}, tempDirectory,
+                "Lint rule 'zyx' does not exist.",
+                ExitType.COMMAND_LINE_ERROR);
+    }
 }
