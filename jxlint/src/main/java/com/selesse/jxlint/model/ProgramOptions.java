@@ -5,13 +5,18 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.selesse.jxlint.model.rules.Categories;
+import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
 import com.selesse.jxlint.utils.FileUtils;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * jxlint program options. This contains information relating to {@link com.selesse.jxlint.model.JxlintOption}s.
@@ -20,6 +25,10 @@ import java.util.Map;
 public class ProgramOptions {
     private Map<JxlintOption, String> options;
     private String sourceDirectory;
+    private Optional<List<Enum<?>>> enabledCategories;
+    private Optional<List<LintRule>> checkRules;
+    private Optional<List<LintRule>> disabledRules;
+    private Optional<List<LintRule>> enabledRules;
 
     public ProgramOptions() {
         this.options = Maps.newHashMap();
@@ -36,6 +45,23 @@ public class ProgramOptions {
      * Adds a {@link com.selesse.jxlint.model.JxlintOption} with a particular value.
      */
     public void addOption(JxlintOption option, String value) {
+        switch (option) {
+            case CATEGORY:
+                enabledCategories = null;
+                break;
+            case CHECK:
+                checkRules = null;
+                break;
+            case ENABLE:
+                enabledRules = null;
+                break;
+            case DISABLE:
+                disabledRules = null;
+                break;
+            default:
+                //nothing to do
+                break;
+        }
         options.put(option, value);
     }
 
@@ -115,12 +141,151 @@ public class ProgramOptions {
     }
 
     /**
-     * Returns a list of strings from the raw option string. In other words,
-     * given a raw option string "Rule1, Rule2" (i.e. parsed from <code>--disable "Rule1, Rule2"</code>), this returns
-     * a list with { "Rule1", "Rule2" }. If any of the rules passed as strings do not exist, this will function
-     * will throw a {@link com.selesse.jxlint.model.rules.NonExistentLintRuleException}.
+     * Get the list of enabled categories, either set with {@link #setEnabledCategories(List)} or with the the option
+     * value corresponding to the {@link JxlintOption#CATEGORY} key. In this second case the list will be computed with
+     * the {@link #getCategoryListFromOptionString(String)} method.
+     *
+     * @return an optional containing the list of categories if the option is set.
+     * @throws NonExistentCategoryException
      */
-    public static List<String> getRuleListFromOptionString(String optionString)
+    public Optional<List<Enum<?>>> getEnabledCategories() throws NonExistentCategoryException {
+        if (enabledCategories == null) {
+            if (hasOption(JxlintOption.CATEGORY)) {
+                enabledCategories = Optional.of(Collections
+                        .unmodifiableList(getCategoryListFromOptionString(options.get(JxlintOption.CATEGORY))));
+            }
+            else {
+                enabledCategories = Optional.empty();
+            }
+        }
+        return enabledCategories;
+    }
+
+    /**
+     * Set the list of enabled categories, this will update the option value corresponding to the
+     * {@link JxlintOption#CATEGORY} key.
+     *
+     * @param enabledCategories
+     *            list of categories. <code>null</code> value means no option set.
+     */
+    public void setEnabledCategories(List<Enum<?>> enabledCategories) {
+        this.enabledCategories =
+                computeSetterValueAndFixOptionsValue(JxlintOption.CATEGORY, enabledCategories, c -> c.toString());
+    }
+
+    /**
+     * Get the list of rules to check, either set with {@link #setCheckRules(List)} or with the option value
+     * corresponding to the {@link JxlintOption#CHECK} key. In this second case the list will be computed with the
+     * {@link #getRuleListFromOptionString(String)} method.
+     *
+     * @return an optional containing the list of rules if the option is set.
+     * @throws NonExistentLintRuleException
+     */
+    public Optional<List<LintRule>> getCheckRules() throws NonExistentLintRuleException {
+        if (checkRules == null) {
+            checkRules = computeGetterValueWhenNull(JxlintOption.CHECK);
+        }
+        return checkRules;
+    }
+
+    /**
+     * Set the list of rules to check. This will update the option value corresponding to the {@link JxlintOption#CHECK}
+     * key.
+     *
+     * @param checkRules
+     *            list of rules. <code>null</code> value means no option set.
+     */
+    public void setCheckRules(List<LintRule> checkRules) {
+        this.checkRules =
+                computeSetterValueAndFixOptionsValue(JxlintOption.CHECK, checkRules, r -> r.getName());
+    }
+
+    /**
+     * Get the list of rules to disable, either set with {@link #setDisabledRules(List)} or with the option value
+     * corresponding to the {@link JxlintOption#DISABLE} key. In this second case the list will be computed with the
+     * {@link #getRuleListFromOptionString(String)} method.
+     *
+     * @return an optional containing the list of rules if the option is set.
+     * @throws NonExistentLintRuleException
+     */
+    public Optional<List<LintRule>> getDisabledRules() throws NonExistentLintRuleException {
+        if (disabledRules == null) {
+            disabledRules = computeGetterValueWhenNull(JxlintOption.DISABLE);
+        }
+        return disabledRules;
+    }
+
+    /**
+     * Set the list of rules to disable. This will update the option value corresponding to the
+     * {@link JxlintOption#DISABLE} key.
+     *
+     * @param disabledRules
+     *            list of rules. <code>null</code> value means no option set.
+     */
+    public void setDisabledRules(List<LintRule> disabledRules) {
+        this.disabledRules =
+                computeSetterValueAndFixOptionsValue(JxlintOption.DISABLE, disabledRules, r -> r.getName());
+    }
+
+    /**
+     * Get the list of rules to check, either set with {@link #setEnabledRules(List)} or with the option value
+     * corresponding to the {@link JxlintOption#ENABLE} key. In this second case the list will be computed with the
+     * {@link #getRuleListFromOptionString(String)} method.
+     *
+     * @return an optional containing the list of rules if the option is set.
+     * @throws NonExistentLintRuleException
+     */
+    public Optional<List<LintRule>> getEnabledRules() throws NonExistentLintRuleException {
+        if (enabledRules == null) {
+            enabledRules = computeGetterValueWhenNull(JxlintOption.ENABLE);
+        }
+        return enabledRules;
+    }
+
+    /**
+     * Set the list of rules to enable. This will update the option value corresponding to the
+     * {@link JxlintOption#ENABLE} key.
+     *
+     * @param enabledRules
+     *            list of rules. <code>null</code> value means no option set.
+     */
+    public void setEnabledRules(List<LintRule> enabledRules) {
+        this.enabledRules =
+                computeSetterValueAndFixOptionsValue(JxlintOption.ENABLE, enabledRules, r -> r.getName());
+    }
+
+    private Optional<List<LintRule>> computeGetterValueWhenNull(JxlintOption jxlintOption)
+            throws NonExistentLintRuleException {
+        if (hasOption(jxlintOption)) {
+            return Optional.of(Collections
+                    .unmodifiableList(getRuleListFromOptionString(options.get(jxlintOption))));
+        }
+        else {
+            return Optional.empty();
+        }
+    }
+
+    private <T> Optional<List<T>> computeSetterValueAndFixOptionsValue(JxlintOption jxlintOption, List<T> listValue,
+            Function<T, String> mapper) {
+        if (listValue != null) {
+            String stringValue = listValue.stream().map(mapper).collect(Collectors.joining(","));
+            addOption(jxlintOption, stringValue);
+            return Optional.of(Collections.unmodifiableList(listValue));
+        }
+        else {
+            //corresponds to a remove
+            options.remove(jxlintOption);
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Returns a list of rules from the raw option string. In other words, given a raw option string "Rule1, Rule2"
+     * (i.e. parsed from <code>--disable "Rule1, Rule2"</code>), this returns a list with the instances having "Rule1"
+     * and "Rule2" as name. If any of the rules have a name corresponding to the passed strings, this will function will
+     * throw a {@link com.selesse.jxlint.model.rules.NonExistentLintRuleException}.
+     */
+    public static List<LintRule> getRuleListFromOptionString(String optionString)
             throws NonExistentLintRuleException {
         Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
 
@@ -128,16 +293,16 @@ public class ProgramOptions {
         return getRuleListFromRuleNameList(rulesStringList);
     }
 
-    public static List<String> getRuleListFromRuleNameList(List<String> ruleNameList)
+    public static List<LintRule> getRuleListFromRuleNameList(List<String> ruleNameList)
             throws NonExistentLintRuleException {
+        List<LintRule> rules = Lists.newArrayList();
         for (String ruleName : ruleNameList) {
-            LintRulesImpl.getInstance().getLintRule(ruleName);
+            rules.add(LintRulesImpl.getInstance().getLintRule(ruleName));
         }
-
-        return Lists.newArrayList(ruleNameList);
+        return rules;
     }
 
-    public static List<String> getCategoryListFromOptionString(String categoryOptionString)
+    public static List<Enum<?>> getCategoryListFromOptionString(String categoryOptionString)
             throws NonExistentCategoryException {
 
         Splitter splitter = Splitter.on(",").omitEmptyStrings().trimResults();
@@ -154,20 +319,20 @@ public class ProgramOptions {
      * @return categories as list
      * @throws NonExistentCategoryException
      */
-    public static List<String> getCategoryListFromCategoryNameList(List<String> categoryNameList)
+    public static List<Enum<?>> getCategoryListFromCategoryNameList(List<String> categoryNameList)
             throws NonExistentCategoryException {
-        List<String> categoryList = Lists.newArrayList();
+        List<Enum<?>> categoryList = Lists.newArrayList();
         Enum<?>[] categories = Categories.get().getEnumConstants();
-        List<String> categoryNames = Lists.newArrayList();
+        Map<String, Enum<?>> categoryMap = Maps.newHashMap();
         for (Enum<?> category : categories) {
-            categoryNames.add(category.toString());
+            categoryMap.put(category.toString(), category);
         }
 
-        for (String categoryString : categoryNameList) {
-            if (!categoryNames.contains(categoryString)) {
-                throw new NonExistentCategoryException(categoryString, categoryNames);
+        for (String categoryName : categoryNameList) {
+            if (!categoryMap.containsKey(categoryName)) {
+                throw new NonExistentCategoryException(categoryName, categoryMap.keySet());
             }
-            categoryList.add(categoryString);
+            categoryList.add(categoryMap.get(categoryName));
         }
 
         return categoryList;

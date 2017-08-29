@@ -1,11 +1,11 @@
 package com.selesse.jxlint.maven;
 
-import com.google.common.base.Joiner;
 import com.selesse.jxlint.model.JxlintOption;
 import com.selesse.jxlint.model.NonExistentCategoryException;
 import com.selesse.jxlint.model.ProgramOptions;
 import com.selesse.jxlint.model.rules.Categories;
 import com.selesse.jxlint.model.rules.Category;
+import com.selesse.jxlint.model.rules.LintRule;
 import com.selesse.jxlint.model.rules.LintRules;
 import com.selesse.jxlint.model.rules.LintRulesImpl;
 import com.selesse.jxlint.model.rules.NonExistentLintRuleException;
@@ -19,6 +19,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.Consumer;
 
 public abstract class AbstractJxlintMojo extends AbstractMojo {
 
@@ -115,9 +116,9 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
         addOption(options, JxlintOption.OUTPUT_TYPE_PATH, outputFile.getAbsolutePath());
         addOption(options, JxlintOption.SRC_PATH_PREFIX, srcPathPrefix);
 
-        addRulesOption(options, JxlintOption.CHECK, enableOnlyRules);
-        addRulesOption(options, JxlintOption.ENABLE, enableRules);
-        addRulesOption(options, JxlintOption.DISABLE, disableRules);
+        addRulesOption(l -> options.setCheckRules(l), JxlintOption.CHECK, enableOnlyRules);
+        addRulesOption(l -> options.setEnabledRules(l), JxlintOption.ENABLE, enableRules);
+        addRulesOption(l -> options.setDisabledRules(l), JxlintOption.DISABLE, disableRules);
 
         addCategoryOption(options, enableCategories);
 
@@ -138,18 +139,16 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
         }
     }
 
-    private void addRulesOption(ProgramOptions options, JxlintOption option, List<String> list)
+    private void addRulesOption(Consumer<List<LintRule>> setter, JxlintOption option, List<String> list)
             throws MojoExecutionException {
         if (list != null && !list.isEmpty()) {
-            List<String> ruleList;
             try {
-                ruleList = ProgramOptions.getRuleListFromRuleNameList(list);
+                List<LintRule> ruleList = ProgramOptions.getRuleListFromRuleNameList(list);
+                setter.accept(ruleList);
             }
             catch (NonExistentLintRuleException e) {
                 throw new MojoExecutionException(e.getMessage());
             }
-            String value = Joiner.on(',').join(ruleList);
-            addOption(options, option, value);
         }
         else {
             getLog().debug("option '" + option + "' is not set (null or empty list)");
@@ -159,15 +158,13 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
     private void addCategoryOption(ProgramOptions options, List<String> rawCategoryStringList)
             throws MojoExecutionException {
         if (rawCategoryStringList != null && !rawCategoryStringList.isEmpty()) {
-            List<String> categories;
             try {
-                categories = ProgramOptions.getCategoryListFromCategoryNameList(rawCategoryStringList);
+                List<Enum<?>> categories = ProgramOptions.getCategoryListFromCategoryNameList(rawCategoryStringList);
+                options.setEnabledCategories(categories);
             }
             catch (NonExistentCategoryException e) {
                 throw new MojoExecutionException(e.getMessage());
             }
-            String value = Joiner.on(',').join(categories);
-            addOption(options, JxlintOption.CATEGORY, value);
         }
         else {
             getLog().debug("option '" + JxlintOption.CATEGORY + "' is not set (null or empty list)");

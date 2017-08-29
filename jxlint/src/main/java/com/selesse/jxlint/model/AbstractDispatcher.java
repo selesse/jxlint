@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -103,18 +104,17 @@ public abstract class AbstractDispatcher {
                     ExitType.COMMAND_LINE_ERROR);
         }
 
-        if (programOptions.hasOption(JxlintOption.CHECK)) {
-            String checkRules = programOptions.getOption(JxlintOption.CHECK);
-            List<String> checkRulesList = null;
-            try {
-                checkRulesList = ProgramOptions.getRuleListFromOptionString(checkRules);
+        try {
+            Optional<List<LintRule>> checkRules = programOptions.getCheckRules();
+            if (checkRules.isPresent()) {
+                List<LintRule> checkRulesList = checkRules.get();
+                handleLint(checkRulesList, warningsAreErrors, programOptions, programSettings);
+                return;
             }
-            catch (NonExistentLintRuleException e) {
-                LOGGER.warn("Could not find rule [{}] in: {}", e.getRuleName(), checkRules);
-            }
-
-            handleLint(lintRules.getOnlyRules(checkRulesList), warningsAreErrors, programOptions, programSettings);
-            return;
+        }
+        catch (NonExistentLintRuleException e) {
+            LOGGER.warn("Could not find rule [{}]", e.getRuleName());
+            throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
         }
 
         // By default, we only check enabled rules.
@@ -132,41 +132,38 @@ public abstract class AbstractDispatcher {
             lintRulesSet = Sets.newHashSet(lintRules.getAllEnabledRules());
         }
 
-        if (programOptions.hasOption(JxlintOption.CATEGORY)) {
-            String enabledCategories = programOptions.getOption(JxlintOption.CATEGORY);
-            try {
-                final List<String> enabledCategoriesList =
-                        ProgramOptions.getCategoryListFromOptionString(enabledCategories);
+        try {
+            Optional<List<Enum<?>>> enabledCategories = programOptions.getEnabledCategories();
+            if (enabledCategories.isPresent()) {
+                final List<Enum<?>> enabledCategoriesList = enabledCategories.get();
                 lintRulesSet =
                         lintRulesSet.stream()
-                                .filter(input -> enabledCategoriesList.contains(input.getCategory().toString()))
+                                .filter(input -> enabledCategoriesList.contains(input.getCategory()))
                                 .collect(Collectors.toSet());
             }
-            catch (NonExistentCategoryException e) {
-                throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
-            }
+        }
+        catch (NonExistentCategoryException e) {
+            throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
         }
 
         // Options that are "standalone"
-        if (programOptions.hasOption(JxlintOption.DISABLE)) {
-            String disabledRules = programOptions.getOption(JxlintOption.DISABLE);
-            try {
-                List<String> disabledRulesList = ProgramOptions.getRuleListFromOptionString(disabledRules);
-                lintRulesSet.removeAll(lintRules.getOnlyRules(disabledRulesList));
-            }
-            catch (NonExistentLintRuleException e) {
-                throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+        try {
+            Optional<List<LintRule>> disabledRules = programOptions.getDisabledRules();
+            if (disabledRules.isPresent()) {
+                lintRulesSet.removeAll(disabledRules.get());
             }
         }
-        if (programOptions.hasOption(JxlintOption.ENABLE)) {
-            String enabledRules = programOptions.getOption(JxlintOption.ENABLE);
-            try {
-                List<String> enabledRulesList = ProgramOptions.getRuleListFromOptionString(enabledRules);
-                lintRulesSet.addAll(lintRules.getOnlyRules(enabledRulesList));
+        catch (NonExistentLintRuleException e) {
+            throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
+        }
+        try {
+            Optional<List<LintRule>> enabledRules = programOptions.getEnabledRules();
+            if (enabledRules.isPresent()) {
+                lintRulesSet.addAll(enabledRules.get());
             }
-            catch (NonExistentLintRuleException e) {
-                throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
-            }
+        }
+        catch (NonExistentLintRuleException e) {
+            throw new ExitException(e.getMessage(), ExitType.COMMAND_LINE_ERROR);
         }
         handleLint(Lists.newArrayList(lintRulesSet), warningsAreErrors, programOptions, programSettings);
     }

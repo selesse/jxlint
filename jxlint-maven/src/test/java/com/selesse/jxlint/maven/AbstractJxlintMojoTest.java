@@ -57,8 +57,13 @@ public class AbstractJxlintMojoTest {
         ProgramOptions options = mojoUnderTest.callCreateProgramOptions();
         assertThat(options.getSourceDirectory()).isEqualTo(tempDirectory.getAbsolutePath());
         assertThat(options.hasOption(JxlintOption.DISABLE)).isEqualTo(false);
+        assertThat(options.getDisabledRules()).isNotPresent();
         assertThat(options.hasOption(JxlintOption.CHECK)).isEqualTo(false);
+        assertThat(options.getCheckRules()).isNotPresent();
         assertThat(options.hasOption(JxlintOption.ENABLE)).isEqualTo(false);
+        assertThat(options.getEnabledRules()).isNotPresent();
+        assertThat(options.hasOption(JxlintOption.CATEGORY)).isEqualTo(false);
+        assertThat(options.getEnabledCategories()).isNotPresent();
         assertThat(options.hasOption(JxlintOption.NO_WARNINGS)).isEqualTo(false);
         assertThat(options.hasOption(JxlintOption.ALL_WARNINGS)).isEqualTo(false);
         assertThat(options.hasOption(JxlintOption.WARNINGS_ARE_ERRORS)).isEqualTo(false);
@@ -88,9 +93,17 @@ public class AbstractJxlintMojoTest {
         ProgramOptions options = mojoUnderTest.callCreateProgramOptions();
         assertThat(options.getSourceDirectory()).isEqualTo(srcFolder.getAbsolutePath());
         assertThat(options.getOption(JxlintOption.DISABLE)).isEqualTo(RULE_NAME);
+        assertThat(options.getDisabledRules()).isPresent()
+                .contains(Collections.singletonList(new SampleRule()));
         assertThat(options.getOption(JxlintOption.CHECK)).isEqualTo(RULE_NAME);
+        assertThat(options.getDisabledRules()).isPresent()
+                .contains(Collections.singletonList(new SampleRule()));
         assertThat(options.getOption(JxlintOption.ENABLE)).isEqualTo(RULE_NAME);
+        assertThat(options.getEnabledRules()).isPresent()
+                .contains(Collections.singletonList(new SampleRule()));
         assertThat(options.getOption(JxlintOption.CATEGORY)).isEqualTo(CATEGORY_NAME);
+        assertThat(options.getEnabledCategories()).isPresent()
+                .contains(Collections.singletonList(Category.CORRECTNESS));
         assertThat(options.hasOption(JxlintOption.NO_WARNINGS)).isEqualTo(true);
         assertThat(options.hasOption(JxlintOption.ALL_WARNINGS)).isEqualTo(true);
         assertThat(options.hasOption(JxlintOption.WARNINGS_ARE_ERRORS)).isEqualTo(true);
