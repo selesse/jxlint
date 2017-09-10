@@ -13,8 +13,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -158,6 +162,31 @@ public class AbstractJxlintMojoTest {
             mojoUnderTest.callCreateProgramOptions();
         }).withMessage(
                 "Category 'xyz' does not exist. Try one of: LINT, CORRECTNESS, PERFORMANCE, SECURITY, STYLE.");
+    }
+
+    @Test
+    public void testPublicConstantsCorrespondToFieldNames() throws Exception {
+        Field[] fields = AbstractJxlintMojo.class.getDeclaredFields();
+
+        //@Parameter (org.apache.maven.plugins.annotations.Parameter) is not available at runtime,
+        //get all protected fields:
+        List<String> parameterFields = Arrays.asList(fields).stream()
+                .filter(f -> Modifier.isProtected(f.getModifiers()))
+                .map(f -> f.getName()).collect(Collectors.toList());
+
+        //Compare the list against the constants defined in the class:
+        assertThat(parameterFields).containsExactlyInAnyOrder(
+                AbstractJxlintMojo.ALL_WARNINGS,
+                AbstractJxlintMojo.DISABLE_RULES,
+                AbstractJxlintMojo.ENABLE_CATEGORY,
+                AbstractJxlintMojo.ENABLE_ONLY_RULES,
+                AbstractJxlintMojo.ENABLE_RULES,
+                AbstractJxlintMojo.NO_WARNINGS,
+                AbstractJxlintMojo.OUTPUT_FILE,
+                AbstractJxlintMojo.OUTPUT_TYPE,
+                AbstractJxlintMojo.SOURCE_DIRECTORY,
+                AbstractJxlintMojo.SRC_PATH_PREFIX,
+                AbstractJxlintMojo.WARNINGS_ARE_ERRORS);
     }
 
     private static class TestJxlintImplMojo extends AbstractJxlintMojo {

@@ -30,10 +30,10 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
     public static final String SOURCE_DIRECTORY = "sourceDirectory";
     public static final String NO_WARNINGS = "noWarnings";
     public static final String ALL_WARNINGS = "allWarnings";
-    public static final String WARNINGS_ARE_ERRORS = "warningAsErrors";
+    public static final String WARNINGS_ARE_ERRORS = "waringsAreErrors";
     public static final String OUTPUT_TYPE = "outputType";
     public static final String OUTPUT_FILE = "outputFile";
-    public static final String SRC_PATH_PREFIX = "srcPath";
+    public static final String SRC_PATH_PREFIX = "srcPathPrefix";
 
     /**
      * Disable the list of rules.
