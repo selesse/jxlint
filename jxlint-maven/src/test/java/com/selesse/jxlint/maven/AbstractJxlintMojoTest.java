@@ -117,6 +117,21 @@ public class AbstractJxlintMojoTest {
     }
 
     @Test
+    public void testJenkinsXmlValidConfiguration() throws Exception {
+        File reportFile = new File(tempDirectory, "jenkins-report.xml");
+        File srcFolder = new File(tempDirectory, "src");
+
+        mojoUnderTest.setSourceDirectory(srcFolder);
+        mojoUnderTest.setOutputType("jenkins-xml");
+        mojoUnderTest.setOutputFile(reportFile);
+
+        ProgramOptions options = mojoUnderTest.callCreateProgramOptions();
+        assertThat(options.getSourceDirectory()).isEqualTo(srcFolder.getAbsolutePath());
+        assertThat(options.getOutputType()).isEqualTo(OutputType.JENKINS_XML);
+        assertThat(options.getOption(JxlintOption.OUTPUT_TYPE_PATH)).isEqualTo(reportFile.getAbsolutePath());
+    }
+
+    @Test
     public void testOutputTypeQuiet() throws Exception {
         initValidConfiguration();
         mojoUnderTest.setOutputType("quiet");

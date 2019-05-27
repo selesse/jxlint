@@ -91,6 +91,8 @@ public class ProgramOptions {
                 return OutputType.HTML;
             case "xml":
                 return OutputType.XML;
+            case "jenkins-xml":
+                return OutputType.JENKINS_XML;
             default:
                 return OutputType.DEFAULT;
         }
