@@ -45,6 +45,7 @@ public class Reporters {
         outputTypeReporterMap.put(OutputType.DEFAULT, DefaultReporter.class);
         outputTypeReporterMap.put(OutputType.HTML, HtmlTemplatedReporter.class);
         outputTypeReporterMap.put(OutputType.XML, XmlReporter.class);
+        outputTypeReporterMap.put(OutputType.JENKINS_XML, JenkinsXmlReporter.class);
         outputTypeReporterMap.put(OutputType.QUIET, DefaultReporter.class);
     }
 
@@ -105,6 +106,7 @@ public class Reporters {
         try {
             switch (outputType) {
                 case XML:
+                case JENKINS_XML:
                 case HTML:
                     Class<? extends Reporter> reporterType = outputTypeReporterMap.get(outputType);
                     Constructor<?> reporterTypeConstructor = reporterType.getConstructor(PrintStream.class,

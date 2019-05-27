@@ -6,7 +6,7 @@ import org.junit.Test;
 public class JxlintTest extends AbstractTestCase {
     @Test
     public void testMutuallyExclusiveArgumentsGivesError() {
-        final String expectedOutput = "Only one of --html, --quiet, --xml must be selected.";
+        final String expectedOutput = "Only one of --html, --jenkins-xml, --quiet, --xml must be selected.";
         runExitTest(new String[]{"--quiet", "--xml"}, pwd, expectedOutput, ExitType.COMMAND_LINE_ERROR);
     }
 

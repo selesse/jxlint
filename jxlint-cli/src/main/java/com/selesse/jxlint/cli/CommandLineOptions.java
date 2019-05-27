@@ -87,6 +87,12 @@ public class CommandLineOptions {
                 withArgName("filename").
                 create('x')
         );
+        outputOptionGroup.addOption(OptionBuilder.withLongOpt("jenkins-xml").
+                withDescription("Create an XML Jenkins format (!!) report.").
+                hasOptionalArg().
+                withArgName("filename").
+                create('j')
+        );
         options.addOption(OptionBuilder.withLongOpt("srcpath").
                 withDescription("Local or remote path to the source directory, "
                     + "if not set a relative path to the local file will be computed.").
@@ -166,7 +172,8 @@ public class CommandLineOptions {
                 .put("q", 15)
                 .put("t", 16)
                 .put("x", 17)
-                .put("sp", 18)
+                .put("j", 18)
+                .put("sp", 19)
                 .build();
     }
 

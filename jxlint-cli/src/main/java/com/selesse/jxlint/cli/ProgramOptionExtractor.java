@@ -18,6 +18,8 @@ public class ProgramOptionExtractor {
     @VisibleForTesting
     static final String XML_OPTION = "xml";
     @VisibleForTesting
+    static final String JENKINS_XML_OPTION = "jenkins-xml";
+    @VisibleForTesting
     static final String QUIET_OPTION = "quiet";
 
     public static ProgramOptions extractProgramOptions(CommandLine commandLine) {
@@ -86,6 +88,16 @@ public class ProgramOptionExtractor {
         }
         if (commandLine.hasOption(XML_OPTION)) {
             programOptions.addOption(JxlintOption.OUTPUT_TYPE, XML_OPTION);
+            String outputXmlFile = commandLine.getOptionValue(XML_OPTION);
+            if (outputXmlFile != null) {
+                if (!outputXmlFile.endsWith(".xml")) {
+                    outputXmlFile += ".xml";
+                }
+                programOptions.addOption(JxlintOption.OUTPUT_TYPE_PATH, outputXmlFile);
+            }
+        }
+        if (commandLine.hasOption(JENKINS_XML_OPTION)) {
+            programOptions.addOption(JxlintOption.OUTPUT_TYPE, JENKINS_XML_OPTION);
             String outputXmlFile = commandLine.getOptionValue(XML_OPTION);
             if (outputXmlFile != null) {
                 if (!outputXmlFile.endsWith(".xml")) {
