@@ -32,6 +32,7 @@ taken care of for you:
      -q,--quiet                    Don't output any progress or reports.
      -t,--html <filename>          Create an HTML report.
      -x,--xml <filename>           Create an XML (!!) report.
+     -j,--jenkins-xml <filename>   Create an XML Jenkins format (!!) report.
      -sp,--srcpath <PATH-PREFIX>   Local or remote path to the source
                                    directory, if not set a relative path to
                                    the local file will be computed.
