@@ -1,3 +1,24 @@
+## jxlint 2.1.0 (July 19, 2019)
+
+IMPROVEMENTS:
+
+- New output format `jenkins-xml` that can be imported in Jenkins CI
+
+## jxlint 2.0.0 (September 14, 2017)
+
+BUG FIXES:
+
+- avoid duplicate rule analysis with --enable
+
+IMPROVEMENTS:
+
+- Separate "core" from "command-line" logic
+- Add "jxlint-maven" to create maven plugins
+- Add `srcpath` option
+- Ensure that rule names are unique
+- Ensure that rule names do not contain a comma
+- Update jetty version to 9.2.22.v20170606
+
 ## jxlint 1.7.2 (August 20, 2016)
 
 BUG FIXES:
