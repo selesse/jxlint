@@ -1,3 +1,9 @@
+## jxlint 2.x.x
+
+IMPROVEMENTS:
+
+- Update to gradle 4.10.3
+
 ## jxlint 2.1.0 (July 19, 2019)
 
 IMPROVEMENTS:
