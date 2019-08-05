@@ -3,6 +3,7 @@
 IMPROVEMENTS:
 
 - Update to gradle 4.10.3
+- Add "jxlint-gradle" to create gradle plugins
 
 ## jxlint 2.1.0 (July 19, 2019)
 
