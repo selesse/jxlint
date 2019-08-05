@@ -48,7 +48,7 @@ public class AbstractJxlintMojoTest {
         mojoUnderTest.setEnableCategories(null);
         mojoUnderTest.setNoWarnings(false);
         mojoUnderTest.setAllWarnings(false);
-        mojoUnderTest.setWaringsAreErrors(false);
+        mojoUnderTest.setWarningsAreErrors(false);
         mojoUnderTest.setOutputType("html");
         mojoUnderTest.setOutputFile(new File(tempDirectory, "my-report.html"));
         mojoUnderTest.setSrcPathPrefix(null);
@@ -89,7 +89,7 @@ public class AbstractJxlintMojoTest {
         mojoUnderTest.setEnableCategories(Collections.singletonList(CATEGORY_NAME));
         mojoUnderTest.setNoWarnings(true);
         mojoUnderTest.setAllWarnings(true);
-        mojoUnderTest.setWaringsAreErrors(true);
+        mojoUnderTest.setWarningsAreErrors(true);
         mojoUnderTest.setOutputType("xml");
         mojoUnderTest.setOutputFile(reportFile);
         mojoUnderTest.setSrcPathPrefix(SRC_PATH_PREFIX_VALUE);
@@ -249,8 +249,8 @@ public class AbstractJxlintMojoTest {
             this.allWarnings = allWarnings;
         }
 
-        public void setWaringsAreErrors(boolean waringsAreErrors) {
-            this.waringsAreErrors = waringsAreErrors;
+        public void setWarningsAreErrors(boolean warningsAreErrors) {
+            this.warningsAreErrors = warningsAreErrors;
         }
 
         public void setOutputType(String outputType) {
