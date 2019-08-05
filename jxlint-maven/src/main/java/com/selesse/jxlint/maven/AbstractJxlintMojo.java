@@ -30,7 +30,7 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
     public static final String SOURCE_DIRECTORY = "sourceDirectory";
     public static final String NO_WARNINGS = "noWarnings";
     public static final String ALL_WARNINGS = "allWarnings";
-    public static final String WARNINGS_ARE_ERRORS = "waringsAreErrors";
+    public static final String WARNINGS_ARE_ERRORS = "warningsAreErrors";
     public static final String OUTPUT_TYPE = "outputType";
     public static final String OUTPUT_FILE = "outputFile";
     public static final String SRC_PATH_PREFIX = "srcPathPrefix";
@@ -78,7 +78,7 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
      * Treat all warnings as errors.
      */
     @Parameter(property = WARNINGS_ARE_ERRORS, defaultValue = "false")
-    protected boolean waringsAreErrors = false;
+    protected boolean warningsAreErrors = false;
 
     /**
      * Type of report that should be created (xml, html)
@@ -124,7 +124,7 @@ public abstract class AbstractJxlintMojo extends AbstractMojo {
 
         addBooleanOption(options, JxlintOption.NO_WARNINGS, noWarnings);
         addBooleanOption(options, JxlintOption.ALL_WARNINGS, allWarnings);
-        addBooleanOption(options, JxlintOption.WARNINGS_ARE_ERRORS, waringsAreErrors);
+        addBooleanOption(options, JxlintOption.WARNINGS_ARE_ERRORS, warningsAreErrors);
 
         return options;
     }

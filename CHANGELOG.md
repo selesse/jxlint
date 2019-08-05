@@ -5,6 +5,10 @@ IMPROVEMENTS:
 - Update to gradle 4.10.3
 - Add "jxlint-gradle" to create gradle plugins
 
+BUG FIXES:
+
+- Fix typo in AbstractJxlintMojo: 'waringsAreErrors' -> 'warningsAreErrors'
+
 ## jxlint 2.1.0 (July 19, 2019)
 
 IMPROVEMENTS:
