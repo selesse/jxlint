@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+VERSION="$1"
+
+if [ -z "$VERSION" ] ; then
+    echo "Error: must pass version. Usage: $0 2.2.0"
+    exit 1
+fi
+
+main() {
+    export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
+    git tag -a "${VERSION}" -m "jxlint ${VERSION}"
+    echo "Don't forget the changelog"
+    echo "== Note: there will be one password prompt per signed artifact =="
+    gradlew clean release sign uploadArchives --no-daemon
+    echo "== Done - now push and visit https://oss.sonatype.org and Staging Repositories =="
+}
+
+main
