@@ -1,4 +1,4 @@
-## jxlint 2.x.x
+## jxlint 2.2.0
 
 IMPROVEMENTS:
 
